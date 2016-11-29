@@ -1,16 +1,14 @@
 package com.kachidoki.oxgenmusic.activity;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
-import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
+import com.kachidoki.oxgenmusic.model.AdapterPlaylist;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.network.NetWork;
@@ -24,11 +22,14 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
-    @BindView(R.id.recyclerView_main)
+/**
+ * Created by mayiwei on 16/11/29.
+ */
+public class RankActivity extends BaseActivity {
+    @BindView(R.id.recyclerView_playlist)
     RecyclerView recyclerView;
 
-    AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this);
+    AdapterPlaylist adapter = new AdapterPlaylist(RankActivity.this);
 
     Observer<List<Song>> observer = new Observer<List<Song>>() {
         @Override
@@ -38,7 +39,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
         @Override
         public void onError(Throwable e) {
-            Toast.makeText(MainActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
+            Toast.makeText(RankActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
         }
 
         @Override
@@ -48,21 +49,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     };
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_playlist);
         ButterKnife.bind(this);
 
         setToolbar(true);
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
-        recyclerView.setAdapter(adapter);
-
-        getHotSong();
+        getRankMusic();
     }
 
-
-    private void getHotSong(){
+    private void getRankMusic(){
         unsubscribe();
         subscription = NetWork.getMusicApi()
                 .getMusicList(Constants.showapi_appid,Constants.showapi_sign,"26")
@@ -77,13 +74,4 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 .subscribe(observer);
     }
 
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()){
-            case R.id.rank1:startActivity(new Intent(MainActivity.this,RankActivity.class));
-                break;
-
-        }
-    }
 }
