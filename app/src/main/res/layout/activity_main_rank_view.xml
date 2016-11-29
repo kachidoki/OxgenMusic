@@ -40,7 +40,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:id="@+id/ranks2"
+                    android:id="@+id/rank2"
                     android:background="@drawable/test"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>

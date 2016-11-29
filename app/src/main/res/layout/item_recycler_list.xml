@@ -3,12 +3,13 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
+    android:layout_height="52dp"
+    android:background="@color/blackDark"
     >
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="48dp">
+        android:layout_height="50dp">
         <LinearLayout
             android:layout_marginLeft="16dp"
             android:layout_weight="16"
@@ -20,6 +21,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
+                android:singleLine="true"
                 android:id="@+id/songname_list"
                 style="@style/TextAppearance.AppCompat.Body2"
                 android:text="歌名"/>
@@ -37,17 +39,19 @@
             android:minWidth="48dp"
             android:layout_height="48dp"
             android:orientation="vertical"
-            android:layout_gravity="end">
+            android:layout_gravity="end"
+            android:gravity="center_vertical">
             <ImageView
                 android:layout_marginRight="8dp"
                 android:layout_gravity="right"
                 android:src="@drawable/icon_more"
-                android:layout_width="48dp"
-                android:layout_height="48dp"/>
+                android:layout_width="32dp"
+                android:layout_height="32dp"/>
         </LinearLayout>
     </LinearLayout>
     <View
         android:layout_width="match_parent"
-        android:layout_height="2dp"
+        android:layout_marginLeft="16dp"
+        android:layout_height="0.5dp"
         android:background="@color/gray"/>
 </LinearLayout>

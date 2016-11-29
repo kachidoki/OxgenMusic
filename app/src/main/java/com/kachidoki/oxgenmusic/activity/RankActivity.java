@@ -2,6 +2,7 @@ package com.kachidoki.oxgenmusic.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
@@ -56,13 +57,16 @@ public class RankActivity extends BaseActivity {
 
         setToolbar(true);
 
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(adapter);
+
         getRankMusic();
     }
 
     private void getRankMusic(){
         unsubscribe();
         subscription = NetWork.getMusicApi()
-                .getMusicList(Constants.showapi_appid,Constants.showapi_sign,"26")
+                .getMusicList(Constants.showapi_appid,Constants.showapi_sign,"5")
                 .map(new Func1<ApiResult, List<Song>>() {
                     @Override
                     public List<Song> call(ApiResult apiResult) {

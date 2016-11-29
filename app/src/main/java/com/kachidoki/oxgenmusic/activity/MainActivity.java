@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
@@ -19,12 +20,13 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import rx.Observer;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener{
+public class MainActivity extends BaseActivity{
     @BindView(R.id.recyclerView_main)
     RecyclerView recyclerView;
 
@@ -77,13 +79,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                 .subscribe(observer);
     }
 
-
-    @Override
-    public void onClick(View view) {
+    @OnClick({R.id.rank1,R.id.rank2})
+    void toRankActivity(View view){
         switch (view.getId()){
             case R.id.rank1:startActivity(new Intent(MainActivity.this,RankActivity.class));
                 break;
-
         }
     }
+
 }
