@@ -22,7 +22,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank1"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -41,7 +41,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank2"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
@@ -62,7 +62,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -80,7 +80,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>
@@ -101,7 +101,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
 
         </LinearLayout>
@@ -119,7 +119,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
-                    android:background="@drawable/test"/>
+                    android:background="@drawable/test2"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
     </LinearLayout>

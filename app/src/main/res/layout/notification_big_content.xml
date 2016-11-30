@@ -25,12 +25,16 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
                     android:text="songName"
                     android:id="@+id/songname"/>
                 <TextView
+                    android:layout_marginLeft="16dp"
+                    android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="0dp"
@@ -41,8 +45,16 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1">
-
+                android:gravity="right"
+                android:layout_weight="2">
+                <ImageView
+                    android:layout_marginRight="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/nof_stop"
+                    android:src="@drawable/icon_stop"
+                    />
             </LinearLayout>
 
         </LinearLayout>
@@ -51,21 +63,43 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal">
-            <ImageView
+            <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                />
-            <ImageView
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/nof_pre"
+                    android:src="@drawable/icon_previous"
+                    />
+            </LinearLayout>
+
+            <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                />
-            <ImageView
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/nof_playpasue"
+                    android:src="@drawable/icon_play_gray"
+                    />
+            </LinearLayout>
+            <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                />
+                android:gravity="center">
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:id="@+id/nof_next"
+                    android:src="@drawable/icon_next"
+                    />
+            </LinearLayout>
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
