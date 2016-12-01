@@ -12,7 +12,7 @@ import java.util.List;
 public class PlayEvent {
 
     public enum Action {
-        PLAY, PAUSE, NEXT, PREVIOES
+        PLAY, PAUSE, NEXT, PREVIOES,PLAYNOW,CHANGE
     }
 
     private Action mAction;

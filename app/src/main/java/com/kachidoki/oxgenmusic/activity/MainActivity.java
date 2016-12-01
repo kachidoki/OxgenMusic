@@ -4,9 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
@@ -16,7 +15,6 @@ import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.network.NetWork;
-import com.kachidoki.oxgenmusic.widget.PopWindow;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -36,9 +34,11 @@ import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
-public class MainActivity extends BaseActivity{
+public class MainActivity extends BaseActivity {
     @BindView(R.id.recyclerView_main)
     RecyclerView recyclerView;
+    @BindView(R.id.main_cd)
+    LinearLayout mainCd;
 
 
     AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this);
@@ -69,17 +69,17 @@ public class MainActivity extends BaseActivity{
         setToolbar(true);
         initDrawer();
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false));
+        recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
 
         getHotSong();
     }
 
 
-    private void getHotSong(){
+    private void getHotSong() {
         unsubscribe();
         subscription = NetWork.getMusicApi()
-                .getMusicList(Constants.showapi_appid,Constants.showapi_sign,"26")
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "26")
                 .map(new Func1<ApiResult, List<Song>>() {
                     @Override
                     public List<Song> call(ApiResult apiResult) {
@@ -91,12 +91,55 @@ public class MainActivity extends BaseActivity{
                 .subscribe(observer);
     }
 
-    @OnClick({R.id.rank1,R.id.rank2})
-    void toRankActivity(View view){
-        switch (view.getId()){
-            case R.id.rank1:startActivity(new Intent(MainActivity.this,RankActivity.class));
+    @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8})
+    void toRankActivity(View view) {
+        switch (view.getId()) {
+            case R.id.rank1:
+                Intent intent1 = new Intent(MainActivity.this, RankActivity.class);
+                intent1.putExtra("topid","5");
+                startActivity(intent1);
+                break;
+            case R.id.rank2:
+                Intent intent2 = new Intent(MainActivity.this, RankActivity.class);
+                intent2.putExtra("topid","3");
+                startActivity(intent2);
+                break;
+            case R.id.rank3:
+                Intent intent3 = new Intent(MainActivity.this, RankActivity.class);
+                intent3.putExtra("topid","6");
+                startActivity(intent3);
+                break;
+            case R.id.rank4:
+                Intent intent4 = new Intent(MainActivity.this, RankActivity.class);
+                intent4.putExtra("topid","16");
+                startActivity(intent4);
+                break;
+            case R.id.rank5:
+                Intent intent5 = new Intent(MainActivity.this, RankActivity.class);
+                intent5.putExtra("topid","17");
+                startActivity(intent5);
+                break;
+            case R.id.rank6:
+                Intent intent6 = new Intent(MainActivity.this, RankActivity.class);
+                intent6.putExtra("topid","18");
+                startActivity(intent6);
+                break;
+            case R.id.rank7:
+                Intent intent7 = new Intent(MainActivity.this, RankActivity.class);
+                intent7.putExtra("topid","19");
+                startActivity(intent7);
+                break;
+            case R.id.rank8:
+                Intent intent8 = new Intent(MainActivity.this, RankActivity.class);
+                intent8.putExtra("topid","23");
+                startActivity(intent8);
                 break;
         }
+    }
+
+    @OnClick(R.id.main_cd)
+    void toPlayActivity(){
+        startActivity(new Intent(MainActivity.this, PlayActivity.class));
     }
 
 
@@ -113,7 +156,7 @@ public class MainActivity extends BaseActivity{
                 .withHeaderBackground(R.color.blackDark)
                 .build();
 
-        Drawer drawer =  new DrawerBuilder()
+        Drawer drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(getToolbar())
                 .withDisplayBelowStatusBar(true)
@@ -126,13 +169,13 @@ public class MainActivity extends BaseActivity{
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch (position){
+                        switch (position) {
                             case 1:
                                 break;
                             case 2:
                                 break;
                             case 3:
-                                startActivity(new Intent(MainActivity.this,PlayActivity.class));
+                                startActivity(new Intent(MainActivity.this, MyPlaylistActivity.class));
                                 break;
                         }
                         return false;

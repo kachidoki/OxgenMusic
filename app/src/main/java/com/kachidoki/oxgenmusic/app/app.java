@@ -18,5 +18,6 @@ public class App extends Application {
         super.onCreate();
 
         playEvent = new PlayEvent();
-        startService(new Intent(this, PlayerService.class));    }
+        startService(new Intent(this, PlayerService.class));
+    }
 }

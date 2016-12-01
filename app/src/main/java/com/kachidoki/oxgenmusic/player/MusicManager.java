@@ -16,7 +16,7 @@ import java.util.Random;
 public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlayer.OnPreparedListener {
 
     private enum PlayMode {
-        NOMAL,LOOP, RANDOM, REPEAT
+       LOOP, RANDOM, REPEAT
     }
 
     private static MusicManager musicManager = new MusicManager();
@@ -31,6 +31,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     private PlayMode playMode;
     private Boolean isReady;
     private Boolean isfirst;
+    private CallBack callBack;
 
 
 
@@ -41,11 +42,14 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
         mQueue = new ArrayList<>();
         mQueueIndex = 0;
-        playMode = PlayMode.NOMAL;
+        playMode = PlayMode.LOOP;
         isReady = false;
         isfirst = true;
     }
 
+    public interface CallBack{
+        void OnChange();
+    }
 
     /**
      * 播放队列管理
@@ -57,6 +61,11 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         mQueueIndex = index;
         play(getNowPlaying());
     }
+    public void addQueuePlay(Song song){
+        mQueue.add(song);
+        mQueueIndex = mQueue.size()-1;
+    }
+
 
     public void addQueue(Song song){
         mQueue.add(song);
@@ -66,12 +75,41 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         mQueue.addAll(songs);
     }
 
+    public List<Song> getmQueue(){
+        return mQueue;
+    }
+
+    public boolean checkIsAdd(Song song){
+        for (int i=0;i<mQueue.size();i++){
+            if (song.songname==mQueue.get(i).songname) return true;
+        }
+        return false;
+    }
+
+    public boolean playAndCheck(Song song){
+        for (int i=0;i<mQueue.size();i++){
+            if (song.songname==mQueue.get(i).songname){
+                mQueueIndex = i;
+                play(getNowPlaying());
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * MusicManager调用给外部的接口
      */
 
-    public Boolean getIsReady(){
+    public void setCallBack(CallBack callBack){
+        this.callBack = callBack;
+    }
+
+    public boolean getIsfirst(){
+        return isfirst;
+    }
+
+    public boolean getIsReady(){
         return isReady;
     }
 
@@ -89,28 +127,24 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         mediaPlayer.pause();
     }
 
-    public void resume(){
-        mediaPlayer.start();
+    public void playNow(){
+        play(getNowPlaying());
     }
 
     public void next(){
-        if (mQueueIndex>0&&mQueueIndex<(mQueue.size()-1)){
-            play(getNextSong());
-        }else {
-            mediaPlayer.reset();
-        }
+        play(getNextSong());
     }
 
     public void previous(){
-        if (mQueueIndex>0&&mQueueIndex<(mQueue.size()-1)){
-            play(getPreviousSong());
-        }else {
-            mediaPlayer.reset();
-        }
+        play(getPreviousSong());
     }
 
     public void stop(){
         mediaPlayer.stop();
+    }
+
+    public Song getNowSong(){
+        return getNowPlaying();
     }
 
     public boolean getIsPlaying(){
@@ -157,7 +191,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         isfirst = false;
         try {
             mediaPlayer.reset();
-            mediaPlayer.setDataSource(song.downUrl);
+            mediaPlayer.setDataSource(song.url);
             mediaPlayer.prepareAsync();
         } catch (IOException e) {
             e.printStackTrace();
@@ -181,8 +215,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
             return null;
         }
         switch (playMode){
-            case NOMAL:
-                return mQueue.get(getNextIndex());
             case LOOP:
                 return mQueue.get(getNextIndex());
             case RANDOM:
@@ -198,8 +230,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
             return null;
         }
         switch (playMode){
-            case NOMAL:
-                return mQueue.get(getPreviousIndex());
             case LOOP:
                 return mQueue.get(getPreviousIndex());
             case RANDOM:
@@ -216,12 +246,14 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     public void onCompletion(MediaPlayer mediaPlayer) {
         isReady = false;
         next();
+        callBack.OnChange();
     }
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         isReady = true;
         mediaPlayer.start();
+        callBack.OnChange();
     }
 
 
@@ -230,19 +262,8 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
      * @return
      */
     private int getPreviousIndex() {
-        if (playMode==PlayMode.NOMAL){
-            if ((mQueueIndex-1)<0){
-                mQueueIndex = -1;
-                return mQueueIndex;
-            }else {
-                mQueueIndex = mQueueIndex - 1;
-                return mQueueIndex;
-            }
-        }else {
-            mQueueIndex = (mQueueIndex - 1) % mQueue.size();
-            return mQueueIndex;
-        }
-
+        mQueueIndex = (mQueueIndex - 1) % mQueue.size();
+        return mQueueIndex;
     }
 
     private int getRandomIndex() {
@@ -252,20 +273,8 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
 
     private int getNextIndex() {
-        if (playMode==PlayMode.NOMAL){
-            if ((mQueueIndex+1)>(mQueue.size()-1)){
-                mQueueIndex = -1;
-                return mQueueIndex;
-            }else {
-                mQueueIndex = mQueueIndex + 1;
-                return mQueueIndex;
-            }
-        }else {
-            mQueueIndex = (mQueueIndex + 1) % mQueue.size();
-            return mQueueIndex;
-        }
-
-
+        mQueueIndex = (mQueueIndex + 1) % mQueue.size();
+        return mQueueIndex;
     }
 
 

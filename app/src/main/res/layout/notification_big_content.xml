@@ -9,7 +9,7 @@
         android:layout_width="128dp"
         android:layout_height="128dp"
         android:src="@drawable/test"
-        android:id="@+id/img_notification"/>
+        android:id="@+id/nof_img"/>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="128dp"
@@ -29,17 +29,19 @@
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="songName"
-                    android:id="@+id/songname"/>
+                    android:id="@+id/nof_songname"/>
                 <TextView
                     android:layout_marginLeft="16dp"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
-                    android:layout_height="0dp"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
                     android:text="songerName"
-                    android:id="@+id/singer"/>
+                    android:id="@+id/nof_singer"/>
 
             </LinearLayout>
             <LinearLayout

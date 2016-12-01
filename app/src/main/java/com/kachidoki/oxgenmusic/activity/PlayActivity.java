@@ -2,6 +2,7 @@ package com.kachidoki.oxgenmusic.activity;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -64,8 +65,10 @@ public class PlayActivity extends BaseActivity {
             case R.id.play_play:
                 if (MusicManager.getMusicManager().getIsPlaying()){
                     App.playEvent.setAction(PlayEvent.Action.PAUSE);
+                    playPlay.setImageResource(R.drawable.icon_play_play);
                 }else {
                     App.playEvent.setAction(PlayEvent.Action.PLAY);
+                    playPlay.setImageResource(R.drawable.icon_play_pause);
                 }
                 EventBus.getDefault().post(App.playEvent);
                 break;

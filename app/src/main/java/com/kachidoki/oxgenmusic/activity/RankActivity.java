@@ -66,7 +66,7 @@ public class RankActivity extends BaseActivity {
     private void getRankMusic(){
         unsubscribe();
         subscription = NetWork.getMusicApi()
-                .getMusicList(Constants.showapi_appid,Constants.showapi_sign,"5")
+                .getMusicList(Constants.showapi_appid,Constants.showapi_sign,getIntent().getStringExtra("topid"))
                 .map(new Func1<ApiResult, List<Song>>() {
                     @Override
                     public List<Song> call(ApiResult apiResult) {
