@@ -16,6 +16,7 @@ import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.utils.Utils;
 import com.kachidoki.oxgenmusic.widget.PopWindow;
 
 import org.greenrobot.eventbus.EventBus;
@@ -77,36 +78,11 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
             songname.setText(song.songname);
             number.setText((i+1)+"");
 
-            final PopWindow popWindow = new PopWindow(itemView.getContext(), new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    switch (view.getId()){
-                        case R.id.pop_addlist:
-                            if (!MusicManager.getMusicManager().checkIsAdd(song)){
-                                Toast.makeText(itemView.getContext(),"添加成功",Toast.LENGTH_SHORT).show();
-                                MusicManager.getMusicManager().addQueue(song);
-                            }else {
-                                Toast.makeText(itemView.getContext(),"已在播放列表",Toast.LENGTH_SHORT).show();
-                            }
-
-                            break;
-                        case R.id.pop_playthis:
-                            Toast.makeText(itemView.getContext(),"播放歌曲",Toast.LENGTH_SHORT).show();
-                            if(!MusicManager.getMusicManager().playAndCheck(song)){
-                                MusicManager.getMusicManager().addQueuePlay(song);
-                                App.playEvent.setAction(PlayEvent.Action.PLAYNOW);
-                                EventBus.getDefault().post(App.playEvent);
-                            }
-                            break;
-
-
-                    }
-                }
-            });
+            final PopWindow popWindow = new PopWindow(itemView.getContext(),song);
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    popWindow.showAtLocation(itemView,Gravity.CENTER_VERTICAL, 0, 0);
+                    popWindow.showAtLocation(itemView,Gravity.BOTTOM, 0, Utils.getNavigationBarHeight());
                 }
             });
         }

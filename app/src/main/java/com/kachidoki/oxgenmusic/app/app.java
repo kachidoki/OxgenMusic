@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.utils.Utils;
 
 /**
  * Created by mayiwei on 16/11/30.
@@ -16,7 +17,7 @@ public class App extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
+        Utils.initialize(this);
         playEvent = new PlayEvent();
         startService(new Intent(this, PlayerService.class));
     }

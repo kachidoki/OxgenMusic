@@ -11,6 +11,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.app.App;
+import com.kachidoki.oxgenmusic.model.bean.Song;
+import com.kachidoki.oxgenmusic.model.event.PlayEvent;
+import com.kachidoki.oxgenmusic.player.MusicManager;
+
+import org.greenrobot.eventbus.EventBus;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 /**
  * Created by mayiwei on 16/11/30.
@@ -19,20 +29,18 @@ public class PopWindow extends PopupWindow {
 
     private Context context;
     private View view;
-    private LinearLayout add;
-    private LinearLayout playthis;
+    private Song song;
+    @BindView(R.id.pop_addlist)
+    LinearLayout add;
+    @BindView(R.id.pop_playthis)
+    LinearLayout playthis;
 
 
-    public PopWindow(Context mContext, View.OnClickListener itemsOnClick) {
-
+    public PopWindow(Context mContext, Song mSong) {
+        context = mContext;
+        song = mSong;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_list, null);
-
-        add = (LinearLayout) view.findViewById(R.id.pop_addlist);
-        playthis = (LinearLayout) view.findViewById(R.id.pop_playthis);
-        add.setOnClickListener(itemsOnClick);
-        playthis.setOnClickListener(itemsOnClick);
-
-
+        ButterKnife.bind(this,view);
         // 设置外部可点击
         this.setOutsideTouchable(true);
 
@@ -57,18 +65,41 @@ public class PopWindow extends PopupWindow {
         // 设置视图
         this.setContentView(this.view);
         // 设置弹出窗体的宽和高
-        this.setHeight(RelativeLayout.LayoutParams.MATCH_PARENT);
-        this.setWidth(RelativeLayout.LayoutParams.WRAP_CONTENT);
+        this.setHeight(RelativeLayout.LayoutParams.WRAP_CONTENT);
+        this.setWidth(RelativeLayout.LayoutParams.MATCH_PARENT);
 
         // 设置弹出窗体可点击
         this.setFocusable(true);
 
-        // 实例化一个ColorDrawable颜色为半透明
-        ColorDrawable dw = new ColorDrawable(0xb0000000);
         // 设置弹出窗体的背景
-        this.setBackgroundDrawable(dw);
+        this.setBackgroundDrawable(new ColorDrawable(0xff282828));
 
         // 设置弹出窗体显示时的动画，从底部向上弹出
-        this.setAnimationStyle(R.style.take_photo_anim);
+        this.setAnimationStyle(R.style.pop_anim);
     }
+
+    @OnClick({R.id.pop_playthis,R.id.pop_addlist})
+    void toTarget(View view){
+        switch (view.getId()){
+            case R.id.pop_addlist:
+                if (!MusicManager.getMusicManager().checkIsAdd(song)){
+                    Toast.makeText(context,"添加成功",Toast.LENGTH_SHORT).show();
+                    MusicManager.getMusicManager().addQueue(song);
+                }else {
+                    Toast.makeText(context,"已在播放列表",Toast.LENGTH_SHORT).show();
+                }
+                dismiss();
+                break;
+            case R.id.pop_playthis:
+                Toast.makeText(context,"播放歌曲",Toast.LENGTH_SHORT).show();
+                if(!MusicManager.getMusicManager().playAndCheck(song)){
+                    MusicManager.getMusicManager().addQueuePlay(song);
+                    App.playEvent.setAction(PlayEvent.Action.PLAYNOW);
+                    EventBus.getDefault().post(App.playEvent);
+                }
+                dismiss();
+                break;
+        }
+    }
+
 }
