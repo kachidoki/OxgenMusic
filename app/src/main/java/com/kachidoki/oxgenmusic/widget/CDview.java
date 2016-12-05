@@ -11,6 +11,7 @@ import android.graphics.PorterDuffXfermode;
 import android.os.Handler;
 import android.os.Message;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 
 import com.kachidoki.oxgenmusic.R;
@@ -66,7 +67,7 @@ public class CDview extends View {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // size of height
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-
+        Log.e("Test","onMeasure :"+(widthMode== MeasureSpec.AT_MOST));
         // parent assign the size
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;
@@ -89,6 +90,7 @@ public class CDview extends View {
         }
         setMeasuredDimension(width, height);
         mCircleBitmap = resizeBitmap(width/10,mCircleBitmap);
+        mClipBitmap = resizeBitmap(width,mClipBitmap);
         mWidth = width;
     }
 
@@ -130,6 +132,7 @@ public class CDview extends View {
     private Bitmap resizeBitmap(int dstWidth, Bitmap srcBitmap) {
 //        缩放系数
         float scale = 1.0f * dstWidth / srcBitmap.getWidth();
+
 //        缩放矩阵
         Matrix matrix = new Matrix();
         matrix.setScale(scale, scale);
@@ -144,15 +147,13 @@ public class CDview extends View {
      */
     public void setImage(Bitmap bmp) {
 
-        Bitmap resizeBitmap = resizeBitmap(getWidth(),bmp);
         int widthSize = bmp.getWidth();
         int heightSize = bmp.getHeight();
         int widthSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.AT_MOST);
         int heightSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.AT_MOST);
 
         measure(widthSpec, heightSpec);
-
-        mClipBitmap = createCircleBitmap(resizeBitmap);
+        mClipBitmap = createCircleBitmap(bmp);
         requestLayout();
         invalidate();
     }
