@@ -1,6 +1,9 @@
 package com.kachidoki.oxgenmusic.activity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -8,13 +11,19 @@ import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.animation.GlideAnimation;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
+import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
+import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.widget.CDview;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -23,6 +32,9 @@ import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.List;
 
@@ -39,7 +51,21 @@ public class MainActivity extends BaseActivity {
     RecyclerView recyclerView;
     @BindView(R.id.main_cd)
     LinearLayout mainCd;
+    @BindView(R.id.main_cdView)
+    CDview cDview;
 
+    private SimpleTarget target = new SimpleTarget<Bitmap>() {
+        @Override
+        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
+            cDview.setImage(resource);
+        }
+
+        @Override
+        public void onLoadFailed(Exception e, Drawable errorDrawable) {
+            super.onLoadFailed(e, errorDrawable);
+            cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
+        }
+    };
 
     AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this);
 
@@ -65,16 +91,37 @@ public class MainActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         setToolbar(true);
         initDrawer();
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
-
+        cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
         getHotSong();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            loadCDBitmap();
+        }
+
+        if (MusicManager.getMusicManager().getIsPlaying()){
+            cDview.start();
+        }else {
+            cDview.pause();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
 
     private void getHotSong() {
         unsubscribe();
@@ -91,6 +138,13 @@ public class MainActivity extends BaseActivity {
                 .subscribe(observer);
     }
 
+    private void loadCDBitmap(){
+        Glide.with(getApplicationContext())
+                .load(MusicManager.getMusicManager().getNowSong().albumpic_big )
+                .asBitmap()
+                .into( target );
+    }
+
     @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8})
     void toRankActivity(View view) {
         switch (view.getId()) {
@@ -101,17 +155,17 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.rank2:
                 Intent intent2 = new Intent(MainActivity.this, RankActivity.class);
-                intent2.putExtra("topid","3");
+                intent2.putExtra("topid","6");
                 startActivity(intent2);
                 break;
             case R.id.rank3:
                 Intent intent3 = new Intent(MainActivity.this, RankActivity.class);
-                intent3.putExtra("topid","6");
+                intent3.putExtra("topid","23");
                 startActivity(intent3);
                 break;
             case R.id.rank4:
                 Intent intent4 = new Intent(MainActivity.this, RankActivity.class);
-                intent4.putExtra("topid","16");
+                intent4.putExtra("topid","19");
                 startActivity(intent4);
                 break;
             case R.id.rank5:
@@ -126,12 +180,12 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.rank7:
                 Intent intent7 = new Intent(MainActivity.this, RankActivity.class);
-                intent7.putExtra("topid","19");
+                intent7.putExtra("topid","3");
                 startActivity(intent7);
                 break;
             case R.id.rank8:
                 Intent intent8 = new Intent(MainActivity.this, RankActivity.class);
-                intent8.putExtra("topid","23");
+                intent8.putExtra("topid","16");
                 startActivity(intent8);
                 break;
         }
@@ -142,6 +196,16 @@ public class MainActivity extends BaseActivity {
         startActivity(new Intent(MainActivity.this, PlayActivity.class));
     }
 
+    @Subscribe
+    public void onEvent(PlayEvent playEvent){
+        switch (playEvent.getAction()) {
+            case CHANGE:
+                if (MusicManager.getMusicManager().getNowSong()!=null){
+                    loadCDBitmap();
+                }
+                break;
+        }
+    }
 
     private void initDrawer() {
         PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("主界面");

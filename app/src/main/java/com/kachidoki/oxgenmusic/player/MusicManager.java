@@ -262,7 +262,11 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
      * @return
      */
     private int getPreviousIndex() {
-        mQueueIndex = (mQueueIndex - 1) % mQueue.size();
+        if (!((mQueueIndex-1)<0)){
+            mQueueIndex = (mQueueIndex - 1) % mQueue.size();
+        }else {
+            mQueueIndex=0;
+        }
         return mQueueIndex;
     }
 

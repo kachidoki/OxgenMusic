@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 
@@ -47,6 +48,8 @@ public class PlayerService extends Service {
             @Override
             public void OnChange() {
                 sendPlayerNotification(NotificationClose);
+                App.playEvent.setAction(PlayEvent.Action.CHANGE);
+                EventBus.getDefault().post(App.playEvent);
             }
         });
     }
@@ -67,6 +70,7 @@ public class PlayerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        EventBus.getDefault().unregister(this);
         notificationManager.cancel(Constants.PlayerNotification);
         MusicManager.getMusicManager().release();
     }

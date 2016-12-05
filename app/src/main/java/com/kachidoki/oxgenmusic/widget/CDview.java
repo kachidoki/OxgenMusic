@@ -27,7 +27,6 @@ public class CDview extends View {
     private Bitmap mClipBitmap; // cd图片
 
     private float mRotation = 0.0f;
-    private int mWidth;
 
     private Matrix mMatrix;
 
@@ -91,7 +90,6 @@ public class CDview extends View {
         setMeasuredDimension(width, height);
         mCircleBitmap = resizeBitmap(width/10,mCircleBitmap);
         mClipBitmap = resizeBitmap(width,mClipBitmap);
-        mWidth = width;
     }
 
     @Override
@@ -181,7 +179,7 @@ public class CDview extends View {
         public void handleMessage(Message msg) {
             if (msg.what == MSG_RUN) {
                 if (isRunning) {
-                    mRotation += 0.5f;
+                    mRotation += 0.3f;
                     if (mRotation >= 360)
                         mRotation = 0;
                     invalidate();

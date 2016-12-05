@@ -4,6 +4,11 @@
     android:orientation="vertical"
     android:layout_marginTop="48dp"
     android:layout_width="match_parent"
-    android:layout_height="360dp">
+    android:layout_height="360dp"
+    android:gravity="center">
+    <com.kachidoki.oxgenmusic.widget.CDview
+        android:id="@+id/play_cdView"
+        android:layout_width="280dp"
+        android:layout_height="280dp" />
 
 </LinearLayout>

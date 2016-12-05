@@ -6,7 +6,12 @@
     android:background="@color/blackDark"
     android:id="@+id/main_cd"
     android:layout_height="150dp"
+    android:gravity="center"
     >
 
+    <com.kachidoki.oxgenmusic.widget.CDview
+        android:id="@+id/main_cdView"
+        android:layout_width="130dp"
+        android:layout_height="130dp" />
 
 </LinearLayout>

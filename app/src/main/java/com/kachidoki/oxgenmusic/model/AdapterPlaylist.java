@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -65,7 +66,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
         @BindView(R.id.songname_list)
         TextView songname;
         @BindView(R.id.more_list)
-        ImageView more;
+        LinearLayout more;
         @BindView(R.id.number_list)
         TextView number;
 
