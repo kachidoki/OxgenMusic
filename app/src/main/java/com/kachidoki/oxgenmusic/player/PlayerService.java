@@ -42,6 +42,7 @@ public class PlayerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
+        Log.e("Test","----------------PlayService OnCreate-------------");
         EventBus.getDefault().register(this);
         notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         MusicManager.getMusicManager().setCallBack(new MusicManager.CallBack() {
@@ -56,6 +57,7 @@ public class PlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
+        Log.e("Test","----------------PlayService onStartCommand-------------");
         if (intent==null){
             return super.onStartCommand(intent, flags, startId);
         }
@@ -70,6 +72,7 @@ public class PlayerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        Log.e("Test","----------------PlayService onDestroy-------------");
         EventBus.getDefault().unregister(this);
         notificationManager.cancel(Constants.PlayerNotification);
         MusicManager.getMusicManager().release();

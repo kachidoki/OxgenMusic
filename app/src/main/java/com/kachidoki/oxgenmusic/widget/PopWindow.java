@@ -2,6 +2,7 @@ package com.kachidoki.oxgenmusic.widget;
 
 import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -12,9 +13,13 @@ import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.App;
+import com.kachidoki.oxgenmusic.config.Constants;
+import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.Song;
+import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -34,6 +39,8 @@ public class PopWindow extends PopupWindow {
     LinearLayout add;
     @BindView(R.id.pop_playthis)
     LinearLayout playthis;
+    @BindView(R.id.pop_cancel)
+    LinearLayout cancel;
 
 
     public PopWindow(Context mContext, Song mSong) {
@@ -78,13 +85,14 @@ public class PopWindow extends PopupWindow {
         this.setAnimationStyle(R.style.pop_anim);
     }
 
-    @OnClick({R.id.pop_playthis,R.id.pop_addlist})
+    @OnClick({R.id.pop_playthis,R.id.pop_addlist,R.id.pop_cancel})
     void toTarget(View view){
         switch (view.getId()){
             case R.id.pop_addlist:
                 if (!MusicManager.getMusicManager().checkIsAdd(song)){
                     Toast.makeText(context,"添加成功",Toast.LENGTH_SHORT).show();
                     MusicManager.getMusicManager().addQueue(song);
+                    MusicDBHelper.getMusicDBHelper().saveSong(song,MusicManager.myList);
                 }else {
                     Toast.makeText(context,"已在播放列表",Toast.LENGTH_SHORT).show();
                 }
@@ -94,9 +102,13 @@ public class PopWindow extends PopupWindow {
                 Toast.makeText(context,"播放歌曲",Toast.LENGTH_SHORT).show();
                 if(!MusicManager.getMusicManager().playAndCheck(song)){
                     MusicManager.getMusicManager().addQueuePlay(song);
+                    MusicDBHelper.getMusicDBHelper().saveSong(song,MusicManager.myList);
                     App.playEvent.setAction(PlayEvent.Action.PLAYNOW);
                     EventBus.getDefault().post(App.playEvent);
                 }
+                dismiss();
+                break;
+            case R.id.pop_cancel:
                 dismiss();
                 break;
         }

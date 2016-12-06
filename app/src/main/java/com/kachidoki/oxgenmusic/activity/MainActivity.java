@@ -18,6 +18,7 @@ import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
+import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
@@ -100,6 +101,8 @@ public class MainActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
         getHotSong();
+
+        MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0);
     }
 
     @Override

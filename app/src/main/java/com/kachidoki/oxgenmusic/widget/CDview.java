@@ -66,7 +66,6 @@ public class CDview extends View {
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         // size of height
         int heightSize = MeasureSpec.getSize(heightMeasureSpec);
-        Log.e("Test","onMeasure :"+(widthMode== MeasureSpec.AT_MOST));
         // parent assign the size
         if (widthMode == MeasureSpec.EXACTLY) {
             width = widthSize;

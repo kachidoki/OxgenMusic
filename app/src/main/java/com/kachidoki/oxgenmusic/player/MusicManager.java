@@ -3,6 +3,7 @@ package com.kachidoki.oxgenmusic.player;
 import android.media.MediaPlayer;
 
 import com.kachidoki.oxgenmusic.model.bean.Song;
+import com.kachidoki.oxgenmusic.model.bean.SongQueue;
 
 import java.io.IOException;
 import java.security.PublicKey;
@@ -15,6 +16,8 @@ import java.util.Random;
  */
 public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlayer.OnPreparedListener {
 
+    public static SongQueue myList;
+    public static SongQueue hotList;
     private enum PlayMode {
        LOOP, RANDOM, REPEAT
     }
@@ -59,7 +62,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     public void setQueue(List<Song> queue,int index){
         mQueue = queue;
         mQueueIndex = index;
-        play(getNowPlaying());
+//        play(getNowPlaying());
     }
     public void addQueuePlay(Song song){
         mQueue.add(song);

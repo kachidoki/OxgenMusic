@@ -8,6 +8,7 @@ import android.support.v7.widget.RecyclerView;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.AdapterPlaylist;
+import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 
 import butterknife.BindView;
@@ -36,6 +37,6 @@ public class MyPlaylistActivity extends BaseActivity {
     }
 
     private void getMylist(){
-        adapter.setData(MusicManager.getMusicManager().getmQueue());
+        adapter.setData(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList));
     }
 }
