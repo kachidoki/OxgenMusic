@@ -1,5 +1,6 @@
 package com.kachidoki.oxgenmusic.model;
 
+import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
 import com.kachidoki.oxgenmusic.model.bean.Song;
@@ -26,6 +27,19 @@ public class MusicDBHelper {
 
     public void saveQueue(SongQueue songQueue){
         songQueue.save();
+    }
+
+    public void saveListSong(List<Song> songs,SongQueue songQueue){
+        ActiveAndroid.beginTransaction();
+        try {
+            for (int i = 0; i < songs.size(); i++) {
+                new SongBean(songs.get(i).songname,songs.get(i).seconds,songs.get(i).singerid,songs.get(i).albumpic_big,songs.get(i).url,songs.get(i).singername,songs.get(i).albumid,songQueue).save();
+            }
+            ActiveAndroid.setTransactionSuccessful();
+        }
+        finally {
+            ActiveAndroid.endTransaction();
+        }
     }
 
     public void deleteSingleSong(Song song){

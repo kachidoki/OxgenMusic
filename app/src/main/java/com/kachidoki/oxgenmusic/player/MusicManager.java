@@ -1,6 +1,7 @@
 package com.kachidoki.oxgenmusic.player;
 
 import android.media.MediaPlayer;
+import android.util.Log;
 
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongQueue;
@@ -39,9 +40,11 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
 
     public MusicManager(){
+        Log.e("Test","======MusicManager 构造===========");
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
+        mediaPlayer.reset();
 
         mQueue = new ArrayList<>();
         mQueueIndex = 0;
@@ -56,13 +59,19 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     /**
      * 播放队列管理
-     * @param queue
-     * @param index
      */
-    public void setQueue(List<Song> queue,int index){
+    public void setIndex(int index){
+        mQueueIndex = index;
+        play(getNowPlaying());
+    }
+
+    public void setQueue(List<Song> queue,int index,boolean play){
         mQueue = queue;
         mQueueIndex = index;
-//        play(getNowPlaying());
+        if (play){
+            play(getNowPlaying());
+        }
+
     }
     public void addQueuePlay(Song song){
         mQueue.add(song);
@@ -76,6 +85,25 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public void addQueue(List<Song> songs){
         mQueue.addAll(songs);
+    }
+
+    public void deleteSong(int index,boolean isPlaying,boolean isMylist){
+        mQueue.remove(index);
+        if (isMylist){
+            if (isPlaying&&(mQueueIndex==index)){
+                if (!(mQueue.size()<1)){
+                    if (index+1>mQueue.size()){
+                        mQueueIndex = mQueueIndex-1;
+                        play(getNowPlaying());
+                    }else {
+                        play(getNowPlaying());
+                    }
+                }else {
+                    mediaPlayer.stop();
+                    callBack.OnChange();
+                }
+            }
+        }
     }
 
     public List<Song> getmQueue(){
@@ -143,6 +171,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void stop(){
+        Log.e("Test","--MediaPlayer stop--");
         mediaPlayer.stop();
     }
 
@@ -191,13 +220,15 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
      * @param song
      */
     private void play(Song song){
-        isfirst = false;
-        try {
-            mediaPlayer.reset();
-            mediaPlayer.setDataSource(song.url);
-            mediaPlayer.prepareAsync();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (song!=null){
+            isfirst = false;
+            try {
+                mediaPlayer.reset();
+                mediaPlayer.setDataSource(song.url);
+                mediaPlayer.prepareAsync();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

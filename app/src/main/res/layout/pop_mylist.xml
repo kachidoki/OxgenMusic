@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:id="@+id/pop_layout">
+    android:id="@+id/popMy_layout">
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
@@ -14,12 +14,12 @@
             android:layout_height="52dp"
             android:gravity="center">
             <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/pop_add"/>
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/pop_play"/>
         </LinearLayout>
         <LinearLayout
-            android:id="@+id/pop_addlist"
+            android:id="@+id/popMy_playthis"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:orientation="vertical"
@@ -29,7 +29,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:text="添加到播放列表"/>
+                android:text="播放这首"/>
             <View
                 android:layout_marginRight="16dp"
                 android:layout_width="match_parent"
@@ -47,22 +47,22 @@
             android:layout_height="52dp"
             android:gravity="center">
             <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/pop_play"/>
+                android:layout_width="26dp"
+                android:layout_height="26dp"
+                android:src="@drawable/pop_delete"/>
         </LinearLayout>
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:orientation="vertical"
-            android:id="@+id/pop_playthis"
+            android:id="@+id/popMy_delete"
             android:gravity="center_vertical">
             <TextView
                 android:layout_marginLeft="16dp"
                 android:layout_width="match_parent"
                 android:layout_height="48dp"
                 android:gravity="center_vertical"
-                android:text="播放这首"/>
+                android:text="从列表删除"/>
             <View
                 android:layout_marginRight="16dp"
                 android:layout_width="match_parent"
@@ -87,7 +87,7 @@
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:orientation="vertical"
-            android:id="@+id/pop_cancel"
+            android:id="@+id/popMy_cancel"
             android:gravity="center_vertical">
             <TextView
                 android:layout_marginLeft="16dp"

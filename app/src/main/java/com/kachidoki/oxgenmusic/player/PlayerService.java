@@ -15,6 +15,7 @@ import android.widget.RemoteViews;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.target.NotificationTarget;
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.activity.PlayActivity;
 import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
@@ -62,6 +63,7 @@ public class PlayerService extends Service {
             return super.onStartCommand(intent, flags, startId);
         }
         int command = intent.getIntExtra("command",0);
+        Log.e("Test","onStartCommand : command = "+command);
         setMediaPlayer(command);
         sendPlayerNotification(NotificationClose);
         return super.onStartCommand(intent, flags, startId);
@@ -122,6 +124,11 @@ public class PlayerService extends Service {
             PendingIntent PIntent4 =  PendingIntent.getService(this,8,Intent4,0);
             bigRemoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
 
+            Intent intentToPlay = new Intent(this, PlayActivity.class);
+            PendingIntent pIntentToPlay = PendingIntent.getActivity(this,9,intentToPlay,0);
+            bigRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
+            bigRemoteViews.setOnClickPendingIntent(R.id.nof_img,pIntentToPlay);
+
 
 
             builder.setCustomContentView(bigRemoteViews);
@@ -141,26 +148,35 @@ public class PlayerService extends Service {
     private void setMediaPlayer(int command) {
         switch (command){
             case CommandNext:
+                Log.e("Test","setMediaPlayer : CommandNext");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().next();
                 }
                 break;
             case CommandPlay:
+                Log.e("Test","setMediaPlayer : CommandPlay");
                 if (MusicManager.getMusicManager().getIsPlaying()){
                     MusicManager.getMusicManager().pause();
                 }else {
                     MusicManager.getMusicManager().start();
                 }
                 sendPlayerNotification(NotificationClose);
+                App.playEvent.setAction(PlayEvent.Action.CHANGE);
+                EventBus.getDefault().post(App.playEvent);
                 break;
             case CommandPrevious:
+                Log.e("Test","setMediaPlayer : CommandPrevious");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().previous();
                 }
                 break;
             case CommandClose:
+                Log.e("Test","setMediaPlayer : CommandClose");
                 if (MusicManager.getMusicManager().getNowSong()!=null){
-                    MusicManager.getMusicManager().stop();
+                    Log.e("Test","NowSongName : "+MusicManager.getMusicManager().getNowSong().songname);
+                    if (MusicManager.getMusicManager().getIsReady()){
+                        MusicManager.getMusicManager().pause();
+                    }
                 }
                 notificationManager.cancel(Constants.PlayerNotification);
                 NotificationClose = true;

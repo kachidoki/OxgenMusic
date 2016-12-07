@@ -18,6 +18,7 @@
                 app:cardCornerRadius="18dp"
                 android:layout_width="108dp"
                 android:layout_height="42dp"
+                android:id="@+id/play_toMylist"
                 >
                 <TextView
                     android:gravity="center"

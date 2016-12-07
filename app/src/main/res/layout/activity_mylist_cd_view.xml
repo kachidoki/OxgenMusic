@@ -8,12 +8,12 @@
         android:layout_width="0dp"
         android:layout_height="180dp"
         android:orientation="vertical">
-        <ImageView
+        <com.kachidoki.oxgenmusic.widget.CDview
             android:layout_marginTop="8dp"
             android:layout_width="150dp"
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
-            android:id="@+id/list_img"
+            android:id="@+id/mylist_cdview"
             />
     </LinearLayout>
     <LinearLayout
@@ -37,8 +37,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
-                android:id="@+id/list_count"
-                android:text=""/>
+                android:id="@+id/mylist_count"
+                android:text="30首"/>
         </LinearLayout>
         <LinearLayout
             android:layout_weight="1"
@@ -56,8 +56,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center_horizontal"
-                android:id="@+id/list_countTime"
-                android:text=""/>
+                android:id="@+id/mylist_countTime"
+                android:text="4h 0分"/>
         </LinearLayout>
         <LinearLayout
             android:layout_marginRight="8dp"
@@ -70,7 +70,7 @@
                 android:layout_width="42dp"
                 android:layout_height="42dp"
                 android:padding="6dp"
-                android:id="@+id/list_playall"
+                android:id="@+id/mylist_playall"
                 android:src="@drawable/icon_playall"/>
             <TextView
                 android:layout_width="match_parent"

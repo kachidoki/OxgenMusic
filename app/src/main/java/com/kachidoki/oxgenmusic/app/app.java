@@ -11,6 +11,7 @@ import com.kachidoki.oxgenmusic.model.bean.SongQueue;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.utils.Utils;
 
 /**
@@ -29,6 +30,7 @@ public class App extends Application {
         playEvent = new PlayEvent();
         startService(new Intent(this, PlayerService.class));
         initQueueDB();
+        initSP();
     }
 
     @Override
@@ -48,6 +50,18 @@ public class App extends Application {
             MusicDBHelper.getMusicDBHelper().saveQueue(new SongQueue(Constants.hotList));
         }else {
             MusicManager.hotList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList);
+        }
+    }
+
+    private void initSP(){
+        if (!SPUtils.contains(getApplicationContext(),Constants.nowQueue_sp)){
+            SPUtils.put(getApplicationContext(),Constants.nowQueue_sp,Constants.myList);
+        }
+        if (!SPUtils.contains(getApplicationContext(),Constants.nowIndex_sp)){
+            SPUtils.put(getApplicationContext(),Constants.nowIndex_sp,0);
+        }
+        if (!SPUtils.contains(getApplicationContext(),Constants.nowTime_sp)){
+            SPUtils.put(getApplicationContext(),Constants.nowTime_sp,0);
         }
     }
 

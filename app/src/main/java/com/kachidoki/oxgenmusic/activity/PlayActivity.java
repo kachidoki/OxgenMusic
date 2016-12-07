@@ -1,11 +1,12 @@
 package com.kachidoki.oxgenmusic.activity;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.util.Log;
+import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -42,6 +43,8 @@ public class PlayActivity extends BaseActivity {
     ImageView playMode;
     @BindView(R.id.play_cdView)
     CDview cDview;
+    @BindView(R.id.play_toMylist)
+    CardView playToMylist;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -70,19 +73,19 @@ public class PlayActivity extends BaseActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        if (MusicManager.getMusicManager().getIsPlaying()){
+        if (MusicManager.getMusicManager().getIsPlaying()) {
             playPlay.setImageResource(R.drawable.icon_play_pause);
-        }else {
+        } else {
             playPlay.setImageResource(R.drawable.icon_play_play);
         }
 
-        if (MusicManager.getMusicManager().getNowSong()!=null){
+        if (MusicManager.getMusicManager().getNowSong() != null) {
             loadCDBitmap();
         }
 
-        if (MusicManager.getMusicManager().getIsPlaying()){
+        if (MusicManager.getMusicManager().getIsPlaying()) {
             cDview.start();
-        }else {
+        } else {
             cDview.pause();
         }
 
@@ -95,9 +98,9 @@ public class PlayActivity extends BaseActivity {
         EventBus.getDefault().unregister(this);
     }
 
-    @OnClick({R.id.play_more,R.id.play_previous,R.id.play_play,R.id.play_next,R.id.play_mode})
-    void sendCommand(View view){
-        switch (view.getId()){
+    @OnClick({R.id.play_more, R.id.play_previous, R.id.play_play, R.id.play_next, R.id.play_mode})
+    void sendCommand(View view) {
+        switch (view.getId()) {
             case R.id.play_more:
                 break;
             case R.id.play_previous:
@@ -106,11 +109,11 @@ public class PlayActivity extends BaseActivity {
                 loadCDBitmap();
                 break;
             case R.id.play_play:
-                if (MusicManager.getMusicManager().getIsPlaying()){
+                if (MusicManager.getMusicManager().getIsPlaying()) {
                     App.playEvent.setAction(PlayEvent.Action.PAUSE);
                     cDview.pause();
                     playPlay.setImageResource(R.drawable.icon_play_play);
-                }else {
+                } else {
                     App.playEvent.setAction(PlayEvent.Action.PLAY);
                     cDview.start();
                     playPlay.setImageResource(R.drawable.icon_play_pause);
@@ -127,13 +130,23 @@ public class PlayActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.play_toMylist)
+    void toMyList(){
+        startActivity(new Intent(this,MyPlaylistActivity.class));
+    }
+
 
     @Subscribe
-    public void onEvent(PlayEvent playEvent){
+    public void onEvent(PlayEvent playEvent) {
         switch (playEvent.getAction()) {
             case CHANGE:
-                if (MusicManager.getMusicManager().getNowSong()!=null){
+                if (MusicManager.getMusicManager().getNowSong() != null) {
                     loadCDBitmap();
+                }
+                if (MusicManager.getMusicManager().getIsPlaying()) {
+                    cDview.start();
+                } else {
+                    cDview.pause();
                 }
                 break;
 
@@ -141,10 +154,10 @@ public class PlayActivity extends BaseActivity {
     }
 
 
-    private void loadCDBitmap(){
+    private void loadCDBitmap() {
         Glide.with(getApplicationContext())
-                .load(MusicManager.getMusicManager().getNowSong().albumpic_big )
+                .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
                 .asBitmap()
-                .into( target );
+                .into(target);
     }
 }

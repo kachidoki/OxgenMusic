@@ -24,6 +24,7 @@ import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -101,8 +102,7 @@ public class MainActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
         getHotSong();
-
-        MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0);
+        initQueue();
     }
 
     @Override
@@ -146,6 +146,16 @@ public class MainActivity extends BaseActivity {
                 .load(MusicManager.getMusicManager().getNowSong().albumpic_big )
                 .asBitmap()
                 .into( target );
+    }
+    //先放在这里之后放在launch
+    private void initQueue(){
+
+        if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
+        }else if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)){
+            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)),0,false);
+        }
+
     }
 
     @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8})
@@ -205,6 +215,11 @@ public class MainActivity extends BaseActivity {
             case CHANGE:
                 if (MusicManager.getMusicManager().getNowSong()!=null){
                     loadCDBitmap();
+                }
+                if (MusicManager.getMusicManager().getIsPlaying()){
+                    cDview.start();
+                }else {
+                    cDview.pause();
                 }
                 break;
         }
