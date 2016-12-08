@@ -27,12 +27,12 @@ import org.greenrobot.eventbus.Subscribe;
  * Created by mayiwei on 16/11/29.
  */
 public class PlayerService extends Service {
+    public static final int CommandCreate =0;
     public static final int CommandPlay =1;
     public static final int CommandNext =2;
     public static final int CommandPrevious = 3;
     public static final int CommandClose =4;
-    private static boolean NotificationClose = false;
-    private NotificationManager notificationManager;
+    public static final int CommandPlayNow = 5;
     private NotificationTarget notificationTarget;
     @Nullable
     @Override
@@ -44,13 +44,20 @@ public class PlayerService extends Service {
     public void onCreate() {
         super.onCreate();
         Log.e("Test","----------------PlayService OnCreate-------------");
-        EventBus.getDefault().register(this);
-        notificationManager = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
         MusicManager.getMusicManager().setCallBack(new MusicManager.CallBack() {
             @Override
             public void OnChange() {
-                sendPlayerNotification(NotificationClose);
+                sendPlayerNotification();
+                Log.e("Test","---------- OnChange --------");
                 App.playEvent.setAction(PlayEvent.Action.CHANGE);
+                EventBus.getDefault().post(App.playEvent);
+            }
+
+            @Override
+            public void OnChangeSong() {
+                Log.e("Test","---------- OnChangeSong --------");
+                sendPlayerNotification();
+                App.playEvent.setAction(PlayEvent.Action.CHANGESONG);
                 EventBus.getDefault().post(App.playEvent);
             }
         });
@@ -65,7 +72,6 @@ public class PlayerService extends Service {
         int command = intent.getIntExtra("command",0);
         Log.e("Test","onStartCommand : command = "+command);
         setMediaPlayer(command);
-        sendPlayerNotification(NotificationClose);
         return super.onStartCommand(intent, flags, startId);
     }
 
@@ -75,14 +81,11 @@ public class PlayerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         Log.e("Test","----------------PlayService onDestroy-------------");
-        EventBus.getDefault().unregister(this);
-        notificationManager.cancel(Constants.PlayerNotification);
-        MusicManager.getMusicManager().release();
+        stopForeground(true);
     }
 
 
-    private void sendPlayerNotification(boolean isClose) {
-        if (!isClose){
+    private void sendPlayerNotification() {
             NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
             builder.setSmallIcon(R.mipmap.ic_launcher);
             builder.setAutoCancel(false);
@@ -141,17 +144,21 @@ public class PlayerService extends Service {
                         .asBitmap()
                         .into(notificationTarget);
             }
-            notificationManager.notify(Constants.PlayerNotification,notification);
-        }
+
+        startForeground(Constants.PlayerNotification,notification);
     }
 
     private void setMediaPlayer(int command) {
         switch (command){
+            case CommandCreate:
+                sendPlayerNotification();
+                break;
             case CommandNext:
                 Log.e("Test","setMediaPlayer : CommandNext");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().next();
                 }
+                sendPlayerNotification();
                 break;
             case CommandPlay:
                 Log.e("Test","setMediaPlayer : CommandPlay");
@@ -160,56 +167,34 @@ public class PlayerService extends Service {
                 }else {
                     MusicManager.getMusicManager().start();
                 }
-                sendPlayerNotification(NotificationClose);
-                App.playEvent.setAction(PlayEvent.Action.CHANGE);
-                EventBus.getDefault().post(App.playEvent);
+                sendPlayerNotification();
                 break;
             case CommandPrevious:
                 Log.e("Test","setMediaPlayer : CommandPrevious");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().previous();
                 }
+                sendPlayerNotification();
                 break;
             case CommandClose:
                 Log.e("Test","setMediaPlayer : CommandClose");
                 if (MusicManager.getMusicManager().getNowSong()!=null){
-                    Log.e("Test","NowSongName : "+MusicManager.getMusicManager().getNowSong().songname);
                     if (MusicManager.getMusicManager().getIsReady()){
                         MusicManager.getMusicManager().pause();
                     }
                 }
-                notificationManager.cancel(Constants.PlayerNotification);
-                NotificationClose = true;
+                stopForeground(true);
+                stopSelf();
+                break;
+            case CommandPlayNow:
+                if (MusicManager.getMusicManager().getNowSong()!=null){
+                    MusicManager.getMusicManager().playNow();
+                }
+                sendPlayerNotification();
                 break;
         }
     }
 
-    @Subscribe
-    public void onEvent(PlayEvent playEvent){
-        switch (playEvent.getAction()) {
-            case PLAY:
-                MusicManager.getMusicManager().start();
-                sendPlayerNotification(NotificationClose);
-                break;
-            case NEXT:
-                MusicManager.getMusicManager().next();
-                sendPlayerNotification(NotificationClose);
-                break;
-            case PREVIOES:
-                MusicManager.getMusicManager().previous();
-                sendPlayerNotification(NotificationClose);
-                break;
-            case PAUSE:
-                MusicManager.getMusicManager().pause();
-                sendPlayerNotification(NotificationClose);
-                break;
-            case PLAYNOW:
-                MusicManager.getMusicManager().playNow();
-                sendPlayerNotification(NotificationClose);
-                break;
-
-        }
-    }
 
 
 }

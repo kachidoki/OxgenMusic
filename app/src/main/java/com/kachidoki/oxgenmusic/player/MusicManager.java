@@ -55,6 +55,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public interface CallBack{
         void OnChange();
+        void OnChangeSong();
     }
 
     /**
@@ -145,6 +146,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void start(){
+        callBack.OnChange();
         if (getNowPlaying()!=null){
           if (isfirst==true){
               play(getNowPlaying());
@@ -155,23 +157,26 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void pause(){
+        callBack.OnChange();
         mediaPlayer.pause();
     }
 
     public void playNow(){
+        callBack.OnChange();
         play(getNowPlaying());
     }
 
     public void next(){
+        callBack.OnChangeSong();
         play(getNextSong());
     }
 
     public void previous(){
+        callBack.OnChangeSong();
         play(getPreviousSong());
     }
 
     public void stop(){
-        Log.e("Test","--MediaPlayer stop--");
         mediaPlayer.stop();
     }
 

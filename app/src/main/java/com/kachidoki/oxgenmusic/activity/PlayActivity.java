@@ -7,6 +7,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 
@@ -18,6 +20,7 @@ import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.widget.CDview;
 
 import org.greenrobot.eventbus.EventBus;
@@ -92,6 +95,8 @@ public class PlayActivity extends BaseActivity {
 
     }
 
+
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -104,25 +109,20 @@ public class PlayActivity extends BaseActivity {
             case R.id.play_more:
                 break;
             case R.id.play_previous:
-                App.playEvent.setAction(PlayEvent.Action.PREVIOES);
-                EventBus.getDefault().post(App.playEvent);
+                Intent previous = new Intent(this, PlayerService.class);
+                previous.putExtra("command",PlayerService.CommandPrevious);
+                startService(previous);
                 loadCDBitmap();
                 break;
             case R.id.play_play:
-                if (MusicManager.getMusicManager().getIsPlaying()) {
-                    App.playEvent.setAction(PlayEvent.Action.PAUSE);
-                    cDview.pause();
-                    playPlay.setImageResource(R.drawable.icon_play_play);
-                } else {
-                    App.playEvent.setAction(PlayEvent.Action.PLAY);
-                    cDview.start();
-                    playPlay.setImageResource(R.drawable.icon_play_pause);
-                }
-                EventBus.getDefault().post(App.playEvent);
+                Intent play = new Intent(this, PlayerService.class);
+                play.putExtra("command",PlayerService.CommandPlay);
+                startService(play);
                 break;
             case R.id.play_next:
-                App.playEvent.setAction(PlayEvent.Action.NEXT);
-                EventBus.getDefault().post(App.playEvent);
+                Intent next = new Intent(this, PlayerService.class);
+                next.putExtra("command",PlayerService.CommandNext);
+                startService(next);
                 loadCDBitmap();
                 break;
             case R.id.play_mode:
@@ -143,15 +143,33 @@ public class PlayActivity extends BaseActivity {
                 if (MusicManager.getMusicManager().getNowSong() != null) {
                     loadCDBitmap();
                 }
+                if (!MusicManager.getMusicManager().getIsPlaying()) {
+                    cDview.start();
+                } else {
+                    cDview.pause();
+                }
+                if (MusicManager.getMusicManager().getIsPlaying()) {
+                    playPlay.setImageResource(R.drawable.icon_play_play);
+                } else {
+                    playPlay.setImageResource(R.drawable.icon_play_pause);
+                }
+                break;
+            case CHANGESONG:
                 if (MusicManager.getMusicManager().getIsPlaying()) {
                     cDview.start();
                 } else {
                     cDview.pause();
                 }
+                if (!MusicManager.getMusicManager().getIsPlaying()) {
+                    playPlay.setImageResource(R.drawable.icon_play_play);
+                } else {
+                    playPlay.setImageResource(R.drawable.icon_play_pause);
+                }
                 break;
 
         }
     }
+
 
 
     private void loadCDBitmap() {

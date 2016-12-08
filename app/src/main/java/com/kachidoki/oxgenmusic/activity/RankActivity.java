@@ -132,6 +132,8 @@ public class RankActivity extends BaseActivity {
                 break;
             case "6":listImg.setImageResource(R.drawable.rank_6_2);
                 break;
+            case "26":listImg.setImageResource(R.drawable.rank_26);
+                break;
             default:listImg.setImageResource(R.drawable.cd_nomal);
                 break;
         }

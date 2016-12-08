@@ -16,13 +16,29 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
-            <TextView
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:gravity="center_vertical"
-                android:layout_marginLeft="16dp"
-                style="@style/TextAppearance.AppCompat.Title"
-                android:text="今日热歌"/>
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_weight="1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:text="今日热歌"/>
+                <TextView
+                    android:layout_marginRight="16dp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="16dp"
+                    android:id="@+id/main_more"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:text="更多"/>
+            </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
                 android:layout_height="150dp"

@@ -28,7 +28,6 @@ public class App extends Application {
         Utils.initialize(this);
         ActiveAndroid.initialize(this);
         playEvent = new PlayEvent();
-        startService(new Intent(this, PlayerService.class));
         initQueueDB();
         initSP();
     }
@@ -37,7 +36,6 @@ public class App extends Application {
     public void onTerminate() {
         super.onTerminate();
         ActiveAndroid.dispose();
-        stopService(new Intent(this, PlayerService.class));
     }
 
     private void initQueueDB(){

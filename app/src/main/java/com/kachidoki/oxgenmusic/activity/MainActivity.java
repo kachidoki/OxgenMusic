@@ -7,8 +7,11 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -24,6 +27,7 @@ import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
 import com.mikepenz.materialdrawer.AccountHeader;
@@ -55,6 +59,8 @@ public class MainActivity extends BaseActivity {
     LinearLayout mainCd;
     @BindView(R.id.main_cdView)
     CDview cDview;
+    @BindView(R.id.main_more)
+    TextView more;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -97,6 +103,8 @@ public class MainActivity extends BaseActivity {
 
         setToolbar(true);
         initDrawer();
+
+        startService(new Intent(this, PlayerService.class));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
@@ -158,7 +166,7 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8})
+    @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8,R.id.main_more})
     void toRankActivity(View view) {
         switch (view.getId()) {
             case R.id.rank1:
@@ -201,8 +209,13 @@ public class MainActivity extends BaseActivity {
                 intent8.putExtra("topid","16");
                 startActivity(intent8);
                 break;
+            case R.id.main_more:
+                Intent intent9 = new Intent(MainActivity.this, RankActivity.class);
+                intent9.putExtra("topid","26");
+                startActivity(intent9);
         }
     }
+
 
     @OnClick(R.id.main_cd)
     void toPlayActivity(){
@@ -216,7 +229,7 @@ public class MainActivity extends BaseActivity {
                 if (MusicManager.getMusicManager().getNowSong()!=null){
                     loadCDBitmap();
                 }
-                if (MusicManager.getMusicManager().getIsPlaying()){
+                if (!MusicManager.getMusicManager().getIsPlaying()){
                     cDview.start();
                 }else {
                     cDview.pause();

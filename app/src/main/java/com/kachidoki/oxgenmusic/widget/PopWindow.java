@@ -1,6 +1,7 @@
 package com.kachidoki.oxgenmusic.widget;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.PlayerService;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -102,8 +104,9 @@ public class PopWindow extends PopupWindow {
                 if(!MusicManager.getMusicManager().playAndCheck(song)){
                     MusicManager.getMusicManager().addQueuePlay(song);
                     MusicDBHelper.getMusicDBHelper().saveSong(song,MusicManager.myList);
-                    App.playEvent.setAction(PlayEvent.Action.PLAYNOW);
-                    EventBus.getDefault().post(App.playEvent);
+                    Intent PlayNow = new Intent(context, PlayerService.class);
+                    PlayNow.putExtra("command",PlayerService.CommandPlayNow);
+                    context.startService(PlayNow);
                 }
                 dismiss();
                 break;
