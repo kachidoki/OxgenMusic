@@ -143,18 +143,6 @@ public class PlayActivity extends BaseActivity {
                 if (MusicManager.getMusicManager().getNowSong() != null) {
                     loadCDBitmap();
                 }
-                if (!MusicManager.getMusicManager().getIsPlaying()) {
-                    cDview.start();
-                } else {
-                    cDview.pause();
-                }
-                if (MusicManager.getMusicManager().getIsPlaying()) {
-                    playPlay.setImageResource(R.drawable.icon_play_play);
-                } else {
-                    playPlay.setImageResource(R.drawable.icon_play_pause);
-                }
-                break;
-            case CHANGESONG:
                 if (MusicManager.getMusicManager().getIsPlaying()) {
                     cDview.start();
                 } else {
@@ -166,7 +154,6 @@ public class PlayActivity extends BaseActivity {
                     playPlay.setImageResource(R.drawable.icon_play_pause);
                 }
                 break;
-
         }
     }
 

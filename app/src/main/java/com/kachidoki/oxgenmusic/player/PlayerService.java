@@ -53,13 +53,6 @@ public class PlayerService extends Service {
                 EventBus.getDefault().post(App.playEvent);
             }
 
-            @Override
-            public void OnChangeSong() {
-                Log.e("Test","---------- OnChangeSong --------");
-                sendPlayerNotification();
-                App.playEvent.setAction(PlayEvent.Action.CHANGESONG);
-                EventBus.getDefault().post(App.playEvent);
-            }
         });
     }
 

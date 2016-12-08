@@ -8,7 +8,7 @@ package com.kachidoki.oxgenmusic.model.event;
 public class PlayEvent {
 
     public enum Action {
-        CHANGE,CHANGESONG
+        CHANGE
     }
 
     private Action mAction;
