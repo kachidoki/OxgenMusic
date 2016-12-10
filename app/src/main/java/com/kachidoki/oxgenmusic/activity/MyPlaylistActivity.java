@@ -110,7 +110,7 @@ public class MyPlaylistActivity extends BaseActivity {
                 if (MusicManager.getMusicManager().getNowSong()!=null){
                     loadCDBitmap();
                 }
-                if (!MusicManager.getMusicManager().getIsPlaying()){
+                if (MusicManager.getMusicManager().getIsPlaying()){
                     cDview.start();
                 }else {
                     cDview.pause();

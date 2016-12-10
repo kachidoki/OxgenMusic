@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/include_toolbar"/>
+    <EditText
+        android:id="@+id/number"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:maxLength="11"
+        android:inputType="number"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="16dp"
+        android:textSize="16sp"
+        android:padding="16dp"
+        android:hint="请输入您的手机号"
+        android:textColorHint="@color/black"
+        android:background="@drawable/bg_round_white"/>
+    <EditText
+        android:id="@+id/password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:maxLength="12"
+        android:textSize="16sp"
+        android:inputType="textPassword"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
+        android:hint="请输入您的密码"
+        android:textColorHint="@color/black"
+        android:background="@drawable/bg_round_white"/>
+    <EditText
+        android:id="@+id/password_re"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:singleLine="true"
+        android:maxLength="12"
+        android:textSize="16sp"
+        android:inputType="textPassword"
+        android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="8dp"
+        android:padding="16dp"
+        android:hint="请再次输入您的密码"
+        android:textColorHint="@color/black"
+        android:background="@drawable/bg_round_white"/>
+
+    <Button
+        android:id="@+id/register"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_margin="16dp"
+        android:background="?colorPrimary"
+        android:textSize="18sp"
+        android:text="注册"
+        android:textColor="@color/white"
+        />
+
+
+
+</LinearLayout>

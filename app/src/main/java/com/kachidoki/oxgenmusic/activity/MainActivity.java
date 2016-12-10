@@ -34,10 +34,13 @@ import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
 import com.mikepenz.materialdrawer.DrawerBuilder;
+import com.mikepenz.materialdrawer.model.DividerDrawerItem;
 import com.mikepenz.materialdrawer.model.PrimaryDrawerItem;
 import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
+import com.mikepenz.materialdrawer.model.ProfileSettingDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
+import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -53,6 +56,9 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
+
+
+
     @BindView(R.id.recyclerView_main)
     RecyclerView recyclerView;
     @BindView(R.id.main_cd)
@@ -62,6 +68,8 @@ public class MainActivity extends BaseActivity {
     @BindView(R.id.main_more)
     TextView more;
 
+    Drawer drawer;
+    AccountHeader accountHeader;
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -102,7 +110,7 @@ public class MainActivity extends BaseActivity {
         EventBus.getDefault().register(this);
 
         setToolbar(true);
-        initDrawer();
+        initDrawer(savedInstanceState);
 
         startService(new Intent(this, PlayerService.class));
 
@@ -238,28 +246,37 @@ public class MainActivity extends BaseActivity {
         }
     }
 
-    private void initDrawer() {
-        PrimaryDrawerItem item1 = new PrimaryDrawerItem().withName("主界面");
-        SecondaryDrawerItem item2 = new SecondaryDrawerItem().withName("歌曲榜单");
-        SecondaryDrawerItem item3 = new SecondaryDrawerItem().withName("播放列表");
+    private void initDrawer(Bundle savedInstanceState) {
 
-        AccountHeader accountHeader = new AccountHeaderBuilder()
+        accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("kachidoki").withEmail("mayiwei889@126.com").withIcon(R.mipmap.ic_launcher)
+                        new ProfileDrawerItem().withName("  请先登录").withIcon(R.drawable.drawer_nolog),
+                        new ProfileSettingDrawerItem().withName("添加用户").withIcon(R.drawable.drawer_login).withIdentifier(100)
                 )
                 .withHeaderBackground(R.color.blackDark)
+                .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
+                    @Override
+                    public boolean onProfileChanged(View view, IProfile profile, boolean current) {
+                        if (profile instanceof IDrawerItem&&profile.getIdentifier()==100){
+                            startActivityForResult(new Intent(),Constants.ResquestLogin);
+                        }
+                        return true;
+                    }
+                })
                 .build();
 
-        Drawer drawer = new DrawerBuilder()
+        drawer = new DrawerBuilder()
                 .withActivity(this)
                 .withToolbar(getToolbar())
-                .withDisplayBelowStatusBar(true)
                 .withAccountHeader(accountHeader)
                 .addDrawerItems(
-                        item1,
-                        item2,
-                        item3
+                        new PrimaryDrawerItem().withName("主界面").withIcon(R.drawable.drawer_home).withIdentifier(1),
+                        new PrimaryDrawerItem().withName("我的列表").withIcon(R.drawable.drawer_list).withIdentifier(2),
+                        new PrimaryDrawerItem().withName("正在播放").withIcon(R.drawable.drawer_play).withIdentifier(3),
+                        new DividerDrawerItem(),
+                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
+                        new SecondaryDrawerItem().withName("关于").withIcon(R.drawable.drawer_about).withIdentifier(5)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
@@ -268,8 +285,6 @@ public class MainActivity extends BaseActivity {
                             case 1:
                                 break;
                             case 2:
-                                break;
-                            case 3:
                                 startActivity(new Intent(MainActivity.this, MyPlaylistActivity.class));
                                 break;
                         }
@@ -278,8 +293,25 @@ public class MainActivity extends BaseActivity {
                 })
                 .build();
 
-
     }
 
 
+    @Override
+    public void onBackPressed() {
+        //handle the back press :D close the drawer first and if the drawer is closed close the activity
+        if ( drawer!= null && drawer.isDrawerOpen()) {
+            drawer.closeDrawer();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode==Constants.ResquestLogin&&resultCode==Constants.LoginSuccess){
+//            IProfile newProfile = new ProfileDrawerItem().withNameShown(true).withName("Batman" + count).withEmail("batman" + count + "@gmail.com").withIcon(R.drawable.profile5).withIdentifier(count);
+//            accountHeader.addProfile();
+        }
+    }
 }
