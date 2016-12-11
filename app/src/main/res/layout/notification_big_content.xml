@@ -8,7 +8,7 @@
     <ImageView
         android:layout_width="128dp"
         android:layout_height="128dp"
-        android:src="@drawable/cd_nomal"
+        android:src="@drawable/cd_nomal_png"
         android:id="@+id/nof_img"/>
     <LinearLayout
         android:layout_width="match_parent"
@@ -102,7 +102,7 @@
                 <ImageView
                     android:layout_width="36dp"
                     android:layout_height="36dp"
-                    android:padding="6dp"
+                    android:padding="8dp"
                     android:id="@+id/nof_next"
                     android:src="@drawable/icon_next"
                     />

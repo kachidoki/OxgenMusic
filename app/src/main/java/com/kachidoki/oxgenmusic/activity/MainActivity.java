@@ -168,12 +168,18 @@ public class MainActivity extends BaseActivity {
     }
     //先放在这里之后放在launch
     private void initQueue(){
-
+        Log.e("Test","---------initQueue---------");
         if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+            Log.e("Test","MusicManager set myList");
             MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
         }else if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)){
+            Log.e("Test","MusicManager set hotList");
             MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)),0,false);
         }
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            Log.e("Test","nowSong = "+MusicManager.getMusicManager().getNowSong());
+        }
+
 
     }
 
@@ -297,6 +303,8 @@ public class MainActivity extends BaseActivity {
                             }else if (drawerItem.getIdentifier()==6){
                                 Toast.makeText(MainActivity.this,"同步数据",Toast.LENGTH_SHORT).show();
                                 MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this,MusicManager.myList,AccountModel.getAccountModel().getAccount().getObjectId());
+//                                MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
+//                                Log.e("Test","DBQueue size = "+MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)).size());
                             }else if (drawerItem.getIdentifier()==7){
                                 AccountModel.getAccountModel().logout();
                                 setProfile();

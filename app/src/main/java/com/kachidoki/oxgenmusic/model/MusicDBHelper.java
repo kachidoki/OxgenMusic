@@ -95,19 +95,24 @@ public class MusicDBHelper {
     }
 
     public List<Song> ConvertQueue(SongQueue songQueue){
-        List<Song> songs = new ArrayList<Song>();
-        for (int i=0;i<songQueue.songs().size();i++){
-            Song song = new Song();
-            song.singername = songQueue.songs().get(i).singername;
-            song.seconds = songQueue.songs().get(i).seconds;
-            song.singerid = songQueue.songs().get(i).singerid;
-            song.songname = songQueue.songs().get(i).songname;
-            song.albumid = songQueue.songs().get(i).albumid;
-            song.albumpic_big = songQueue.songs().get(i).albumpic;
-            song.url = songQueue.songs().get(i).url;
-            songs.add(song);
+        if (songQueue.songs()!=null){
+            Log.e("Test","SongQueue.songs.size = "+songQueue.songs().size());
+            List<Song> songs = new ArrayList<Song>();
+            for (int i=0;i<songQueue.songs().size();i++){
+                Song song = new Song();
+                song.singername = songQueue.songs().get(i).singername;
+                song.seconds = songQueue.songs().get(i).seconds;
+                song.singerid = songQueue.songs().get(i).singerid;
+                song.songname = songQueue.songs().get(i).songname;
+                song.albumid = songQueue.songs().get(i).albumid;
+                song.albumpic_big = songQueue.songs().get(i).albumpic;
+                song.url = songQueue.songs().get(i).url;
+                songs.add(song);
+            }
+            return songs;
         }
-        return songs;
+        Log.e("Test","SongQueue.songs is null");
+        return null;
     }
 
     public List<BmobObject> ConvertQueueToYun(SongQueue queue,String userid){
@@ -214,7 +219,7 @@ public class MusicDBHelper {
 
 
     public void syncFromYun(Context context,SongQueue queue,String userid){
-        if (queue.songs().size()!=0){
+        if (queue!=null&&queue.songs().size()!=0){
             findAndDeleteFromYun(userid);
             saveToYun(context,ConvertQueueToYun(queue,userid),userid);
         }else {

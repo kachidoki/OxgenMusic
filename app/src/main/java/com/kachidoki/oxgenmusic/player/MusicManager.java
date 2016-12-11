@@ -146,7 +146,8 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public void start(){
         if (getNowPlaying()!=null){
-          if (isfirst==true){
+          if (isfirst){
+              Log.e("Test","isFirst"+isfirst);
               play(getNowPlaying());
           }else {
               mediaPlayer.start();
@@ -165,10 +166,12 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void next(){
+        isReady = false;
         play(getNextSong());
     }
 
     public void previous(){
+        isReady  = false;
         play(getPreviousSong());
     }
 
@@ -199,6 +202,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
             return mediaPlayer.getDuration();
         }
         return 0;
+    }
+
+    public void seekTo(int position){
+        mediaPlayer.seekTo(position);
     }
 
     public PlayMode getPlayMode() {
@@ -280,6 +287,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
+        Log.e("Test","onCompletion");
         isReady = false;
         next();
         callBack.OnChange();
@@ -287,6 +295,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
+        Log.e("Test","onPrepared");
         isReady = true;
         mediaPlayer.start();
         callBack.OnChange();

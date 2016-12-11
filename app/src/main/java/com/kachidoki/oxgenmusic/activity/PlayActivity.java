@@ -5,18 +5,18 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.SeekBar;
+import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.animation.GlideAnimation;
 import com.bumptech.glide.request.target.SimpleTarget;
 import com.kachidoki.oxgenmusic.R;
-import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
@@ -25,6 +25,8 @@ import com.kachidoki.oxgenmusic.widget.CDview;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.text.SimpleDateFormat;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -48,6 +50,44 @@ public class PlayActivity extends BaseActivity {
     CDview cDview;
     @BindView(R.id.play_toMylist)
     CardView playToMylist;
+    @BindView(R.id.play_seekBar)
+    SeekBar playSeekBar;
+    @BindView(R.id.play_nowTime)
+    TextView playNowTime;
+    @BindView(R.id.play_allTime)
+    TextView playAllTime;
+
+    private SimpleDateFormat time = new SimpleDateFormat("m:ss");
+    private Handler handler = new Handler();
+    public Runnable updataProgress = new Runnable() {
+        @Override
+        public void run() {
+            if (MusicManager.getMusicManager().getNowSong()!=null){
+                if (MusicManager.getMusicManager().getIsReady()){
+                    playAllTime.setText(time.format(MusicManager.getMusicManager().getDuration()));
+                    playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
+                    playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+                    playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
+                    playSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                        @Override
+                        public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                            if (b) MusicManager.getMusicManager().seekTo(seekBar.getProgress());
+                        }
+                        @Override
+                        public void onStartTrackingTouch(SeekBar seekBar) {
+                        }
+                        @Override
+                        public void onStopTrackingTouch(SeekBar seekBar) {
+                        }
+                    });
+                }
+            }else {
+                playAllTime.setText("");
+                playNowTime.setText("");
+            }
+            handler.postDelayed(updataProgress,500);
+        }
+    };
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -91,16 +131,23 @@ public class PlayActivity extends BaseActivity {
         } else {
             cDview.pause();
         }
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            if (MusicManager.getMusicManager().getIsReady())
+            playAllTime.setText(time.format(MusicManager.getMusicManager().getDuration()));
+            playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
+            playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
+            playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+        }
 
-
+        handler.post(updataProgress);
     }
-
 
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        handler.removeCallbacks(updataProgress);
     }
 
     @OnClick({R.id.play_more, R.id.play_previous, R.id.play_play, R.id.play_next, R.id.play_mode})
@@ -110,18 +157,18 @@ public class PlayActivity extends BaseActivity {
                 break;
             case R.id.play_previous:
                 Intent previous = new Intent(this, PlayerService.class);
-                previous.putExtra("command",PlayerService.CommandPrevious);
+                previous.putExtra("command", PlayerService.CommandPrevious);
                 startService(previous);
                 loadCDBitmap();
                 break;
             case R.id.play_play:
                 Intent play = new Intent(this, PlayerService.class);
-                play.putExtra("command",PlayerService.CommandPlay);
+                play.putExtra("command", PlayerService.CommandPlay);
                 startService(play);
                 break;
             case R.id.play_next:
                 Intent next = new Intent(this, PlayerService.class);
-                next.putExtra("command",PlayerService.CommandNext);
+                next.putExtra("command", PlayerService.CommandNext);
                 startService(next);
                 loadCDBitmap();
                 break;
@@ -131,8 +178,8 @@ public class PlayActivity extends BaseActivity {
     }
 
     @OnClick(R.id.play_toMylist)
-    void toMyList(){
-        startActivity(new Intent(this,MyPlaylistActivity.class));
+    void toMyList() {
+        startActivity(new Intent(this, MyPlaylistActivity.class));
     }
 
 
@@ -156,7 +203,6 @@ public class PlayActivity extends BaseActivity {
                 break;
         }
     }
-
 
 
     private void loadCDBitmap() {

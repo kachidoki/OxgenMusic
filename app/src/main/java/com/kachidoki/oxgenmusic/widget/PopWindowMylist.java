@@ -80,7 +80,9 @@ public class PopWindowMylist extends PopupWindow {
         switch (view.getId()){
             case R.id.popMy_playthis:
                 if (SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    Log.e("Test","setIndex = "+index);
                     MusicManager.getMusicManager().setIndex(index);
+                    Log.e("Test","queue.size = "+MusicManager.getMusicManager().getmQueue().size());
                 }else {
                     MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList),index,true);
                     SPUtils.put(context,Constants.nowQueue_sp,Constants.myList);

@@ -131,7 +131,6 @@ public class MyPlaylistActivity extends BaseActivity {
         if (MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList)!=null){
             adapter.setData(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList));
         }
-
     }
 
     private void countAllTime(){
