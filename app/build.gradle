@@ -25,6 +25,7 @@ android {
         exclude 'META-INF/maven/com.squareup.okio/okio/pom.properties'
         exclude 'META-INF/maven/com.squareup.okio/okio/pom.xml'
         exclude 'META-INF/maven/com.google.code.gson/gson/pom.properties'
+        exclude 'META-INF/maven/com.google.code.gson/gson/pom.xml'
         exclude 'META-INF/rxjava.properties'
     }
 }

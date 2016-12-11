@@ -6,7 +6,7 @@
     android:layout_height="match_parent">
     <include layout="@layout/include_toolbar"/>
     <EditText
-        android:id="@+id/number"
+        android:id="@+id/register_num"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
@@ -18,10 +18,9 @@
         android:textSize="16sp"
         android:padding="16dp"
         android:hint="请输入您的手机号"
-        android:textColorHint="@color/black"
         android:background="@drawable/bg_round_white"/>
     <EditText
-        android:id="@+id/password"
+        android:id="@+id/register_pass"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
@@ -33,10 +32,9 @@
         android:layout_marginTop="8dp"
         android:padding="16dp"
         android:hint="请输入您的密码"
-        android:textColorHint="@color/black"
         android:background="@drawable/bg_round_white"/>
     <EditText
-        android:id="@+id/password_re"
+        android:id="@+id/register_pass_re"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:singleLine="true"
@@ -48,10 +46,10 @@
         android:layout_marginTop="8dp"
         android:padding="16dp"
         android:hint="请再次输入您的密码"
-        android:textColorHint="@color/black"
         android:background="@drawable/bg_round_white"/>
 
     <Button
+        android:layout_marginTop="16dp"
         android:id="@+id/register"
         android:layout_width="match_parent"
         android:layout_height="48dp"

@@ -28,7 +28,6 @@
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="手机"
-            android:textColor="@color/blackDark"
             android:gravity="center"/>
         <View
             android:layout_width="1.2dp"
@@ -36,7 +35,7 @@
             android:background="#e5e5e5"/>
 
         <EditText
-            android:id="@+id/number"
+            android:id="@+id/login_num"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
@@ -46,7 +45,6 @@
             android:inputType="number"
             android:textSize="14sp"
             android:gravity="center_vertical"
-            android:textColorHint="@color/black"
             android:hint="请输入你的手机号"/>
     </LinearLayout>
     <LinearLayout
@@ -63,7 +61,6 @@
             android:layout_width="56dp"
             android:layout_height="match_parent"
             android:text="密码"
-            android:textColor="@color/blackDark"
             android:gravity="center"/>
         <View
             android:layout_width="1.2dp"
@@ -71,7 +68,7 @@
             android:background="#e5e5e5"/>
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/login_pass"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:padding="8dp"
@@ -81,7 +78,6 @@
             android:inputType="textPassword"
             android:textSize="14sp"
             android:gravity="center_vertical"
-            android:textColorHint="@color/black"
             android:hint="请输入你的密码"/>
     </LinearLayout>
 
@@ -101,7 +97,7 @@
             android:layout_weight="1"
             android:layout_height="24dp"/>
         <TextView
-            android:id="@+id/register"
+            android:id="@+id/login_register"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:gravity="center"
@@ -109,6 +105,7 @@
     </LinearLayout>
 
     <Button
+        android:layout_marginTop="16dp"
         android:id="@+id/login"
         android:layout_width="match_parent"
         android:layout_height="48dp"

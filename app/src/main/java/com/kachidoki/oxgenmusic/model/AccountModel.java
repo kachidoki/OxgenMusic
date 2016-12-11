@@ -17,15 +17,21 @@ public class AccountModel {
         return instance;
     }
 
-
-    public interface SucessCallback{
+    public interface LogSucessCall{
         void login();
     }
+    public interface RegSucessCall{
+        void register();
+    }
 
-    private SucessCallback callback;
+    private LogSucessCall Logincallback;
+    private RegSucessCall Registercallback;
 
-    public void setCallBack(SucessCallback callBack){
-        this.callback = callBack;
+    public void setLogSucessCall(LogSucessCall callBack){
+        this.Logincallback = callBack;
+    }
+    public void setRegSucessCall(RegSucessCall callBack){
+        this.Registercallback = callBack;
     }
 
     public boolean isLogin(){
@@ -56,9 +62,11 @@ public class AccountModel {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
                 if (e==null){
-                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "注册成功", Toast.LENGTH_SHORT).show();
+                    Registercallback.register();
                 }else {
-                    Toast.makeText(context, "注册成功:" , Toast.LENGTH_SHORT);
+
+                    Toast.makeText(context, "注册失败" +e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -72,9 +80,10 @@ public class AccountModel {
             @Override
             public void done(BmobUser bmobUser, BmobException e) {
                 if (e==null){
-                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "登录成功", Toast.LENGTH_SHORT).show();
+                    Logincallback.login();
                 }else {
-                    Toast.makeText(context, "登录成功:" , Toast.LENGTH_SHORT);
+                    Toast.makeText(context, "登录失败" +e.getMessage().toString(), Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -84,7 +93,7 @@ public class AccountModel {
 
     public void logout(){
         BmobUser.logOut();   //清除缓存用户对象
-        BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
+//        BmobUser currentUser = BmobUser.getCurrentUser(); // 现在的currentUser是null了
     }
 
 }

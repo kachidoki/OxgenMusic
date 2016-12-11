@@ -14,12 +14,14 @@ import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.utils.Utils;
 
+import cn.bmob.v3.Bmob;
+
 /**
  * Created by mayiwei on 16/11/30.
  */
 public class App extends Application {
 
-    public static PlayEvent playEvent;
+    public static PlayEvent playEvent= new PlayEvent();
 
 
     @Override
@@ -27,7 +29,7 @@ public class App extends Application {
         super.onCreate();
         Utils.initialize(this);
         ActiveAndroid.initialize(this);
-        playEvent = new PlayEvent();
+        Bmob.initialize(this,Constants.BmobApi);
         initQueueDB();
         initSP();
     }

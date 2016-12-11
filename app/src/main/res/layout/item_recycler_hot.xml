@@ -19,7 +19,7 @@
             android:id="@+id/name_card_amb"
             android:text="歌名"
             android:layout_gravity="bottom"
-            android:background="@color/whiteA"
+            android:background="@color/gray"
             android:gravity="center"
             style="@style/TextAppearance.AppCompat.Button"
             />

@@ -43,12 +43,10 @@ public class PlayerService extends Service {
     @Override
     public void onCreate() {
         super.onCreate();
-        Log.e("Test","----------------PlayService OnCreate-------------");
         MusicManager.getMusicManager().setCallBack(new MusicManager.CallBack() {
             @Override
             public void OnChange() {
                 sendPlayerNotification();
-                Log.e("Test","---------- OnChange --------");
                 App.playEvent.setAction(PlayEvent.Action.CHANGE);
                 EventBus.getDefault().post(App.playEvent);
             }
@@ -58,12 +56,10 @@ public class PlayerService extends Service {
 
     @Override
     public int onStartCommand(Intent intent, int flags, int startId) {
-        Log.e("Test","----------------PlayService onStartCommand-------------");
         if (intent==null){
             return super.onStartCommand(intent, flags, startId);
         }
         int command = intent.getIntExtra("command",0);
-        Log.e("Test","onStartCommand : command = "+command);
         setMediaPlayer(command);
         return super.onStartCommand(intent, flags, startId);
     }
@@ -73,7 +69,6 @@ public class PlayerService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        Log.e("Test","----------------PlayService onDestroy-------------");
         stopForeground(true);
     }
 

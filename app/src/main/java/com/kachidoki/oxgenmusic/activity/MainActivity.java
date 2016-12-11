@@ -20,6 +20,7 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
+import com.kachidoki.oxgenmusic.model.AccountModel;
 import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
@@ -56,9 +57,6 @@ import rx.functions.Func1;
 import rx.schedulers.Schedulers;
 
 public class MainActivity extends BaseActivity {
-
-
-
     @BindView(R.id.recyclerView_main)
     RecyclerView recyclerView;
     @BindView(R.id.main_cd)
@@ -70,6 +68,8 @@ public class MainActivity extends BaseActivity {
 
     Drawer drawer;
     AccountHeader accountHeader;
+    IProfile profile;
+
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
         public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
@@ -111,6 +111,7 @@ public class MainActivity extends BaseActivity {
 
         setToolbar(true);
         initDrawer(savedInstanceState);
+        setProfile();
 
         startService(new Intent(this, PlayerService.class));
 
@@ -134,6 +135,8 @@ public class MainActivity extends BaseActivity {
         }else {
             cDview.pause();
         }
+
+        checkDrawer();
     }
 
     @Override
@@ -247,11 +250,11 @@ public class MainActivity extends BaseActivity {
     }
 
     private void initDrawer(Bundle savedInstanceState) {
-
+        profile = new ProfileDrawerItem().withName("  请先登录").withIcon(R.drawable.drawer_nolog);
         accountHeader = new AccountHeaderBuilder()
                 .withActivity(this)
                 .addProfiles(
-                        new ProfileDrawerItem().withName("  请先登录").withIcon(R.drawable.drawer_nolog),
+                        profile,
                         new ProfileSettingDrawerItem().withName("添加用户").withIcon(R.drawable.drawer_login).withIdentifier(100)
                 )
                 .withHeaderBackground(R.color.blackDark)
@@ -259,7 +262,7 @@ public class MainActivity extends BaseActivity {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
                         if (profile instanceof IDrawerItem&&profile.getIdentifier()==100){
-                            startActivityForResult(new Intent(),Constants.ResquestLogin);
+                            startActivityForResult(new Intent(MainActivity.this,LoginActivity.class),Constants.ResquestLogin);
                         }
                         return true;
                     }
@@ -281,12 +284,28 @@ public class MainActivity extends BaseActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        switch (position) {
-                            case 1:
-                                break;
-                            case 2:
-                                startActivity(new Intent(MainActivity.this, MyPlaylistActivity.class));
-                                break;
+                        if (drawerItem!=null){
+                            Intent intent =null;
+                            if (drawerItem.getIdentifier()==2){
+                                intent = new Intent(MainActivity.this,MyPlaylistActivity.class);
+                            }else if (drawerItem.getIdentifier()==3){
+                                intent = new Intent(MainActivity.this,PlayActivity.class);
+                            }else if (drawerItem.getIdentifier()==4){
+
+                            }else if (drawerItem.getIdentifier()==5){
+
+                            }else if (drawerItem.getIdentifier()==6){
+                                Toast.makeText(MainActivity.this,"同步数据",Toast.LENGTH_SHORT).show();
+                                MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this,MusicManager.myList,AccountModel.getAccountModel().getAccount().getObjectId());
+                            }else if (drawerItem.getIdentifier()==7){
+                                AccountModel.getAccountModel().logout();
+                                setProfile();
+                                checkDrawer();
+                            }
+                            if (intent!=null){
+                                startActivity(intent);
+                            }
+
                         }
                         return false;
                     }
@@ -295,10 +314,33 @@ public class MainActivity extends BaseActivity {
 
     }
 
+    private void setProfile(){
+        if (AccountModel.getAccountModel().isLogin()){
+            profile.withName(AccountModel.getAccountModel().getAccount().getUsername());
+            accountHeader.updateProfile(profile);
+        }   else {
+            profile.withName(" 请先登录");
+            accountHeader.updateProfile(profile);
+        }
+
+    }
+
+    private void checkDrawer(){
+        if (drawer.getDrawerItems().size()!=8){
+            if (AccountModel.getAccountModel().isLogin()){
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("数据同步").withIcon(R.drawable.drawer_sync).withIdentifier(6),5);
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("退出登录").withIcon(R.drawable.drawer_logout).withIdentifier(7),6);
+            }
+        }else if(drawer.getDrawerItems().size()==8){
+            if (!AccountModel.getAccountModel().isLogin()){
+                drawer.removeItemByPosition(5);
+            }
+        }
+    }
+
 
     @Override
     public void onBackPressed() {
-        //handle the back press :D close the drawer first and if the drawer is closed close the activity
         if ( drawer!= null && drawer.isDrawerOpen()) {
             drawer.closeDrawer();
         } else {
@@ -310,8 +352,8 @@ public class MainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode==Constants.ResquestLogin&&resultCode==Constants.LoginSuccess){
-//            IProfile newProfile = new ProfileDrawerItem().withNameShown(true).withName("Batman" + count).withEmail("batman" + count + "@gmail.com").withIcon(R.drawable.profile5).withIdentifier(count);
-//            accountHeader.addProfile();
+            profile.withName(data.getStringExtra("name"));
+            accountHeader.updateProfile(profile);
         }
     }
 }
