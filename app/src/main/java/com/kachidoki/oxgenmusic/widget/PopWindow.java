@@ -3,7 +3,6 @@ package com.kachidoki.oxgenmusic.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,16 +12,11 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
-import com.kachidoki.oxgenmusic.app.App;
-import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.Song;
-import com.kachidoki.oxgenmusic.model.bean.SongBean;
-import com.kachidoki.oxgenmusic.model.event.PlayEvent;
+import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
-
-import org.greenrobot.eventbus.EventBus;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -33,6 +27,7 @@ import butterknife.OnClick;
  */
 public class PopWindow extends PopupWindow {
 
+
     private Context context;
     private View view;
     private Song song;
@@ -42,13 +37,14 @@ public class PopWindow extends PopupWindow {
     LinearLayout playthis;
     @BindView(R.id.pop_cancel)
     LinearLayout cancel;
-
+    @BindView(R.id.pop_download)
+    LinearLayout popDownload;
 
     public PopWindow(Context mContext, Song mSong) {
         context = mContext;
         song = mSong;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_list, null);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         // 设置外部可点击
         this.setOutsideTouchable(true);
 
@@ -86,33 +82,41 @@ public class PopWindow extends PopupWindow {
         this.setAnimationStyle(R.style.pop_anim);
     }
 
-    @OnClick({R.id.pop_playthis,R.id.pop_addlist,R.id.pop_cancel})
-    void toTarget(View view){
-        switch (view.getId()){
+    @OnClick({R.id.pop_playthis, R.id.pop_addlist, R.id.pop_cancel,R.id.pop_download})
+    void toTarget(View view) {
+        switch (view.getId()) {
             case R.id.pop_addlist:
-                if (!MusicManager.getMusicManager().checkIsAdd(song)){
-                    Toast.makeText(context,"添加成功",Toast.LENGTH_SHORT).show();
+                if (!MusicManager.getMusicManager().checkIsAdd(song)) {
+                    Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
                     MusicManager.getMusicManager().addQueue(song);
-                    MusicDBHelper.getMusicDBHelper().saveSong(song,MusicManager.myList);
-                }else {
-                    Toast.makeText(context,"已在播放列表",Toast.LENGTH_SHORT).show();
+                    MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
+                } else {
+                    Toast.makeText(context, "已在播放列表", Toast.LENGTH_SHORT).show();
                 }
                 dismiss();
                 break;
             case R.id.pop_playthis:
-                Toast.makeText(context,"播放歌曲",Toast.LENGTH_SHORT).show();
-                if(!MusicManager.getMusicManager().playAndCheck(song)){
+                Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
+                if (!MusicManager.getMusicManager().playAndCheck(song)) {
                     MusicManager.getMusicManager().addQueuePlay(song);
-                    MusicDBHelper.getMusicDBHelper().saveSong(song,MusicManager.myList);
+                    MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
                     Intent PlayNow = new Intent(context, PlayerService.class);
-                    PlayNow.putExtra("command",PlayerService.CommandPlayNow);
+                    PlayNow.putExtra("command", PlayerService.CommandPlayNow);
                     context.startService(PlayNow);
                 }
+                dismiss();
+                break;
+            case R.id.pop_download:
+                Intent intent = new Intent(context, DownloadService.class);
+                intent.putExtra("command",DownloadService.CommandDownload);
+                intent.putExtra("songname",song.songname);
+                context.startService(intent);
                 dismiss();
                 break;
             case R.id.pop_cancel:
                 dismiss();
                 break;
+
         }
     }
 

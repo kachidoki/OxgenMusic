@@ -14,6 +14,7 @@
             android:layout_height="150dp"
             android:layout_gravity="center_horizontal"
             android:id="@+id/list_img"
+            android:transitionName="rankImg"
             />
     </LinearLayout>
     <LinearLayout

@@ -5,11 +5,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -65,10 +65,26 @@ public class MainActivity extends BaseActivity {
     CDview cDview;
     @BindView(R.id.main_more)
     TextView more;
+    @BindView(R.id.rank1)
+    ImageView rank1;
 
     Drawer drawer;
     AccountHeader accountHeader;
     IProfile profile;
+    @BindView(R.id.rank2)
+    ImageView rank2;
+    @BindView(R.id.rank3)
+    ImageView rank3;
+    @BindView(R.id.rank4)
+    ImageView rank4;
+    @BindView(R.id.rank5)
+    ImageView rank5;
+    @BindView(R.id.rank6)
+    ImageView rank6;
+    @BindView(R.id.rank7)
+    ImageView rank7;
+    @BindView(R.id.rank8)
+    ImageView rank8;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -126,13 +142,13 @@ public class MainActivity extends BaseActivity {
     protected void onResume() {
         super.onResume();
 
-        if (MusicManager.getMusicManager().getNowSong()!=null){
+        if (MusicManager.getMusicManager().getNowSong() != null) {
             loadCDBitmap();
         }
 
-        if (MusicManager.getMusicManager().getIsPlaying()){
+        if (MusicManager.getMusicManager().getIsPlaying()) {
             cDview.start();
-        }else {
+        } else {
             cDview.pause();
         }
 
@@ -160,95 +176,96 @@ public class MainActivity extends BaseActivity {
                 .subscribe(observer);
     }
 
-    private void loadCDBitmap(){
+    private void loadCDBitmap() {
         Glide.with(getApplicationContext())
-                .load(MusicManager.getMusicManager().getNowSong().albumpic_big )
+                .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
                 .asBitmap()
-                .into( target );
+                .into(target);
     }
+
     //先放在这里之后放在launch
-    private void initQueue(){
-        Log.e("Test","---------initQueue---------");
-        if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
-            Log.e("Test","MusicManager set myList");
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
-        }else if (SPUtils.get(getApplicationContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)){
-            Log.e("Test","MusicManager set hotList");
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)),0,false);
+    private void initQueue() {
+        if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
+            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)), 0, false);
+        } else if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.hotList)) {
+            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)), 0, false);
         }
-        if (MusicManager.getMusicManager().getNowSong()!=null){
-            Log.e("Test","nowSong = "+MusicManager.getMusicManager().getNowSong());
-        }
-
-
     }
 
-    @OnClick({R.id.rank1, R.id.rank2,R.id.rank3,R.id.rank4,R.id.rank5,R.id.rank6,R.id.rank7,R.id.rank8,R.id.main_more})
+    @OnClick({R.id.rank1, R.id.rank2, R.id.rank3, R.id.rank4, R.id.rank5, R.id.rank6, R.id.rank7, R.id.rank8, R.id.main_more})
     void toRankActivity(View view) {
         switch (view.getId()) {
             case R.id.rank1:
                 Intent intent1 = new Intent(MainActivity.this, RankActivity.class);
-                intent1.putExtra("topid","5");
-                startActivity(intent1);
+                intent1.putExtra("topid", "5");
+                ActivityOptionsCompat activityOptionsCompat1 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank1, "rankImg");
+                startActivity(intent1, activityOptionsCompat1.toBundle());
                 break;
             case R.id.rank2:
                 Intent intent2 = new Intent(MainActivity.this, RankActivity.class);
-                intent2.putExtra("topid","6");
-                startActivity(intent2);
+                intent2.putExtra("topid", "6");
+                ActivityOptionsCompat activityOptionsCompat2 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank2, "rankImg");
+                startActivity(intent2, activityOptionsCompat2.toBundle());
                 break;
             case R.id.rank3:
                 Intent intent3 = new Intent(MainActivity.this, RankActivity.class);
-                intent3.putExtra("topid","23");
-                startActivity(intent3);
+                intent3.putExtra("topid", "23");
+                ActivityOptionsCompat activityOptionsCompat3 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank3, "rankImg");
+                startActivity(intent3, activityOptionsCompat3.toBundle());
                 break;
             case R.id.rank4:
                 Intent intent4 = new Intent(MainActivity.this, RankActivity.class);
-                intent4.putExtra("topid","19");
-                startActivity(intent4);
+                intent4.putExtra("topid", "19");
+                ActivityOptionsCompat activityOptionsCompat4 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank4, "rankImg");
+                startActivity(intent4, activityOptionsCompat4.toBundle());
                 break;
             case R.id.rank5:
                 Intent intent5 = new Intent(MainActivity.this, RankActivity.class);
-                intent5.putExtra("topid","17");
-                startActivity(intent5);
+                intent5.putExtra("topid", "17");
+                ActivityOptionsCompat activityOptionsCompat5 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank5, "rankImg");
+                startActivity(intent5, activityOptionsCompat5.toBundle());
                 break;
             case R.id.rank6:
                 Intent intent6 = new Intent(MainActivity.this, RankActivity.class);
-                intent6.putExtra("topid","18");
-                startActivity(intent6);
+                intent6.putExtra("topid", "18");
+                ActivityOptionsCompat activityOptionsCompat6 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank6, "rankImg");
+                startActivity(intent6, activityOptionsCompat6.toBundle());
                 break;
             case R.id.rank7:
                 Intent intent7 = new Intent(MainActivity.this, RankActivity.class);
-                intent7.putExtra("topid","3");
-                startActivity(intent7);
+                intent7.putExtra("topid", "3");
+                ActivityOptionsCompat activityOptionsCompat7 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank7, "rankImg");
+                startActivity(intent7, activityOptionsCompat7.toBundle());
                 break;
             case R.id.rank8:
                 Intent intent8 = new Intent(MainActivity.this, RankActivity.class);
-                intent8.putExtra("topid","16");
-                startActivity(intent8);
+                intent8.putExtra("topid", "16");
+                ActivityOptionsCompat activityOptionsCompat8 = ActivityOptionsCompat.makeSceneTransitionAnimation(MainActivity.this, rank8, "rankImg");
+                startActivity(intent8, activityOptionsCompat8.toBundle());
                 break;
             case R.id.main_more:
                 Intent intent9 = new Intent(MainActivity.this, RankActivity.class);
-                intent9.putExtra("topid","26");
+                intent9.putExtra("topid", "26");
                 startActivity(intent9);
         }
     }
 
 
     @OnClick(R.id.main_cd)
-    void toPlayActivity(){
+    void toPlayActivity() {
         startActivity(new Intent(MainActivity.this, PlayActivity.class));
     }
 
     @Subscribe
-    public void onEvent(PlayEvent playEvent){
+    public void onEvent(PlayEvent playEvent) {
         switch (playEvent.getAction()) {
             case CHANGE:
-                if (MusicManager.getMusicManager().getNowSong()!=null){
+                if (MusicManager.getMusicManager().getNowSong() != null) {
                     loadCDBitmap();
                 }
-                if (MusicManager.getMusicManager().getIsPlaying()){
+                if (MusicManager.getMusicManager().getIsPlaying()) {
                     cDview.start();
-                }else {
+                } else {
                     cDview.pause();
                 }
                 break;
@@ -267,8 +284,8 @@ public class MainActivity extends BaseActivity {
                 .withOnAccountHeaderListener(new AccountHeader.OnAccountHeaderListener() {
                     @Override
                     public boolean onProfileChanged(View view, IProfile profile, boolean current) {
-                        if (profile instanceof IDrawerItem&&profile.getIdentifier()==100){
-                            startActivityForResult(new Intent(MainActivity.this,LoginActivity.class),Constants.ResquestLogin);
+                        if (profile instanceof IDrawerItem && profile.getIdentifier() == 100) {
+                            startActivityForResult(new Intent(MainActivity.this, LoginActivity.class), Constants.ResquestLogin);
                         }
                         return true;
                     }
@@ -290,27 +307,27 @@ public class MainActivity extends BaseActivity {
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
                     @Override
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
-                        if (drawerItem!=null){
-                            Intent intent =null;
-                            if (drawerItem.getIdentifier()==2){
-                                intent = new Intent(MainActivity.this,MyPlaylistActivity.class);
-                            }else if (drawerItem.getIdentifier()==3){
-                                intent = new Intent(MainActivity.this,PlayActivity.class);
-                            }else if (drawerItem.getIdentifier()==4){
+                        if (drawerItem != null) {
+                            Intent intent = null;
+                            if (drawerItem.getIdentifier() == 2) {
+                                intent = new Intent(MainActivity.this, MyPlaylistActivity.class);
+                            } else if (drawerItem.getIdentifier() == 3) {
+                                intent = new Intent(MainActivity.this, PlayActivity.class);
+                            } else if (drawerItem.getIdentifier() == 4) {
 
-                            }else if (drawerItem.getIdentifier()==5){
+                            } else if (drawerItem.getIdentifier() == 5) {
 
-                            }else if (drawerItem.getIdentifier()==6){
-                                Toast.makeText(MainActivity.this,"同步数据",Toast.LENGTH_SHORT).show();
-                                MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this,MusicManager.myList,AccountModel.getAccountModel().getAccount().getObjectId());
+                            } else if (drawerItem.getIdentifier() == 6) {
+                                Toast.makeText(MainActivity.this, "同步数据", Toast.LENGTH_SHORT).show();
+                                MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this, MusicManager.myList, AccountModel.getAccountModel().getAccount().getObjectId());
 //                                MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
 //                                Log.e("Test","DBQueue size = "+MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)).size());
-                            }else if (drawerItem.getIdentifier()==7){
+                            } else if (drawerItem.getIdentifier() == 7) {
                                 AccountModel.getAccountModel().logout();
                                 setProfile();
                                 checkDrawer();
                             }
-                            if (intent!=null){
+                            if (intent != null) {
                                 startActivity(intent);
                             }
 
@@ -322,25 +339,25 @@ public class MainActivity extends BaseActivity {
 
     }
 
-    private void setProfile(){
-        if (AccountModel.getAccountModel().isLogin()){
+    private void setProfile() {
+        if (AccountModel.getAccountModel().isLogin()) {
             profile.withName(AccountModel.getAccountModel().getAccount().getUsername());
             accountHeader.updateProfile(profile);
-        }   else {
+        } else {
             profile.withName(" 请先登录");
             accountHeader.updateProfile(profile);
         }
 
     }
 
-    private void checkDrawer(){
-        if (drawer.getDrawerItems().size()!=8){
-            if (AccountModel.getAccountModel().isLogin()){
-                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("数据同步").withIcon(R.drawable.drawer_sync).withIdentifier(6),5);
-                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("退出登录").withIcon(R.drawable.drawer_logout).withIdentifier(7),6);
+    private void checkDrawer() {
+        if (drawer.getDrawerItems().size() != 8) {
+            if (AccountModel.getAccountModel().isLogin()) {
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("数据同步").withIcon(R.drawable.drawer_sync).withIdentifier(6), 5);
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("退出登录").withIcon(R.drawable.drawer_logout).withIdentifier(7), 6);
             }
-        }else if(drawer.getDrawerItems().size()==8){
-            if (!AccountModel.getAccountModel().isLogin()){
+        } else if (drawer.getDrawerItems().size() == 8) {
+            if (!AccountModel.getAccountModel().isLogin()) {
                 drawer.removeItemByPosition(5);
             }
         }
@@ -349,7 +366,7 @@ public class MainActivity extends BaseActivity {
 
     @Override
     public void onBackPressed() {
-        if ( drawer!= null && drawer.isDrawerOpen()) {
+        if (drawer != null && drawer.isDrawerOpen()) {
             drawer.closeDrawer();
         } else {
             super.onBackPressed();
@@ -359,7 +376,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode==Constants.ResquestLogin&&resultCode==Constants.LoginSuccess){
+        if (requestCode == Constants.ResquestLogin && resultCode == Constants.LoginSuccess) {
             profile.withName(data.getStringExtra("name"));
             accountHeader.updateProfile(profile);
         }

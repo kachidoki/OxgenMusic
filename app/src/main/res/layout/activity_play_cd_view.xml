@@ -8,6 +8,7 @@
     android:gravity="center">
     <com.kachidoki.oxgenmusic.widget.CDview
         android:id="@+id/play_cdView"
+        android:transitionName="cdView"
         android:layout_width="250dp"
         android:layout_height="250dp" />
 

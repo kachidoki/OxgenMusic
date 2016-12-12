@@ -11,6 +11,7 @@
 
     <com.kachidoki.oxgenmusic.widget.CDview
         android:id="@+id/main_cdView"
+        android:transitionName="cdView"
         android:layout_width="130dp"
         android:layout_height="130dp" />
 

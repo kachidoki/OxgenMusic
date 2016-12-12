@@ -15,13 +15,13 @@
             <android.support.v7.widget.CardView
                 android:layout_width="165dp"
                 android:layout_height="165dp"
-                android:background="@drawable/test"
                 app:cardCornerRadius="4dp">
                 <ImageView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank1"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_5_2"/>
             </android.support.v7.widget.CardView>
 
@@ -41,6 +41,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank2"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_6_2"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -63,6 +64,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank3"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_23_"/>
             </android.support.v7.widget.CardView>
 
@@ -82,6 +84,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank4"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_19_3"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -104,6 +107,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank5"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_17"/>
             </android.support.v7.widget.CardView>
 
@@ -123,6 +127,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank6"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_18"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>
@@ -146,6 +151,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank7"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_3"/>
             </android.support.v7.widget.CardView>
 
@@ -165,6 +171,7 @@
                     android:layout_height="match_parent"
                     android:adjustViewBounds="true"
                     android:id="@+id/rank8"
+                    android:transitionName="rankImg"
                     android:background="@drawable/rank_16_1"/>
             </android.support.v7.widget.CardView>
         </LinearLayout>

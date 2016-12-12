@@ -147,7 +147,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     public void start(){
         if (getNowPlaying()!=null){
           if (isfirst){
-              Log.e("Test","isFirst"+isfirst);
               play(getNowPlaying());
           }else {
               mediaPlayer.start();

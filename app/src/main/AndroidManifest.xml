@@ -30,6 +30,7 @@
         <activity android:name=".activity.MyPlaylistActivity"
             android:label="我的列表"/>
         <service android:name=".player.PlayerService" />
+        <service android:name=".player.DownloadService"/>
         <activity android:name=".activity.LoginActivity"
             android:label="登录"/>
         <activity android:name=".activity.RegisterActivity"

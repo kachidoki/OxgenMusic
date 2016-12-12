@@ -1,9 +1,15 @@
 package com.kachidoki.oxgenmusic.activity;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.transition.Fade;
+import android.transition.Slide;
+import android.transition.TransitionInflater;
+import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -73,6 +79,7 @@ public class RankActivity extends BaseActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_playlist);
+        setActivityAnimation();
         ButterKnife.bind(this);
 
         setToolbar(true);
@@ -116,7 +123,7 @@ public class RankActivity extends BaseActivity {
 
     private void setListImg(String topid){
         switch (topid){
-            case "16":listImg.setImageResource(R.drawable.rank_16);
+            case "16":listImg.setImageResource(R.drawable.rank_16_1);
                 break;
             case "17":listImg.setImageResource(R.drawable.rank_17);
                 break;
@@ -126,7 +133,7 @@ public class RankActivity extends BaseActivity {
                 break;
             case "23":listImg.setImageResource(R.drawable.rank_23_);
                 break;
-            case "3":listImg.setImageResource(R.drawable.rank_3_1);
+            case "3":listImg.setImageResource(R.drawable.rank_3);
                 break;
             case "5":listImg.setImageResource(R.drawable.rank_5_2);
                 break;
@@ -150,6 +157,12 @@ public class RankActivity extends BaseActivity {
             MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
         }
 
+    }
+
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
+    private void setActivityAnimation(){
+        Fade fade = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade);
+        getWindow().setEnterTransition(fade);
     }
 
 }
