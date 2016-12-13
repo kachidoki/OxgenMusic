@@ -19,7 +19,9 @@ import com.bumptech.glide.request.target.SimpleTarget;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
+import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.MusicManager.PlayMode;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.widget.CDview;
 
@@ -31,6 +33,8 @@ import java.text.SimpleDateFormat;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+import static com.kachidoki.oxgenmusic.player.MusicManager.PlayMode.*;
 
 /**
  * Created by mayiwei on 16/11/30.
@@ -131,12 +135,23 @@ public class PlayActivity extends BaseActivity {
         } else {
             cDview.pause();
         }
+
+        switch (MusicManager.getMusicManager().getPlayMode()){
+            case LOOP:playMode.setImageResource(R.drawable.icon_play_loop);
+                break;
+            case REPEAT:playMode.setImageResource(R.drawable.icon_play_one);
+                break;
+            case RANDOM:playMode.setImageResource(R.drawable.icon_play_random);
+                break;
+        }
+
         if (MusicManager.getMusicManager().getNowSong()!=null){
-            if (MusicManager.getMusicManager().getIsReady())
-            playAllTime.setText(time.format(MusicManager.getMusicManager().getDuration()));
-            playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
-            playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
-            playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+            if (MusicManager.getMusicManager().getIsReady()){
+                playAllTime.setText(time.format(MusicManager.getMusicManager().getDuration()));
+                playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
+                playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
+                playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+            }
         }
 
         handler.post(updataProgress);
@@ -177,11 +192,37 @@ public class PlayActivity extends BaseActivity {
         }
     }
 
+    @OnClick(R.id.play_more)
+    void download(){
+        Intent intent = new Intent(PlayActivity.this, DownloadService.class);
+        intent.putExtra("command",DownloadService.CommandDownload);
+        intent.putExtra("songname", MusicManager.getMusicManager().getNowSong().songname);
+        intent.putExtra("url",MusicManager.getMusicManager().getNowSong().url);
+        startService(intent);
+    }
+
     @OnClick(R.id.play_toMylist)
     void toMyList() {
         startActivity(new Intent(this, MyPlaylistActivity.class));
     }
 
+    @OnClick(R.id.play_mode)
+    void changeMode(){
+        switch (MusicManager.getMusicManager().getPlayMode()){
+            case LOOP:
+                playMode.setImageResource(R.drawable.icon_play_one);
+                MusicManager.getMusicManager().setPlayMode(REPEAT);
+                break;
+            case REPEAT:
+                playMode.setImageResource(R.drawable.icon_play_random);
+                MusicManager.getMusicManager().setPlayMode(RANDOM);
+                break;
+            case RANDOM:
+                playMode.setImageResource(R.drawable.icon_play_loop);
+                MusicManager.getMusicManager().setPlayMode(LOOP);
+                break;
+        }
+    }
 
     @Subscribe
     public void onEvent(PlayEvent playEvent) {

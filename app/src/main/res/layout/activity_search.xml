@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/include_toolbar"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+        <LinearLayout
+            android:layout_weight="10"
+            android:layout_width="wrap_content"
+            android:layout_height="48dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:background="@drawable/bg_round_white"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:padding="6dp"
+                android:src="@drawable/icon_search"/>
+            <EditText
+                android:id="@+id/search_keyword"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:imeOptions="actionSearch"
+                android:padding="8dp"
+                android:background="@null"
+                android:singleLine="true"
+                android:textSize="14sp"
+                android:gravity="center_vertical"
+                android:hint="请输入歌手名或者歌名"/>
+        </LinearLayout>
+        <TextView
+            android:layout_marginLeft="8dp"
+            android:background="@drawable/bg_round_white"
+            android:gravity="center"
+            android:layout_weight="2"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:textSize="14sp"
+            android:id="@+id/search_search"
+            android:text="搜索"/>
+    </LinearLayout>
+
+    <android.support.v7.widget.RecyclerView
+        android:layout_marginTop="8dp"
+        android:id="@+id/search_recycler"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+</LinearLayout>

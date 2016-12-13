@@ -1,11 +1,14 @@
 package com.kachidoki.oxgenmusic.utils;
 
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.ComponentName;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 
 import java.util.List;
 
@@ -62,6 +65,18 @@ public class Utils {
             }
         }
         return false;
+    }
+
+    /**
+     * 关闭输入法
+     * @param act
+     */
+    public static void closeInputMethod(Activity act){
+        View view = act.getCurrentFocus();
+        if(view!=null){
+            ((InputMethodManager)mApplicationContent.getSystemService(Context.INPUT_METHOD_SERVICE)).
+                    hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
+        }
     }
 
     /**

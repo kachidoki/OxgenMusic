@@ -38,6 +38,7 @@ public class PopWindow extends PopupWindow {
     private Song song;
     private List<Song> songList;
     private int queueIndex;
+    private String callname;
     @BindView(R.id.pop_addlist)
     LinearLayout add;
     @BindView(R.id.pop_playthis)
@@ -47,11 +48,12 @@ public class PopWindow extends PopupWindow {
     @BindView(R.id.pop_download)
     LinearLayout popDownload;
 
-    public PopWindow(Context mContext, Song mSong, List<Song> songs,int index) {
-        context = mContext;
-        song = mSong;
-        songList = songs;
-        queueIndex = index;
+    public PopWindow(Context mContext, Song mSong, List<Song> songs,int index,String callname) {
+        this.context = mContext;
+        this.song = mSong;
+        this.songList = songs;
+        this.queueIndex = index;
+        this.callname = callname;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_list, null);
         ButterKnife.bind(this, view);
         // 设置外部可点击
@@ -116,8 +118,25 @@ public class PopWindow extends PopupWindow {
                 break;
             case R.id.pop_playthis:
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
-                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
-                    SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
+                if (callname.equals("rank")){
+                    if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                        SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
+                        //重置队列
+                        MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
+                        MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
+                        MusicManager.getMusicManager().setQueue(songList,queueIndex,false);
+                        Intent PlayNow = new Intent(context, PlayerService.class);
+                        PlayNow.putExtra("command", PlayerService.CommandPlayNow);
+                        context.startService(PlayNow);
+                    }else {
+                        //设置index即可
+                        MusicManager.getMusicManager().setIndex(queueIndex);
+                    }
+                }else {
+                    //search界面呼出pop
+                    if (!SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals("searchList")){
+                        SPUtils.put(context,Constants.nowQueue_sp,"searchList");
+                    }
                     //重置队列
                     MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
                     MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
@@ -125,9 +144,6 @@ public class PopWindow extends PopupWindow {
                     Intent PlayNow = new Intent(context, PlayerService.class);
                     PlayNow.putExtra("command", PlayerService.CommandPlayNow);
                     context.startService(PlayNow);
-                }else {
-                    //设置index即可
-                    MusicManager.getMusicManager().setIndex(queueIndex);
                 }
                 dismiss();
                 break;

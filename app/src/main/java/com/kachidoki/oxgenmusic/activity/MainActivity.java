@@ -8,6 +8,9 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -67,10 +70,6 @@ public class MainActivity extends BaseActivity {
     TextView more;
     @BindView(R.id.rank1)
     ImageView rank1;
-
-    Drawer drawer;
-    AccountHeader accountHeader;
-    IProfile profile;
     @BindView(R.id.rank2)
     ImageView rank2;
     @BindView(R.id.rank3)
@@ -85,6 +84,10 @@ public class MainActivity extends BaseActivity {
     ImageView rank7;
     @BindView(R.id.rank8)
     ImageView rank8;
+
+    IProfile profile;
+    Drawer drawer;
+    AccountHeader accountHeader;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -187,7 +190,7 @@ public class MainActivity extends BaseActivity {
     private void initQueue() {
         if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
             MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)), 0, false);
-        } else if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.hotList)) {
+        } else  {
             MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)), 0, false);
         }
     }
@@ -379,6 +382,25 @@ public class MainActivity extends BaseActivity {
         if (requestCode == Constants.ResquestLogin && resultCode == Constants.LoginSuccess) {
             profile.withName(data.getStringExtra("name"));
             accountHeader.updateProfile(profile);
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+
+        switch (item.getItemId()){
+            case R.id.menu_search:
+                startActivity(new Intent(MainActivity.this,SearchActivity.class));
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
         }
     }
 }

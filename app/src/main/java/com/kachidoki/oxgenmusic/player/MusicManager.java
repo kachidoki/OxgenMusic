@@ -19,7 +19,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public static SongQueue myList;
     public static SongQueue hotList;
-    private enum PlayMode {
+    public enum PlayMode {
        LOOP, RANDOM, REPEAT
     }
 

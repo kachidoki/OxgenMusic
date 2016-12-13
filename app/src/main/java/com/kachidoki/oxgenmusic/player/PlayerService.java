@@ -34,6 +34,7 @@ public class PlayerService extends Service {
     public static final int CommandClose =4;
     public static final int CommandPlayNow = 5;
     private NotificationTarget notificationTarget;
+    private NotificationTarget BignotificationTarget;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -74,64 +75,84 @@ public class PlayerService extends Service {
 
 
     private void sendPlayerNotification() {
-            NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
-            builder.setSmallIcon(R.mipmap.ic_launcher);
-            builder.setAutoCancel(false);
-            builder.setOngoing(true);
-            builder.setShowWhen(false);
-
-            //bigView
-            RemoteViews bigRemoteViews = new RemoteViews(getPackageName(),R.layout.notification_big_content);
-            if (MusicManager.getMusicManager().getNowSong()!=null){
-                bigRemoteViews.setTextViewText(R.id.nof_songname,MusicManager.getMusicManager().getNowSong().songname);
-                bigRemoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
-                bigRemoteViews.setImageViewUri(R.id.nof_img, Uri.parse(MusicManager.getMusicManager().getNowSong().albumpic_big));
-            }
-
-
-            if(MusicManager.getMusicManager().getIsPlaying()){
-                bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_pause);
-            }else{
-                bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_gray);
-            }
-
-            Intent Intent1 = new Intent(this,PlayerService.class);
-            Intent1.putExtra("command",CommandPlay);
-            PendingIntent PIntent1 =  PendingIntent.getService(this,5,Intent1,0);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
-
-            Intent Intent2 = new Intent(this,PlayerService.class);
-            Intent2.putExtra("command",CommandNext);
-            PendingIntent PIntent2 =  PendingIntent.getService(this,6,Intent2,0);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
-
-            Intent Intent3 = new Intent(this,PlayerService.class);
-            Intent3.putExtra("command",CommandPrevious);
-            PendingIntent PIntent3 =  PendingIntent.getService(this,7,Intent3,0);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_pre,PIntent3);
-
-            Intent Intent4 = new Intent(this,PlayerService.class);
-            Intent4.putExtra("command",CommandClose);
-            PendingIntent PIntent4 =  PendingIntent.getService(this,8,Intent4,0);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
-
-            Intent intentToPlay = new Intent(this, PlayActivity.class);
-            PendingIntent pIntentToPlay = PendingIntent.getActivity(this,9,intentToPlay,0);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
-            bigRemoteViews.setOnClickPendingIntent(R.id.nof_img,pIntentToPlay);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this);
+        builder.setSmallIcon(R.mipmap.ic_launcher);
+        builder.setAutoCancel(false);
+        builder.setOngoing(true);
+        builder.setShowWhen(false);
 
 
 
-            builder.setCustomContentView(bigRemoteViews);
-            builder.setCustomBigContentView(bigRemoteViews);
-            Notification notification = builder.build();
-            notificationTarget = new NotificationTarget(getApplicationContext(),bigRemoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
-            if (MusicManager.getMusicManager().getNowSong()!=null){
-                Glide.with(getApplicationContext())
-                        .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
-                        .asBitmap()
-                        .into(notificationTarget);
-            }
+        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.notification_content);
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            remoteViews.setTextViewText(R.id.nof_songname,MusicManager.getMusicManager().getNowSong().songname);
+            remoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
+            remoteViews.setImageViewUri(R.id.nof_img, Uri.parse(MusicManager.getMusicManager().getNowSong().albumpic_big));
+        }
+
+        //bigView
+        RemoteViews bigRemoteViews = new RemoteViews(getPackageName(),R.layout.notification_big_content);
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            bigRemoteViews.setTextViewText(R.id.nof_songname,MusicManager.getMusicManager().getNowSong().songname);
+            bigRemoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
+            bigRemoteViews.setImageViewUri(R.id.nof_img, Uri.parse(MusicManager.getMusicManager().getNowSong().albumpic_big));
+        }
+
+
+        if(MusicManager.getMusicManager().getIsPlaying()){
+            remoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_pause);
+            bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_pause);
+        }else{
+            remoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_play);
+            bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_gray);
+        }
+
+        Intent Intent1 = new Intent(this,PlayerService.class);
+        Intent1.putExtra("command",CommandPlay);
+        PendingIntent PIntent1 =  PendingIntent.getService(this,5,Intent1,0);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
+        remoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
+
+        Intent Intent2 = new Intent(this,PlayerService.class);
+        Intent2.putExtra("command",CommandNext);
+        PendingIntent PIntent2 =  PendingIntent.getService(this,6,Intent2,0);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
+        remoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
+
+        Intent Intent3 = new Intent(this,PlayerService.class);
+        Intent3.putExtra("command",CommandPrevious);
+        PendingIntent PIntent3 =  PendingIntent.getService(this,7,Intent3,0);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_pre,PIntent3);
+
+        Intent Intent4 = new Intent(this,PlayerService.class);
+        Intent4.putExtra("command",CommandClose);
+        PendingIntent PIntent4 =  PendingIntent.getService(this,8,Intent4,0);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
+        remoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
+
+        Intent intentToPlay = new Intent(this, PlayActivity.class);
+        PendingIntent pIntentToPlay = PendingIntent.getActivity(this,9,intentToPlay,0);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
+        bigRemoteViews.setOnClickPendingIntent(R.id.nof_img,pIntentToPlay);
+
+
+
+        builder.setCustomContentView(remoteViews);
+        builder.setCustomBigContentView(bigRemoteViews);
+        Notification notification = builder.build();
+        notificationTarget = new NotificationTarget(getApplicationContext(),remoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
+        BignotificationTarget = new NotificationTarget(getApplicationContext(),bigRemoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
+
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            Glide.with(getApplicationContext())
+                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
+                    .asBitmap()
+                    .into(BignotificationTarget);
+            Glide.with(getApplicationContext())
+                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
+                    .asBitmap()
+                    .into(notificationTarget);
+        }
 
         startForeground(Constants.PlayerNotification,notification);
     }

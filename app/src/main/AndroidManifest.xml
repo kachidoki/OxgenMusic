@@ -35,6 +35,8 @@
             android:label="登录"/>
         <activity android:name=".activity.RegisterActivity"
             android:label="注册"/>
+        <activity android:name=".activity.SearchActivity"
+            android:label="搜索"/>
         <meta-data android:name="AA_DB_NAME" android:value="MyMusic.db" />
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
         <meta-data android:name="AA_MODELS" android:value="com.kachidoki.oxgenmusic.model.bean.SongBean, com.kachidoki.oxgenmusic.model.bean.SongQueue" />

@@ -36,6 +36,7 @@ public class NetWork {
         }
         return musicApi;
     }
+
     public static Download getDownloadApi(ProgressResponseListener listener){
         okHttpClient = new OkHttpClient.Builder()
                 .addInterceptor(new DownloadProgressInterceptor(listener))

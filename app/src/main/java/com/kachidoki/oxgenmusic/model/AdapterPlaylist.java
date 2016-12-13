@@ -79,7 +79,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
             songname.setText(song.songname);
             number.setText((i+1)+"");
 
-            final PopWindow popWindow = new PopWindow(itemView.getContext(),song,songs,i);
+            final PopWindow popWindow = new PopWindow(itemView.getContext(),song,songs,i,"rank");
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

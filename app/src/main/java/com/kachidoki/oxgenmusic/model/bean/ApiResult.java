@@ -1,7 +1,6 @@
 package com.kachidoki.oxgenmusic.model.bean;
 
 
-import com.google.gson.annotations.SerializedName;
 
 /**
  * Created by mayiwei on 16/11/29.

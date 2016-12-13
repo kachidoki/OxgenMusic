@@ -156,7 +156,6 @@ public class RankActivity extends BaseActivity {
             MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
             MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
         }
-
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
