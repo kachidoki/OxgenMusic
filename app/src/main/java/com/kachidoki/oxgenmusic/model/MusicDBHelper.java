@@ -94,9 +94,16 @@ public class MusicDBHelper {
                 .executeSingle();
     }
 
+    public boolean checkIsAdd(String songname,SongQueue songQueue){
+        List<SongBean> list = SelectQueue(songQueue.name).songs();
+        for (SongBean songBean:list){
+            if (songname.equals(songBean.songname)) return true;
+        }
+        return false;
+    }
+
     public List<Song> ConvertQueue(SongQueue songQueue){
         if (songQueue.songs()!=null){
-            Log.e("Test","SongQueue.songs.size = "+songQueue.songs().size());
             List<Song> songs = new ArrayList<Song>();
             for (int i=0;i<songQueue.songs().size();i++){
                 Song song = new Song();
@@ -111,7 +118,6 @@ public class MusicDBHelper {
             }
             return songs;
         }
-        Log.e("Test","SongQueue.songs is null");
         return null;
     }
 

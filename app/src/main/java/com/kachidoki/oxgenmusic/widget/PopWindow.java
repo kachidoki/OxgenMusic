@@ -12,11 +12,16 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.activity.RankActivity;
+import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -31,6 +36,8 @@ public class PopWindow extends PopupWindow {
     private Context context;
     private View view;
     private Song song;
+    private List<Song> songList;
+    private int queueIndex;
     @BindView(R.id.pop_addlist)
     LinearLayout add;
     @BindView(R.id.pop_playthis)
@@ -40,9 +47,11 @@ public class PopWindow extends PopupWindow {
     @BindView(R.id.pop_download)
     LinearLayout popDownload;
 
-    public PopWindow(Context mContext, Song mSong) {
+    public PopWindow(Context mContext, Song mSong, List<Song> songs,int index) {
         context = mContext;
         song = mSong;
+        songList = songs;
+        queueIndex = index;
         this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_list, null);
         ButterKnife.bind(this, view);
         // 设置外部可点击
@@ -86,23 +95,39 @@ public class PopWindow extends PopupWindow {
     void toTarget(View view) {
         switch (view.getId()) {
             case R.id.pop_addlist:
-                if (!MusicManager.getMusicManager().checkIsAdd(song)) {
-                    Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
-                    MusicManager.getMusicManager().addQueue(song);
-                    MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
-                } else {
-                    Toast.makeText(context, "已在播放列表", Toast.LENGTH_SHORT).show();
+                if (SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    if (!MusicManager.getMusicManager().checkIsAdd(song)) {
+                        Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
+                        MusicManager.getMusicManager().addQueue(song);
+                        MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
+                    } else {
+                        Toast.makeText(context, "已在我的歌单", Toast.LENGTH_SHORT).show();
+                    }
+                }else {
+                    if (!MusicDBHelper.getMusicDBHelper().checkIsAdd(song.songname,MusicManager.myList)){
+                        Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
+                        MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
+                    }else {
+                        Toast.makeText(context, "已在我的歌单", Toast.LENGTH_SHORT).show();
+                    }
                 }
+
                 dismiss();
                 break;
             case R.id.pop_playthis:
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
-                if (!MusicManager.getMusicManager().playAndCheck(song)) {
-                    MusicManager.getMusicManager().addQueuePlay(song);
-                    MusicDBHelper.getMusicDBHelper().saveSong(song, MusicManager.myList);
+                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
+                    //重置队列
+                    MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
+                    MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
+                    MusicManager.getMusicManager().setQueue(songList,queueIndex,false);
                     Intent PlayNow = new Intent(context, PlayerService.class);
                     PlayNow.putExtra("command", PlayerService.CommandPlayNow);
                     context.startService(PlayNow);
+                }else {
+                    //设置index即可
+                    MusicManager.getMusicManager().setIndex(queueIndex);
                 }
                 dismiss();
                 break;
@@ -110,6 +135,7 @@ public class PopWindow extends PopupWindow {
                 Intent intent = new Intent(context, DownloadService.class);
                 intent.putExtra("command",DownloadService.CommandDownload);
                 intent.putExtra("songname",song.songname);
+                intent.putExtra("url",song.url);
                 context.startService(intent);
                 dismiss();
                 break;

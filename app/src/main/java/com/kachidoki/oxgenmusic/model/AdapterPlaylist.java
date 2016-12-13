@@ -47,7 +47,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PlayListViewHolder playListViewHolder = (PlayListViewHolder) holder;
-        playListViewHolder.setData(songLists.get(position),position);
+        playListViewHolder.setData(songLists.get(position),position,songLists);
     }
 
     @Override
@@ -74,12 +74,12 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
-        public void setData(final Song song,int i){
+        public void setData(final Song song,int i,List<Song> songs){
             singername.setText(song.singername);
             songname.setText(song.songname);
             number.setText((i+1)+"");
 
-            final PopWindow popWindow = new PopWindow(itemView.getContext(),song);
+            final PopWindow popWindow = new PopWindow(itemView.getContext(),song,songs,i);
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {

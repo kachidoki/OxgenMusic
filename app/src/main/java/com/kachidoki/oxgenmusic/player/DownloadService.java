@@ -4,7 +4,6 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.Service;
 import android.content.Intent;
-import android.graphics.BitmapFactory;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.IBinder;
@@ -37,13 +36,17 @@ public class DownloadService extends Service{
     private final int DOWNLOAD_PROGRESS=2;
 
     private NotificationManager manger;
+    private String songName = "";
 
     private Handler downloadHandler = new Handler(){
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
             ProgressBean progressBean = (ProgressBean)msg.obj;
-            sendNotification("",(int)progressBean.contentLength,(int)progressBean.bytesRead);
+            sendNotification(songName,(int)progressBean.contentLength,(int)progressBean.bytesRead,progressBean.i);
+            if (progressBean.done){
+                manger.cancel(Constants.DonloadNotification+progressBean.i);
+            }
         }
     };
 
@@ -58,10 +61,6 @@ public class DownloadService extends Service{
             progressBean.done = done;
             Message message = downloadHandler.obtainMessage(DOWNLOAD_PROGRESS,progressBean);
             downloadHandler.sendMessage(message);
-            if (done){
-                manger.cancel(Constants.DonloadNotification);
-            }
-
         }
     };
 
@@ -84,9 +83,9 @@ public class DownloadService extends Service{
         }
 
         int command = intent.getIntExtra("command",0);
-        String name = intent.getStringExtra("songname");
         if (command==CommandDownload){
-            downloadMusic(name);
+            downloadMusic(intent.getStringExtra("songname"),intent.getStringExtra("url"));
+            ProgressBean.i++;
         }
 
         return super.onStartCommand(intent, flags, startId);
@@ -100,24 +99,24 @@ public class DownloadService extends Service{
 
     }
 
-    private void sendNotification(String songName, int max, int progressNow){
+    private void sendNotification(String songName, int max, int progressNow,int i){
         NotificationCompat.Builder nofDown = new NotificationCompat.Builder(this);
         nofDown.setSmallIcon(R.mipmap.ic_launcher);
-        nofDown.setLargeIcon(BitmapFactory.decodeResource(getResources(),R.drawable.icon_download));
         nofDown.setAutoCancel(false);
         nofDown.setOngoing(true);
         nofDown.setShowWhen(false);
-        nofDown.setContentText(songName);
+        nofDown.setContentTitle(songName);
         nofDown.setProgress(max,progressNow,false);
-        nofDown.setContentInfo(progressNow/max+"%");
+        nofDown.setContentInfo(progressNow*100/max+"%");
         nofDown.setOngoing(true);
         Notification notification = nofDown.build();
-        manger.notify(Constants.DonloadNotification,notification);
+        manger.notify(Constants.DonloadNotification+i,notification);
     }
 
-    private void downloadMusic(final String name){
+    private void downloadMusic(final String name,String url){
+        songName = name;
         NetWork.getDownloadApi(progressResponseListener)
-                .download()
+                .download(url)
                 .subscribeOn(Schedulers.io())
                 .subscribe(new Observer<ResponseBody>() {
                     @Override
@@ -134,7 +133,7 @@ public class DownloadService extends Service{
                         if(writeResponseBodyToDisk(responseBody,name)){
                             Log.e("FileDownload","the file is down");
                         }else {
-                            Log.e("FileDownload","the filesdown is fail!!!!!");
+                            Log.e("FileDownload","the filesdown is fail");
                         }
 
                     }
@@ -145,13 +144,10 @@ public class DownloadService extends Service{
         try {
             // todo change the file location/name according to your needs
             File futureStudioIconFile = new File(getExternalFilesDir(Environment.DIRECTORY_MUSIC) ,name+".m4a");
-            Log.e("Test",getExternalFilesDir(Environment.DIRECTORY_MUSIC)+"");
             InputStream inputStream = null;
             OutputStream outputStream = null;
             try {
                 byte[] fileReader = new byte[2048];
-                long fileSize = body.contentLength();
-                long fileSizeDownloaded = 0;
                 inputStream = body.byteStream();
                 outputStream = new FileOutputStream(futureStudioIconFile);
                 while (true) {
@@ -160,8 +156,6 @@ public class DownloadService extends Service{
                         break;
                     }
                     outputStream.write(fileReader, 0, read);
-                    fileSizeDownloaded += read;
-                    Log.d("FileDownload", "file download: " + fileSizeDownloaded + " of " + fileSize);
                 }
                 outputStream.flush();
                 return true;

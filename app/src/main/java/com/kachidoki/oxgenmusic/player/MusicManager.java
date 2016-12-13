@@ -40,7 +40,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
 
     public MusicManager(){
-        Log.e("Test","======MusicManager 构造===========");
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
@@ -112,14 +111,14 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public boolean checkIsAdd(Song song){
         for (int i=0;i<mQueue.size();i++){
-            if (song.songname==mQueue.get(i).songname) return true;
+            if (song.songname.equals(mQueue.get(i).songname)) return true;
         }
         return false;
     }
 
     public boolean playAndCheck(Song song){
         for (int i=0;i<mQueue.size();i++){
-            if (song.songname==mQueue.get(i).songname){
+            if (song.songname.equals(mQueue.get(i).songname)){
                 mQueueIndex = i;
                 play(getNowPlaying());
                 return true;
