@@ -83,12 +83,12 @@ public class PlayerService extends Service {
 
 
 
-        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.notification_content);
-        if (MusicManager.getMusicManager().getNowSong()!=null){
-            remoteViews.setTextViewText(R.id.nof_songname,MusicManager.getMusicManager().getNowSong().songname);
-            remoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
-            remoteViews.setImageViewUri(R.id.nof_img, Uri.parse(MusicManager.getMusicManager().getNowSong().albumpic_big));
-        }
+//        RemoteViews remoteViews = new RemoteViews(getPackageName(),R.layout.notification_content);
+//        if (MusicManager.getMusicManager().getNowSong()!=null){
+//            remoteViews.setTextViewText(R.id.nof_nomal_songname,MusicManager.getMusicManager().getNowSong().songname);
+//            remoteViews.setTextViewText(R.id.nof_nomal_singer,MusicManager.getMusicManager().getNowSong().singername);
+//            remoteViews.setImageViewUri(R.id.nof_nomal_img, Uri.parse(MusicManager.getMusicManager().getNowSong().albumpic_big));
+//        }
 
         //bigView
         RemoteViews bigRemoteViews = new RemoteViews(getPackageName(),R.layout.notification_big_content);
@@ -100,10 +100,10 @@ public class PlayerService extends Service {
 
 
         if(MusicManager.getMusicManager().getIsPlaying()){
-            remoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_pause);
+//            remoteViews.setImageViewResource(R.id.nof_nomal_playpasue,R.drawable.icon_play_pause);
             bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_pause);
         }else{
-            remoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_play);
+//            remoteViews.setImageViewResource(R.id.nof_nomal_playpasue,R.drawable.icon_play_play);
             bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_gray);
         }
 
@@ -111,13 +111,13 @@ public class PlayerService extends Service {
         Intent1.putExtra("command",CommandPlay);
         PendingIntent PIntent1 =  PendingIntent.getService(this,5,Intent1,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
-        remoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
+//        remoteViews.setOnClickPendingIntent(R.id.nof_nomal_playpasue,PIntent1);
 
         Intent Intent2 = new Intent(this,PlayerService.class);
         Intent2.putExtra("command",CommandNext);
         PendingIntent PIntent2 =  PendingIntent.getService(this,6,Intent2,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
-        remoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
+//        remoteViews.setOnClickPendingIntent(R.id.nof_nomal_next,PIntent2);
 
         Intent Intent3 = new Intent(this,PlayerService.class);
         Intent3.putExtra("command",CommandPrevious);
@@ -128,7 +128,7 @@ public class PlayerService extends Service {
         Intent4.putExtra("command",CommandClose);
         PendingIntent PIntent4 =  PendingIntent.getService(this,8,Intent4,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
-        remoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
+//        remoteViews.setOnClickPendingIntent(R.id.nof_nomal_stop,PIntent4);
 
         Intent intentToPlay = new Intent(this, PlayActivity.class);
         PendingIntent pIntentToPlay = PendingIntent.getActivity(this,9,intentToPlay,0);
@@ -137,17 +137,18 @@ public class PlayerService extends Service {
 
 
 
-        builder.setCustomContentView(remoteViews);
+//        builder.setCustomContentView(remoteViews);
+//        builder.setContent(bigRemoteViews);
         builder.setCustomBigContentView(bigRemoteViews);
         Notification notification = builder.build();
-        notificationTarget = new NotificationTarget(getApplicationContext(),remoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
-        BignotificationTarget = new NotificationTarget(getApplicationContext(),bigRemoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
+        notificationTarget = new NotificationTarget(getApplicationContext(),bigRemoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
+//        BignotificationTarget = new NotificationTarget(getApplicationContext(),remoteViews,R.id.nof_nomal_img,notification,Constants.PlayerNotification);
 
         if (MusicManager.getMusicManager().getNowSong()!=null){
-            Glide.with(getApplicationContext())
-                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
-                    .asBitmap()
-                    .into(BignotificationTarget);
+//            Glide.with(getApplicationContext())
+//                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
+//                    .asBitmap()
+//                    .into(BignotificationTarget);
             Glide.with(getApplicationContext())
                     .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
                     .asBitmap()

@@ -3,38 +3,40 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="78dp"
-    android:background="@color/black"
+    android:layout_marginTop="1.5dp"
+    android:layout_height="82dp"
     >
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="match_parent"
-        android:layout_height="76dp">
+        android:layout_height="80dp">
         <ImageView
             android:id="@+id/img_search"
             android:layout_marginLeft="8dp"
-            android:layout_width="76dp"
-            android:layout_height="76dp" />
+            android:layout_width="80dp"
+            android:layout_height="80dp" />
         <LinearLayout
             android:layout_marginLeft="8dp"
             android:layout_weight="16"
             android:layout_width="wrap_content"
-            android:layout_height="48dp"
+            android:layout_height="80dp"
             android:layout_gravity="left|center_vertical"
             android:orientation="vertical">
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:gravity="bottom"
                 android:layout_weight="1"
                 android:singleLine="true"
                 android:id="@+id/songname_search"
                 style="@style/TextAppearance.AppCompat.Body2"
+                android:textSize="16sp"
                 android:text="歌名"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                style="@style/TextAppearance.AppCompat.Body1"
+                android:gravity="center_vertical"
                 android:id="@+id/songername_search"
                 android:text="人名"/>
         </LinearLayout>
@@ -43,7 +45,7 @@
             android:layout_weight="2"
             android:layout_width="wrap_content"
             android:minWidth="42dp"
-            android:layout_height="76dp"
+            android:layout_height="80dp"
             android:orientation="vertical"
             android:layout_gravity="end"
             android:gravity="center_vertical">
@@ -58,6 +60,7 @@
     <View
         android:layout_width="match_parent"
         android:layout_marginLeft="16dp"
+        android:layout_marginRight="16dp"
         android:layout_height="0.5dp"
-        android:background="@color/blackDark"/>
+        android:background="@color/gray"/>
 </LinearLayout>

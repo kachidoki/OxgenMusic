@@ -6,9 +6,11 @@
 
     <color name="black">#282828</color>
     <color name="blackDark">#090909</color>
+    <color name="sysytemBlack">#484848</color>
     <color name="white">#ffffff</color>
     <color name="whiteA">#b4ffffff</color>
     <color name="gray">#626262</color>
+    <color name="textGray">#eeeeee</color>
     <color name="grayA">#64626262</color>
 
 </resources>

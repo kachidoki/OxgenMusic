@@ -10,7 +10,9 @@ import android.transition.Fade;
 import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,6 +54,8 @@ public class RankActivity extends BaseActivity {
     TextView listCountTime;
     @BindView(R.id.list_playall)
     ImageView listPlayall;
+    @BindView(R.id.loadFreshing)
+    LinearLayout freshing;
 
     AdapterPlaylist adapter = new AdapterPlaylist(RankActivity.this);
 
@@ -68,6 +72,7 @@ public class RankActivity extends BaseActivity {
 
         @Override
         public void onNext(List<Song> songs) {
+            freshing.setVisibility(View.GONE);
             adapter.setData(songs);
             countAllTime(songs);
             songList = songs;

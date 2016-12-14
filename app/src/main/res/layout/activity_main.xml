@@ -35,11 +35,14 @@
                     android:gravity="center_vertical"
                     android:layout_marginLeft="16dp"
                     android:id="@+id/main_more"
-                    style="@style/TextAppearance.AppCompat.Title"
+                    android:padding="2dp"
+                    android:textSize="18sp"
                     android:text="更多"/>
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
                 android:id="@+id/recyclerView_main"

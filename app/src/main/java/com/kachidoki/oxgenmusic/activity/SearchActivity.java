@@ -7,8 +7,10 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -42,6 +44,8 @@ public class SearchActivity extends BaseActivity {
     TextView searchSearch;
     @BindView(R.id.search_recycler)
     RecyclerView searchRecycler;
+    @BindView(R.id.loadFreshing)
+    LinearLayout freshing;
 
 
     AdapterSearch adapter = new AdapterSearch(SearchActivity.this);
@@ -52,10 +56,12 @@ public class SearchActivity extends BaseActivity {
         }
         @Override
         public void onError(Throwable e) {
+            freshing.setVisibility(View.GONE);
             Toast.makeText(SearchActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
         }
         @Override
         public void onNext(List<Song> songs) {
+            freshing.setVisibility(View.GONE);
             adapter.setData(songs);
         }
     };
@@ -67,6 +73,7 @@ public class SearchActivity extends BaseActivity {
         setContentView(R.layout.activity_search);
         ButterKnife.bind(this);
         setToolbar(true);
+        freshing.setVisibility(View.GONE);
 
         searchRecycler.setLayoutManager(new LinearLayoutManager(this));
         searchRecycler.setAdapter(adapter);
@@ -131,6 +138,7 @@ public class SearchActivity extends BaseActivity {
 
     @OnClick(R.id.search_search)
     void Search(){
+        freshing.setVisibility(View.VISIBLE);
         getSearchMusic();
         Utils.closeInputMethod(SearchActivity.this);
     }

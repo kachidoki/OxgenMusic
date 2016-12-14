@@ -8,7 +8,7 @@
         android:layout_width="64dp"
         android:layout_height="64dp"
         android:src="@drawable/cd_nomal_png"
-        android:id="@+id/nof_img" />
+        android:id="@+id/nof_nomal_img" />
     <LinearLayout
         android:layout_weight="12"
         android:layout_marginLeft="16dp"
@@ -20,7 +20,7 @@
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/nof_songname"
+            android:id="@+id/nof_nomal_songname"
             android:textColor="@color/white"
             android:text="歌名"/>
         <TextView
@@ -28,7 +28,7 @@
             android:gravity="center_vertical"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/nof_singer"
+            android:id="@+id/nof_nomal_singer"
             android:textColor="@color/white"
             android:text="歌名"/>
     </LinearLayout>
@@ -41,7 +41,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:padding="6dp"
-            android:id="@+id/nof_playpasue"
+            android:id="@+id/nof_nomal_playpasue"
             android:src="@drawable/icon_play_play"/>
     </LinearLayout>
     <LinearLayout
@@ -53,7 +53,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:padding="5dp"
-            android:id="@+id/nof_next"
+            android:id="@+id/nof_nomal_next"
             android:src="@drawable/icon_nextsong"/>
     </LinearLayout>
     <LinearLayout
@@ -65,7 +65,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:padding="5dp"
-            android:id="@+id/nof_stop"
+            android:id="@+id/nof_nomal_stop"
             android:src="@drawable/icon_stop"/>
     </LinearLayout>
 
