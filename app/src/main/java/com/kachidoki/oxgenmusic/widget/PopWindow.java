@@ -118,26 +118,23 @@ public class PopWindow extends PopupWindow {
                 break;
             case R.id.pop_playthis:
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
-                if (callname.equals("rank")){
-                    if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
-                        SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
-                        //重置队列
+
+                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
+                }
+
+                if (SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
+                    //设置index即可
+                    MusicManager.getMusicManager().setIndex(queueIndex);
+                    if (callname.equals("search")){
+                        //也要重置
                         MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
                         MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
-                        MusicManager.getMusicManager().setQueue(songList,queueIndex,false);
-                        Intent PlayNow = new Intent(context, PlayerService.class);
-                        PlayNow.putExtra("command", PlayerService.CommandPlayNow);
-                        context.startService(PlayNow);
-                    }else {
-                        //设置index即可
-                        MusicManager.getMusicManager().setIndex(queueIndex);
+                        MusicManager.getMusicManager().setQueue(songList,queueIndex,true);
                     }
                 }else {
-                    //search界面呼出pop
-                    if (!SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals("searchList")){
-                        SPUtils.put(context,Constants.nowQueue_sp,"searchList");
-                    }
                     //重置队列
+                    SPUtils.put(context,Constants.hotListname_sp,callname);
                     MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
                     MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
                     MusicManager.getMusicManager().setQueue(songList,queueIndex,false);

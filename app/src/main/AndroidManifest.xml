@@ -10,17 +10,13 @@
     <application
         android:name=".app.App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_oxgenmusic"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
             android:name=".activity.MainActivity"
             android:label="氧气云音乐">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity
             android:name=".activity.RankActivity"
@@ -37,6 +33,12 @@
             android:label="注册"/>
         <activity android:name=".activity.SearchActivity"
             android:label="搜索"/>
+        <activity android:name=".activity.LaunchActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
         <meta-data android:name="AA_DB_NAME" android:value="MyMusic.db" />
         <meta-data android:name="AA_DB_VERSION" android:value="1" />
         <meta-data android:name="AA_MODELS" android:value="com.kachidoki.oxgenmusic.model.bean.SongBean, com.kachidoki.oxgenmusic.model.bean.SongQueue" />

@@ -17,6 +17,7 @@ import android.transition.Visibility;
 import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -59,6 +60,10 @@ public class MyPlaylistActivity extends BaseActivity {
     ImageView mylistPlayall;
     @BindView(R.id.recyclerView_mylist)
     RecyclerView recyclerViewMylist;
+    @BindView(R.id.myList_backGround)
+    LinearLayout backGround;
+    @BindView(R.id.mylist_backImag)
+    ImageView backImg;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -104,6 +109,7 @@ public class MyPlaylistActivity extends BaseActivity {
         }else {
             cDview.pause();
         }
+        setBackGround();
     }
 
     @Override
@@ -124,6 +130,7 @@ public class MyPlaylistActivity extends BaseActivity {
                 }else {
                     cDview.pause();
                 }
+                setBackGround();
                 break;
         }
     }
@@ -174,5 +181,17 @@ public class MyPlaylistActivity extends BaseActivity {
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setActivityAnimation(){
         getWindow().setEnterTransition(new Slide(Gravity.RIGHT).setDuration(1000));
+    }
+
+    private void setBackGround(){
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            backGround.getBackground().setAlpha(225);
+            getToolbar().getBackground().setAlpha(225);
+            Glide.with(MyPlaylistActivity.this).load(MusicManager.getMusicManager().getNowSong().albumpic_big).into(backImg);
+        }else {
+            backGround.getBackground().setAlpha(255);
+            getToolbar().getBackground().setAlpha(255);
+        }
+
     }
 }

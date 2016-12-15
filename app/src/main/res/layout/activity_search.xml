@@ -47,6 +47,7 @@
             android:id="@+id/search_search"
             android:text="搜索"/>
     </LinearLayout>
+    <include layout="@layout/include_fail"/>
     <include layout="@layout/include_load"/>
     <android.support.v7.widget.RecyclerView
         android:layout_marginTop="8dp"

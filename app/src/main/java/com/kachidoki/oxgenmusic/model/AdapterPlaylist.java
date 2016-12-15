@@ -33,9 +33,11 @@ import butterknife.ButterKnife;
 public class AdapterPlaylist extends RecyclerView.Adapter {
     List<Song> songLists;
     public Context context;
+    public String callname;
 
-    public AdapterPlaylist(Context context){
+    public AdapterPlaylist(Context context,String callname){
         this.context = context;
+        this.callname = callname;
     }
 
     @Override
@@ -47,7 +49,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         PlayListViewHolder playListViewHolder = (PlayListViewHolder) holder;
-        playListViewHolder.setData(songLists.get(position),position,songLists);
+        playListViewHolder.setData(songLists.get(position),position,songLists,callname);
     }
 
     @Override
@@ -69,23 +71,32 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
         LinearLayout more;
         @BindView(R.id.number_list)
         TextView number;
+        @BindView(R.id.layout_list)
+        LinearLayout layout;
 
         public PlayListViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this,itemView);
         }
-        public void setData(final Song song,int i,List<Song> songs){
+        public void setData(final Song song,int i,List<Song> songs,String callname){
             singername.setText(song.singername);
             songname.setText(song.songname);
             number.setText((i+1)+"");
 
-            final PopWindow popWindow = new PopWindow(itemView.getContext(),song,songs,i,"rank");
+            final PopWindow popWindow = new PopWindow(itemView.getContext(),song,songs,i,callname);
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    popWindow.showAtLocation(itemView,Gravity.BOTTOM, 0, Utils.getNavigationBarHeight());
+                    popWindow.showAtLocation(itemView,Gravity.BOTTOM, 0, Utils.checkDeviceHasNavigationBar()?Utils.getNavigationBarHeight():0);
                 }
             });
+            layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    popWindow.showAtLocation(itemView,Gravity.BOTTOM, 0, Utils.checkDeviceHasNavigationBar()?Utils.getNavigationBarHeight():0);
+                }
+            });
+
         }
 
 

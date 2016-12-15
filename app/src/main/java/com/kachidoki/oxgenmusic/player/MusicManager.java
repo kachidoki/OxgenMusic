@@ -64,6 +64,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         play(getNowPlaying());
     }
 
+    public int getIndex(){
+        return mQueueIndex;
+    }
+
     public void setQueue(List<Song> queue,int index,boolean play){
         mQueue = queue;
         mQueueIndex = index;

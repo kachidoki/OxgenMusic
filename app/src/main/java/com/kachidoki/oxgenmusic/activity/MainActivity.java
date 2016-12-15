@@ -138,7 +138,6 @@ public class MainActivity extends BaseActivity {
         recyclerView.setAdapter(adapter);
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
         getHotSong();
-        initQueue();
     }
 
     @Override
@@ -186,14 +185,7 @@ public class MainActivity extends BaseActivity {
                 .into(target);
     }
 
-    //先放在这里之后放在launch
-    private void initQueue() {
-        if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)), 0, false);
-        } else  {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)), 0, false);
-        }
-    }
+
 
     @OnClick({R.id.rank1, R.id.rank2, R.id.rank3, R.id.rank4, R.id.rank5, R.id.rank6, R.id.rank7, R.id.rank8, R.id.main_more})
     void toRankActivity(View view) {

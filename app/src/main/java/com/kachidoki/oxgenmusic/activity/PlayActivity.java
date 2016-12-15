@@ -10,6 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -60,6 +61,10 @@ public class PlayActivity extends BaseActivity {
     TextView playNowTime;
     @BindView(R.id.play_allTime)
     TextView playAllTime;
+    @BindView(R.id.play_backGround)
+    LinearLayout backGround;
+    @BindView(R.id.play_backImag)
+    ImageView backImg;
 
     private SimpleDateFormat time = new SimpleDateFormat("m:ss");
     private Handler handler = new Handler();
@@ -153,7 +158,7 @@ public class PlayActivity extends BaseActivity {
                 playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
             }
         }
-
+        setBackGround();
         handler.post(updataProgress);
     }
 
@@ -241,6 +246,7 @@ public class PlayActivity extends BaseActivity {
                 } else {
                     playPlay.setImageResource(R.drawable.icon_play_pause);
                 }
+                setBackGround();
                 break;
         }
     }
@@ -251,5 +257,20 @@ public class PlayActivity extends BaseActivity {
                 .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
                 .asBitmap()
                 .into(target);
+    }
+
+    private void setBackGround(){
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            backGround.getBackground().setAlpha(235);
+            getToolbar().getBackground().setAlpha(235);
+            Glide.with(PlayActivity.this).load(MusicManager.getMusicManager().getNowSong().albumpic_big).into(backImg);
+            getToolbar().setTitle(MusicManager.getMusicManager().getNowSong().songname);
+            getToolbar().setSubtitle(MusicManager.getMusicManager().getNowSong().singername);
+        }else {
+            backGround.getBackground().setAlpha(255);
+            getToolbar().setTitle("正在播放");
+            getToolbar().setSubtitle("");
+        }
+
     }
 }

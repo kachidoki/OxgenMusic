@@ -30,8 +30,6 @@ public class App extends Application {
         Utils.initialize(this);
         ActiveAndroid.initialize(this);
         Bmob.initialize(this,Constants.BmobApi);
-        initQueueDB();
-        initSP();
     }
 
     @Override
@@ -40,34 +38,8 @@ public class App extends Application {
         ActiveAndroid.dispose();
     }
 
-    private void initQueueDB(){
-        Log.e("Test","--------initDB-------");
-        if (MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)==null){
-            Log.e("Test","mylist = null");
-            MusicDBHelper.getMusicDBHelper().saveQueue(new SongQueue(Constants.myList));
-            MusicManager.myList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList);
-        }else {
-            Log.e("Test","mylist is not null");
-            MusicManager.myList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList);
-        }
-        if (MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)==null){
-            MusicDBHelper.getMusicDBHelper().saveQueue(new SongQueue(Constants.hotList));
-            MusicManager.hotList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList);
-        }else {
-            MusicManager.hotList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList);
-        }
-    }
 
-    private void initSP(){
-        if (!SPUtils.contains(getApplicationContext(),Constants.nowQueue_sp)){
-            SPUtils.put(getApplicationContext(),Constants.nowQueue_sp,Constants.myList);
-        }
-        if (!SPUtils.contains(getApplicationContext(),Constants.nowIndex_sp)){
-            SPUtils.put(getApplicationContext(),Constants.nowIndex_sp,0);
-        }
-        if (!SPUtils.contains(getApplicationContext(),Constants.nowTime_sp)){
-            SPUtils.put(getApplicationContext(),Constants.nowTime_sp,0);
-        }
-    }
+
+
 
 }

@@ -4,7 +4,8 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="128dp"
-    android:background="@color/blackDark">
+    android:background="@color/blackDark"
+    >
     <ImageView
         android:layout_width="128dp"
         android:layout_height="128dp"
@@ -15,7 +16,7 @@
         android:layout_height="128dp"
         android:orientation="vertical">
         <LinearLayout
-            android:layout_weight="2"
+            android:layout_weight="3"
             android:layout_width="match_parent"
             android:orientation="horizontal"
             android:layout_height="0dp">
@@ -26,22 +27,23 @@
                 android:layout_height="match_parent"
                 android:orientation="vertical">
                 <TextView
-                    android:layout_marginLeft="16dp"
-                    android:gravity="center_vertical"
+                    android:layout_marginLeft="12dp"
+                    android:gravity="bottom"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
-                    android:text="songName"
+                    android:text="songname"
+                    android:textSize="16sp"
                     android:id="@+id/nof_songname"/>
                 <TextView
-                    android:layout_marginLeft="16dp"
+                    android:layout_marginLeft="12dp"
                     android:gravity="center_vertical"
                     android:layout_weight="1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textColor="@color/white"
-                    android:text="songerName"
+                    android:textColor="@color/textGray"
+                    android:text="singer"
                     android:id="@+id/nof_singer"/>
 
             </LinearLayout>
@@ -57,13 +59,13 @@
                     android:layout_height="42dp"
                     android:padding="8dp"
                     android:id="@+id/nof_stop"
-                    android:src="@drawable/icon_stop"
+                    android:src="@drawable/nof_close"
                     />
             </LinearLayout>
 
         </LinearLayout>
         <LinearLayout
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:orientation="horizontal">
@@ -80,16 +82,15 @@
                     android:src="@drawable/icon_previous"
                     />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_weight="1"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:gravity="center">
                 <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="36dp"
-                    android:padding="6dp"
+                    android:layout_width="42dp"
+                    android:layout_height="42dp"
+                    android:padding="8dp"
                     android:id="@+id/nof_playpasue"
                     android:src="@drawable/icon_play_gray"
                     />

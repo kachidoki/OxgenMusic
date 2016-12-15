@@ -1,6 +1,7 @@
 package com.kachidoki.oxgenmusic.model;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.activity.RankActivity;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 
 import java.util.List;
@@ -67,6 +69,14 @@ public class AdapterMainactivity extends RecyclerView.Adapter {
         public void setData(final Song song){
             Glide.with(itemView.getContext()).load(song.albumpic_big).into(img);
             name.setText(song.songname);
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent intent = new Intent(itemView.getContext(), RankActivity.class);
+                    intent.putExtra("topid", "26");
+                    itemView.getContext().startActivity(intent);
+                }
+            });
         }
     }
 

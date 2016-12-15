@@ -46,7 +46,8 @@ public class SearchActivity extends BaseActivity {
     RecyclerView searchRecycler;
     @BindView(R.id.loadFreshing)
     LinearLayout freshing;
-
+    @BindView(R.id.loadFail)
+    LinearLayout loadFail;
 
     AdapterSearch adapter = new AdapterSearch(SearchActivity.this);
 
@@ -57,6 +58,7 @@ public class SearchActivity extends BaseActivity {
         @Override
         public void onError(Throwable e) {
             freshing.setVisibility(View.GONE);
+            loadFail.setVisibility(View.VISIBLE);
             Toast.makeText(SearchActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
         }
         @Override

@@ -86,7 +86,7 @@ public class AdapterMylist extends RecyclerView.Adapter {
             more.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    popWindow.showAtLocation(itemView, Gravity.BOTTOM, 0, Utils.getNavigationBarHeight());
+                    popWindow.showAtLocation(itemView, Gravity.BOTTOM, 0, Utils.checkDeviceHasNavigationBar()?Utils.getNavigationBarHeight():0);
                 }
             });
         }

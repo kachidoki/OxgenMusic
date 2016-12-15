@@ -16,6 +16,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
@@ -24,9 +25,13 @@ import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
+import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +61,10 @@ public class RankActivity extends BaseActivity {
     ImageView listPlayall;
     @BindView(R.id.loadFreshing)
     LinearLayout freshing;
+    @BindView(R.id.loadFail)
+    LinearLayout fail;
 
-    AdapterPlaylist adapter = new AdapterPlaylist(RankActivity.this);
+    AdapterPlaylist adapter;
 
     Observer<List<Song>> observer = new Observer<List<Song>>() {
         @Override
@@ -68,6 +75,8 @@ public class RankActivity extends BaseActivity {
         @Override
         public void onError(Throwable e) {
             Toast.makeText(RankActivity.this, "网络连接失败", Toast.LENGTH_SHORT).show();
+            freshing.setVisibility(View.GONE);
+            fail.setVisibility(View.VISIBLE);
         }
 
         @Override
@@ -89,8 +98,10 @@ public class RankActivity extends BaseActivity {
 
         setToolbar(true);
 
+        adapter = new AdapterPlaylist(RankActivity.this,getIntent().getStringExtra("topid"));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
 
         setListImg(getIntent().getStringExtra("topid"));
         getRankMusic();
@@ -156,11 +167,19 @@ public class RankActivity extends BaseActivity {
         if (SPUtils.get(this,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
             SPUtils.put(this,Constants.nowQueue_sp,Constants.hotList);
         }
-        if (songList!=null){
-            MusicManager.getMusicManager().setQueue(songList,0,true);
-            MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
-            MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
+        if (!SPUtils.get(this,Constants.hotListname_sp,"noname").equals(getIntent().getStringExtra("topid"))){
+            SPUtils.put(this,Constants.hotListname_sp,getIntent().getStringExtra("topid"));
+            if (songList!=null){
+                MusicManager.getMusicManager().setQueue(songList,0,true);
+                MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
+                MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
+            }
+        }else {
+            if (songList!=null){
+                MusicManager.getMusicManager().setQueue(songList,0,true);
+            }
         }
+
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
