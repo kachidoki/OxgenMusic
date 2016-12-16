@@ -1,9 +1,12 @@
 package com.kachidoki.oxgenmusic.activity;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
@@ -11,6 +14,7 @@ import android.transition.Slide;
 import android.transition.TransitionInflater;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,6 +32,7 @@ import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,6 +68,12 @@ public class RankActivity extends BaseActivity {
     LinearLayout freshing;
     @BindView(R.id.loadFail)
     LinearLayout fail;
+    @BindView(R.id.list_backImag)
+    ImageView backImag;
+    @BindView(R.id.list_backGround)
+    LinearLayout backGround;
+    @BindView(R.id.list_fab)
+    FloatingActionButton fab;
 
     AdapterPlaylist adapter;
 
@@ -95,6 +106,7 @@ public class RankActivity extends BaseActivity {
         setContentView(R.layout.activity_playlist);
         setActivityAnimation();
         ButterKnife.bind(this);
+        EventBus.getDefault().register(this);
 
         setToolbar(true);
 
@@ -102,10 +114,36 @@ public class RankActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
 
+        new Handler().postDelayed(new Runnable(){
+            public void run() {
+                setBackGround();
+            }
+        }, 400);
 
         setListImg(getIntent().getStringExtra("topid"));
         getRankMusic();
     }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe
+    public void onEvent(PlayEvent playEvent){
+        switch (playEvent.getAction()) {
+            case CHANGE:
+                if (MusicManager.getMusicManager().getIsPlaying()){
+                    fab.setImageResource(R.mipmap.ic_pause_black_24dp);
+                }else {
+                    fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
+                }
+                setBackGround();
+                break;
+        }
+    }
+
 
     private void getRankMusic() {
         unsubscribe();
@@ -182,10 +220,29 @@ public class RankActivity extends BaseActivity {
 
     }
 
+    @OnClick(R.id.list_fab)
+    void play(){
+        Intent play = new Intent(this, PlayerService.class);
+        play.putExtra("command", PlayerService.CommandPlay);
+        startService(play);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setActivityAnimation(){
         Fade fade = (Fade) TransitionInflater.from(this).inflateTransition(R.transition.activity_fade);
         getWindow().setEnterTransition(fade);
+    }
+
+    private void setBackGround(){
+        if (MusicManager.getMusicManager().getNowSong()!=null){
+            backGround.getBackground().setAlpha(230);
+            getToolbar().getBackground().setAlpha(230);
+            Glide.with(RankActivity.this).load(MusicManager.getMusicManager().getNowSong().albumpic_big).into(backImag);
+        }else {
+            backGround.getBackground().setAlpha(255);
+            getToolbar().getBackground().setAlpha(255);
+        }
+
     }
 
 }

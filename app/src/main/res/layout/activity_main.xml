@@ -25,7 +25,7 @@
                     android:layout_marginLeft="16dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
-                    android:padding="2dp"
+                    android:padding="3dp"
                     android:src="@drawable/icon_hot_main"/>
                 <TextView
                     android:layout_marginLeft="3dp"
@@ -33,6 +33,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
                     android:gravity="center_vertical"
+                    android:textSize="18sp"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:text="今日热歌"/>
                 <TextView
@@ -43,7 +44,7 @@
                     android:layout_marginLeft="16dp"
                     android:id="@+id/main_more"
                     android:padding="2dp"
-                    android:textSize="18sp"
+                    android:textSize="17sp"
                     android:text="更多"/>
             </LinearLayout>
 
@@ -71,6 +72,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
                     android:gravity="center_vertical"
+                    android:textSize="18sp"
                     style="@style/TextAppearance.AppCompat.Title"
                     android:text="歌曲榜单"/>
             </LinearLayout>

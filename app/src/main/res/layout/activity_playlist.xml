@@ -1,18 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:background="@color/blackDark"
-    android:id="@+id/list_backGround"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-    <include layout="@layout/include_toolbar"/>
-    <include layout="@layout/activity_playlist_cd_view"/>
-    <include layout="@layout/include_load"/>
-    <include layout="@layout/include_fail"/>
-    <android.support.v7.widget.RecyclerView
+    <ImageView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerView_playlist"
-        />
-</LinearLayout>
+        android:scaleType="centerCrop"
+        android:id="@+id/list_backImag"/>
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/list_backGround"
+        android:background="@color/blackDark">
+        <include layout="@layout/include_toolbar"/>
+        <include layout="@layout/activity_playlist_cd_view"/>
+        <include layout="@layout/include_load"/>
+        <include layout="@layout/include_fail"/>
+        <android.support.v7.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:id="@+id/recyclerView_playlist"
+            />
+    </LinearLayout>
+    <android.support.design.widget.FloatingActionButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|right"
+        android:id="@+id/list_fab"
+        android:layout_margin="32dp"
+        android:src="@mipmap/ic_play_arrow_black_24dp"
+        app:layout_behavior="com.kachidoki.oxgenmusic.widget.ScrollAwareFABBehavior"
+        app:layout_anchor="@id/recyclerView_playlist"
+        app:layout_anchorGravity="bottom|right|end"/>
+</android.support.design.widget.CoordinatorLayout>

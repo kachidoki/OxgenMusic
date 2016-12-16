@@ -296,7 +296,7 @@ public class MainActivity extends BaseActivity {
                         new PrimaryDrawerItem().withName("我的列表").withIcon(R.drawable.drawer_list).withIdentifier(2),
                         new PrimaryDrawerItem().withName("正在播放").withIcon(R.drawable.drawer_play).withIdentifier(3),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
+//                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
                         new SecondaryDrawerItem().withName("关于").withIcon(R.drawable.drawer_about).withIdentifier(5)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -311,7 +311,7 @@ public class MainActivity extends BaseActivity {
                             } else if (drawerItem.getIdentifier() == 4) {
 
                             } else if (drawerItem.getIdentifier() == 5) {
-
+                                intent = new Intent(MainActivity.this, AboutActivity.class);
                             } else if (drawerItem.getIdentifier() == 6) {
                                 Toast.makeText(MainActivity.this, "同步数据", Toast.LENGTH_SHORT).show();
                                 MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this, MusicManager.myList, AccountModel.getAccountModel().getAccount().getObjectId());

@@ -35,6 +35,15 @@ repositories {
     maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
+configurations {
+    all*.exclude  module: 'gson'
+    all*.exclude  module: 'okhttp'
+    all*.exclude  module: 'rxandroid'
+    all*.exclude  module: 'rxjava'
+
+}
+
+
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     testCompile 'junit:junit:4.12'

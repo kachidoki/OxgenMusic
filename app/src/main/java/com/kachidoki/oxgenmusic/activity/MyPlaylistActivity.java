@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.transition.Fade;
@@ -32,6 +33,7 @@ import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.MusicManager;
+import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
 
@@ -64,6 +66,8 @@ public class MyPlaylistActivity extends BaseActivity {
     LinearLayout backGround;
     @BindView(R.id.mylist_backImag)
     ImageView backImg;
+    @BindView(R.id.mylist_fab)
+    FloatingActionButton fab;
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override
@@ -106,9 +110,12 @@ public class MyPlaylistActivity extends BaseActivity {
 
         if (MusicManager.getMusicManager().getIsPlaying()){
             cDview.start();
+            fab.setImageResource(R.mipmap.ic_pause_black_24dp);
         }else {
             cDview.pause();
+            fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
         }
+
         setBackGround();
     }
 
@@ -127,8 +134,10 @@ public class MyPlaylistActivity extends BaseActivity {
                 }
                 if (MusicManager.getMusicManager().getIsPlaying()){
                     cDview.start();
+                    fab.setImageResource(R.mipmap.ic_pause_black_24dp);
                 }else {
                     cDview.pause();
+                    fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
                 }
                 setBackGround();
                 break;
@@ -178,6 +187,14 @@ public class MyPlaylistActivity extends BaseActivity {
         startActivity(new Intent(this,PlayActivity.class));
     }
 
+
+    @OnClick(R.id.mylist_fab)
+    void play(){
+        Intent play = new Intent(this, PlayerService.class);
+        play.putExtra("command", PlayerService.CommandPlay);
+        startService(play);
+    }
+
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     private void setActivityAnimation(){
         getWindow().setEnterTransition(new Slide(Gravity.RIGHT).setDuration(1000));
@@ -185,8 +202,8 @@ public class MyPlaylistActivity extends BaseActivity {
 
     private void setBackGround(){
         if (MusicManager.getMusicManager().getNowSong()!=null){
-            backGround.getBackground().setAlpha(225);
-            getToolbar().getBackground().setAlpha(225);
+            backGround.getBackground().setAlpha(230);
+            getToolbar().getBackground().setAlpha(230);
             Glide.with(MyPlaylistActivity.this).load(MusicManager.getMusicManager().getNowSong().albumpic_big).into(backImg);
         }else {
             backGround.getBackground().setAlpha(255);

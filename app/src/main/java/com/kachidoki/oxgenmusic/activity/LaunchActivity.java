@@ -83,13 +83,10 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
     private void initQueueDB(){
-        Log.e("Test","--------initDB-------");
         if (MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)==null){
-            Log.e("Test","mylist = null");
             MusicDBHelper.getMusicDBHelper().saveQueue(new SongQueue(Constants.myList));
             MusicManager.myList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList);
         }else {
-            Log.e("Test","mylist is not null");
             MusicManager.myList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList);
         }
         if (MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)==null){

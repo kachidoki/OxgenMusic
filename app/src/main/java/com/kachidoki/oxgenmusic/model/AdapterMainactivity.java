@@ -69,6 +69,7 @@ public class AdapterMainactivity extends RecyclerView.Adapter {
         public void setData(final Song song){
             Glide.with(itemView.getContext()).load(song.albumpic_big).into(img);
             name.setText(song.songname);
+            name.getBackground().setAlpha(230);
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
