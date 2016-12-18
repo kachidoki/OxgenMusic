@@ -11,11 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.transition.Fade;
 import android.transition.Slide;
-import android.transition.TransitionInflater;
-import android.transition.Visibility;
-import android.util.Log;
 import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -28,7 +24,6 @@ import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.AdapterMylist;
-import com.kachidoki.oxgenmusic.model.AdapterPlaylist;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
@@ -40,7 +35,6 @@ import com.kachidoki.oxgenmusic.widget.CDview;
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;

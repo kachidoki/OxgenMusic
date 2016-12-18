@@ -22,7 +22,6 @@ import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
-import com.kachidoki.oxgenmusic.player.MusicManager.PlayMode;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.widget.CDview;
 

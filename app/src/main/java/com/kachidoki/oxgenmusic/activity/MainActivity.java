@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -32,7 +33,6 @@ import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
-import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -296,7 +296,7 @@ public class MainActivity extends BaseActivity {
                         new PrimaryDrawerItem().withName("我的列表").withIcon(R.drawable.drawer_list).withIdentifier(2),
                         new PrimaryDrawerItem().withName("正在播放").withIcon(R.drawable.drawer_play).withIdentifier(3),
                         new DividerDrawerItem(),
-//                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
+                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
                         new SecondaryDrawerItem().withName("关于").withIcon(R.drawable.drawer_about).withIdentifier(5)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -309,14 +309,17 @@ public class MainActivity extends BaseActivity {
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(MainActivity.this, PlayActivity.class);
                             } else if (drawerItem.getIdentifier() == 4) {
-
+                                Toast.makeText(MainActivity.this,"其他功能等待更新哦",Toast.LENGTH_SHORT).show();
                             } else if (drawerItem.getIdentifier() == 5) {
                                 intent = new Intent(MainActivity.this, AboutActivity.class);
                             } else if (drawerItem.getIdentifier() == 6) {
                                 Toast.makeText(MainActivity.this, "同步数据", Toast.LENGTH_SHORT).show();
                                 MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this, MusicManager.myList, AccountModel.getAccountModel().getAccount().getObjectId());
-//                                MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
-//                                Log.e("Test","DBQueue size = "+MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)).size());
+                                new Handler().postDelayed(new Runnable(){
+                                    public void run() {
+                                        MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);
+                                    }
+                                }, 1000);
                             } else if (drawerItem.getIdentifier() == 7) {
                                 AccountModel.getAccountModel().logout();
                                 setProfile();
