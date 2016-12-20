@@ -31,6 +31,7 @@ import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
+import com.kachidoki.oxgenmusic.widget.PopWindowMylist;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -45,7 +46,6 @@ import butterknife.OnClick;
  * Created by mayiwei on 16/12/1.
  */
 public class MyPlaylistActivity extends BaseActivity {
-    AdapterMylist adapter = new AdapterMylist(MyPlaylistActivity.this);
     @BindView(R.id.mylist_cdview)
     CDview cDview;
     @BindView(R.id.mylist_count)
@@ -62,6 +62,13 @@ public class MyPlaylistActivity extends BaseActivity {
     ImageView backImg;
     @BindView(R.id.mylist_fab)
     FloatingActionButton fab;
+
+    AdapterMylist adapter = new AdapterMylist(MyPlaylistActivity.this, new PopWindowMylist.OnChange() {
+        @Override
+        public void Callback(int i) {
+            countAllTime();
+        }
+    });
 
     private SimpleTarget target = new SimpleTarget<Bitmap>() {
         @Override

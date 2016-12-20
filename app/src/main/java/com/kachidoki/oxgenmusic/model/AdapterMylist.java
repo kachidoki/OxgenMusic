@@ -27,17 +27,23 @@ public class AdapterMylist extends RecyclerView.Adapter {
     List<Song> songLists;
     public Context context;
 
+
+
+    private PopWindowMylist.OnChange countTime;
+
+    public AdapterMylist(Context context, PopWindowMylist.OnChange onChange){
+        this.context = context;
+        this.countTime = onChange;
+    }
+
     private PopWindowMylist.OnChange onChange = new PopWindowMylist.OnChange() {
         @Override
         public void Callback(int i) {
             songLists.remove(i);
             notifyDataSetChanged();
+            countTime.Callback(0);
         }
     };
-
-    public AdapterMylist(Context context){
-        this.context = context;
-    }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
