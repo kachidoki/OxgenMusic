@@ -72,6 +72,7 @@ public class PlayerService extends Service {
         super.onDestroy();
         stopForeground(true);
         SPUtils.put(PlayerService.this,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+        MusicManager.getMusicManager().setIsfirst(true);
     }
 
 

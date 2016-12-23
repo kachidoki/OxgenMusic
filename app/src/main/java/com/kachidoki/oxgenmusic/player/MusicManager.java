@@ -40,6 +40,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
 
     public MusicManager(){
+        Log.e("Test","MusicManager构造 isFirst = "+isfirst);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
@@ -93,20 +94,19 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     public void deleteSong(int index,boolean isPlaying,boolean isMylist){
         mQueue.remove(index);
         if (isMylist){
-            if (isPlaying&&(mQueueIndex==index)){
-                if (!(mQueue.size()<1)){
-                    if (index+1>mQueue.size()){
-                        mQueueIndex = mQueueIndex-1;
-                        play(getNowPlaying());
-                    }else {
-                        play(getNowPlaying());
-                    }
+            if (!(mQueue.size()<1)){
+                if (!(index+1<mQueue.size())){
+                    mQueueIndex = mQueueIndex-1;
+                    if (isPlaying) play(getNowPlaying());
                 }else {
-                    mediaPlayer.stop();
-                    callBack.OnChange();
+                    if (isPlaying) play(getNowPlaying());
                 }
+            }else {
+                mediaPlayer.stop();
+                callBack.OnChange();
             }
         }
+        Log.e("Test","deleteSong index = "+mQueueIndex);
     }
 
     public List<Song> getmQueue(){
@@ -141,6 +141,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public boolean getIsfirst(){
         return isfirst;
+    }
+
+    public void setIsfirst(boolean isFirst){
+        this.isfirst  = isFirst;
     }
 
     public boolean getIsReady(){
@@ -232,6 +236,8 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     private void play(Song song){
         if (song!=null){
             isfirst = false;
+            Log.e("Test","play isfirst = "+isfirst);
+            Log.e("Test","play index = "+mQueueIndex);
             try {
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(song.url);

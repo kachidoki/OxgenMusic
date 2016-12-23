@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
@@ -32,10 +33,17 @@ public class LaunchActivity extends AppCompatActivity {
         //设置当前窗体为全屏显示
         window.setFlags(flag, flag);
         setContentView(R.layout.activity_launch);
-        initQueueDB();
-        initQueue();
-        initSP();
-        skipActivity(1500);
+        if (MusicManager.getMusicManager().getIsfirst()){
+            Log.e("Test","LaunchOnCreate isFirst = "+MusicManager.getMusicManager().getIsfirst());
+            initQueueDB();
+            initQueue();
+            initSP();
+            skipActivity(1500);
+        }else {
+            Log.e("Test","LaunchOnCreate isFirst = "+MusicManager.getMusicManager().getIsfirst());
+            skipActivity(1000);
+        }
+
     }
 
 
@@ -49,7 +57,6 @@ public class LaunchActivity extends AppCompatActivity {
 
             @Override
             public void run() {
-
                 Intent intent = new Intent(LaunchActivity.this, MainActivity.class);
                 startActivity(intent);
                 LaunchActivity.this.finish();
@@ -57,14 +64,15 @@ public class LaunchActivity extends AppCompatActivity {
         }, sencond);
     }
 
-    //先放在这里之后放在launch
     private void initQueue() {
-        if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),
-                    (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
-        } else  {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)),
-                    (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
+        if (MusicManager.getMusicManager().getIsfirst()){
+            if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
+                MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),
+                        (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
+            } else  {
+                MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.hotList)),
+                        (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
+            }
         }
     }
     private void initSP(){

@@ -356,7 +356,8 @@ public class MainActivity extends BaseActivity {
             }
         } else if (drawer.getDrawerItems().size() == 8) {
             if (!AccountModel.getAccountModel().isLogin()) {
-                drawer.removeItemByPosition(5);
+                drawer.removeItem(6);
+                drawer.removeItem(7);
             }
         }
     }
