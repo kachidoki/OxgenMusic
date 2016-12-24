@@ -92,14 +92,15 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void deleteSong(int index,boolean isPlaying,boolean isMylist){
+        boolean deleteIsPlaying = index==mQueueIndex;
         mQueue.remove(index);
         if (isMylist){
             if (!(mQueue.size()<1)){
-                if (!(index+1<mQueue.size())){
+                if (!(mQueueIndex+1<mQueue.size())){
                     mQueueIndex = mQueueIndex-1;
-                    if (isPlaying) play(getNowPlaying());
+                    if (isPlaying&&deleteIsPlaying) play(getNowPlaying());
                 }else {
-                    if (isPlaying) play(getNowPlaying());
+                    if (isPlaying&&deleteIsPlaying) play(getNowPlaying());
                 }
             }else {
                 mediaPlayer.stop();

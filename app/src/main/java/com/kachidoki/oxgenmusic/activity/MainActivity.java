@@ -98,7 +98,7 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onLoadFailed(Exception e, Drawable errorDrawable) {
             super.onLoadFailed(e, errorDrawable);
-            cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
+            cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal_png));
         }
     };
 

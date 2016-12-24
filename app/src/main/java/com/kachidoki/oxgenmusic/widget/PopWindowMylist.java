@@ -91,6 +91,9 @@ public class PopWindowMylist extends PopupWindow {
                 MusicManager.getMusicManager().deleteSong(index,MusicManager.getMusicManager().getIsPlaying(),SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList));
                 MusicDBHelper.getMusicDBHelper().deleteSingleSong(song);
                 onChange.Callback(index);
+                if (MusicManager.getMusicManager().getIsfirst()&&SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    SPUtils.put(context,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+                }
                 dismiss();
                 break;
             case R.id.popMy_cancel:
