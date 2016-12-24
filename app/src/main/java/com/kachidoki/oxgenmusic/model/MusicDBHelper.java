@@ -24,6 +24,10 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
+import rx.Observable;
+import rx.Subscriber;
+import rx.functions.Action1;
+import rx.functions.Func1;
 
 
 /**
@@ -120,6 +124,9 @@ public class MusicDBHelper {
         }
         return null;
     }
+
+
+    //云
 
     public List<BmobObject> ConvertQueueToYun(SongQueue queue,String userid){
         List<BmobObject> songs = new ArrayList<>();
@@ -225,13 +232,114 @@ public class MusicDBHelper {
 
 
     public void syncFromYun(Context context,SongQueue queue,String userid){
-        if (queue!=null&&queue.songs().size()!=0){
-            findAndDeleteFromYun(userid);
-            saveToYun(context,ConvertQueueToYun(queue,userid),userid);
+        if (userid!=null&&!userid.equals("")){
+            if (queue!=null&&queue.songs().size()!=0){
+                findAndDeleteFromYun(userid);
+                saveToYun(context,ConvertQueueToYun(queue,userid),userid);
+            }else {
+                findAndSaveFromYun(userid,queue);
+                Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
+            }
         }else {
-            findAndSaveFromYun(userid,queue);
-            Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
+            Toast.makeText(context,"无效的用户信息",Toast.LENGTH_SHORT).show();
         }
+
+    }
+
+
+    public void syncYun(Context context,SongQueue queue,String userid){
+        if (userid!=null&&!userid.equals("")){
+            if (queue!=null&&queue.songs().size()!=0){
+                QueryAndDeleteFromYun(context,userid,queue);
+            }else {
+                QueryAndSaveFromYun(context,userid,queue);
+            }
+        }else {
+            Toast.makeText(context,"无效的用户信息",Toast.LENGTH_SHORT).show();
+        }
+    }
+
+
+    public Observable<List<SongYun>> QueryYun(String userId){
+        BmobQuery<SongYun> query = new BmobQuery<>();
+        query.addWhereEqualTo("userId",userId);
+        return query.findObjectsObservable(SongYun.class);
+    }
+
+    public void QueryAndSaveFromYun(final Context context, String userId, final SongQueue queue){
+        QueryYun(userId).subscribe(new Subscriber<List<SongYun>>() {
+            @Override
+            public void onCompleted() {
+                Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                Log.e("bmob","失败："+throwable.getMessage());
+            }
+
+            @Override
+            public void onNext(List<SongYun> songYuns) {
+                saveListSongYun(songYuns,queue);
+            }
+        });
+    }
+
+
+    public void QueryAndDeleteFromYun(final Context context,final String userId, final SongQueue queue){
+        QueryYun(userId).concatMap(new Func1<List<SongYun>,Observable<List<BatchResult>>>(){
+            @Override
+            public Observable<List<BatchResult>> call(List<SongYun> songYuns) {
+                List<BmobObject> deleteList = new ArrayList<>();
+                for (SongYun songYun:songYuns){
+                    deleteList.add(songYun);
+                }
+                return new BmobBatch().deleteBatch(deleteList).doBatchObservable();
+            }
+        }).doOnNext(new Action1<List<BatchResult>>() {
+            @Override
+            public void call(List<BatchResult> batchResults) {
+                for (int i=0;i<batchResults.size();i++){
+                    BatchResult result = batchResults.get(i);
+                    BmobException ex =result.getError();
+                    if(ex!=null){
+                        Log.e("Bomb","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
+                    }
+                }
+            }
+        }).concatMap(new Func1<List<BatchResult>, Observable<List<BatchResult>>>() {
+            @Override
+            public Observable<List<BatchResult>> call(List<BatchResult> batchResults) {
+                return new BmobBatch().insertBatch(ConvertQueueToYun(queue,userId)).doBatchObservable();
+            }
+        }).doOnNext(new Action1<List<BatchResult>>() {
+            @Override
+            public void call(List<BatchResult> batchResults) {
+                for (int i=0;i<batchResults.size();i++){
+                    BatchResult result = batchResults.get(i);
+                    BmobException ex =result.getError();
+                    if(ex!=null){
+                        Log.e("Bomb","第"+i+"个数据批量上传失败："+ex.getMessage()+","+ex.getErrorCode());
+                    }
+                }
+            }
+        }).subscribe(new Subscriber<List<BatchResult>>() {
+            @Override
+            public void onCompleted() {
+                Toast.makeText(context,"已上传数据到云端",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+                Toast.makeText(context,"上传数据失败",Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onNext(List<BatchResult> batchResults) {
+
+            }
+        });
     }
 
 

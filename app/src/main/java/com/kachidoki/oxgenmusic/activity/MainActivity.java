@@ -312,9 +312,9 @@ public class MainActivity extends BaseActivity {
                                 Toast.makeText(MainActivity.this,"其他功能等待更新哦",Toast.LENGTH_SHORT).show();
                             } else if (drawerItem.getIdentifier() == 5) {
                                 intent = new Intent(MainActivity.this, AboutActivity.class);
-                            } else if (drawerItem.getIdentifier() == 6) {
+                            } else if (drawerItem.getIdentifier()== 6) {
                                 Toast.makeText(MainActivity.this, "同步数据", Toast.LENGTH_SHORT).show();
-                                MusicDBHelper.getMusicDBHelper().syncFromYun(MainActivity.this, MusicManager.myList, AccountModel.getAccountModel().getAccount().getObjectId());
+                                MusicDBHelper.getMusicDBHelper().syncYun(MainActivity.this, MusicManager.myList, AccountModel.getAccountModel().getAccount().getObjectId());
                                 new Handler().postDelayed(new Runnable(){
                                     public void run() {
                                         MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),0,false);

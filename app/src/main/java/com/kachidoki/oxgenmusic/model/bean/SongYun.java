@@ -1,5 +1,7 @@
 package com.kachidoki.oxgenmusic.model.bean;
 
+import android.support.annotation.NonNull;
+
 import cn.bmob.v3.BmobObject;
 
 /**
@@ -14,6 +16,7 @@ public class SongYun extends BmobObject {
     public String singername;
     public int albumid;
     public String queue;
+    @NonNull
     public String userId;
     public SongYun(){}
     public SongYun(String songName,int second,int singerId,String albumpic,String Url,String singerName,int albumId,String que,String userid){
