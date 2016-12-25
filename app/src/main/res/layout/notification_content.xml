@@ -21,6 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/nof_nomal_songname"
+            android:textSize="15sp"
             android:textColor="@color/white"
             android:text="歌名"/>
         <TextView
@@ -29,8 +30,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/nof_nomal_singer"
-            android:textColor="@color/white"
-            android:text="歌名"/>
+            android:text="歌手名"/>
     </LinearLayout>
     <LinearLayout
         android:layout_weight="1"
@@ -66,7 +66,7 @@
             android:layout_height="36dp"
             android:padding="5dp"
             android:id="@+id/nof_nomal_stop"
-            android:src="@drawable/icon_stop"/>
+            android:src="@drawable/nof_close"/>
     </LinearLayout>
 
 </LinearLayout>

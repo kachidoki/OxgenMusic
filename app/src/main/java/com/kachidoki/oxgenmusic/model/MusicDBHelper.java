@@ -7,7 +7,6 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
-import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.bean.SongQueue;
@@ -146,105 +145,105 @@ public class MusicDBHelper {
     }
 
 
-    public void saveToYun(final Context context, List<BmobObject> songYuns,String userId){
-        if (songYuns!=null){
-            new BmobBatch().insertBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if(e==null){
-                        for(int i=0;i<list.size();i++){
-                            BatchResult result = list.get(i);
-                            BmobException ex =result.getError();
-                            if(ex==null){
-                                Log.e("BMOBsava","第"+i+"个数据批量添加成功："+result.getCreatedAt()+","+result.getObjectId()+","+result.getUpdatedAt());
-                            }else{
-                                Log.e("BMOBsava","第"+i+"个数据批量添加失败："+ex.getMessage()+","+ex.getErrorCode());
-                            }
-                            Toast.makeText(context,"同步成功",Toast.LENGTH_SHORT).show();
-                        }
-                    }else{
-                        Log.i("BMOBsava","失败："+e.getMessage()+","+e.getErrorCode());
-                    }
-                }
-            });
-        }
-    }
+//    public void saveToYun(final Context context, List<BmobObject> songYuns,String userId){
+//        if (songYuns!=null){
+//            new BmobBatch().insertBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
+//                @Override
+//                public void done(List<BatchResult> list, BmobException e) {
+//                    if(e==null){
+//                        for(int i=0;i<list.size();i++){
+//                            BatchResult result = list.get(i);
+//                            BmobException ex =result.getError();
+//                            if(ex==null){
+//                                Log.e("BMOBsava","第"+i+"个数据批量添加成功："+result.getCreatedAt()+","+result.getObjectId()+","+result.getUpdatedAt());
+//                            }else{
+//                                Log.e("BMOBsava","第"+i+"个数据批量添加失败："+ex.getMessage()+","+ex.getErrorCode());
+//                            }
+//                            Toast.makeText(context,"同步成功",Toast.LENGTH_SHORT).show();
+//                        }
+//                    }else{
+//                        Log.i("BMOBsava","失败："+e.getMessage()+","+e.getErrorCode());
+//                    }
+//                }
+//            });
+//        }
+//    }
 
-    public void deleteFromYun(List<BmobObject> songYuns){
-        if (songYuns!=null){
-            new BmobBatch().deleteBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
-                @Override
-                public void done(List<BatchResult> list, BmobException e) {
-                    if(e==null){
-                        for(int i=0;i<list.size();i++){
-                            BatchResult result = list.get(i);
-                            BmobException ex =result.getError();
-                            if(ex==null){
-                                Log.e("BMOBdelete","第"+i+"个数据批量删除成功");
-                            }else{
-                                Log.e("BMOBdelete","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
-                            }
-                        }
-                    }else{
-                        Log.i("BMOBdelete","失败："+e.getMessage()+","+e.getErrorCode());
-                    }
-                }
-            });
-        }
-    }
+//    public void deleteFromYun(List<BmobObject> songYuns){
+//        if (songYuns!=null){
+//            new BmobBatch().deleteBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
+//                @Override
+//                public void done(List<BatchResult> list, BmobException e) {
+//                    if(e==null){
+//                        for(int i=0;i<list.size();i++){
+//                            BatchResult result = list.get(i);
+//                            BmobException ex =result.getError();
+//                            if(ex==null){
+//                                Log.e("BMOBdelete","第"+i+"个数据批量删除成功");
+//                            }else{
+//                                Log.e("BMOBdelete","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
+//                            }
+//                        }
+//                    }else{
+//                        Log.i("BMOBdelete","失败："+e.getMessage()+","+e.getErrorCode());
+//                    }
+//                }
+//            });
+//        }
+//    }
 
-    public void findAndDeleteFromYun(String userId){
-        BmobQuery<SongYun> query = new BmobQuery<>();
-        query.addWhereEqualTo("userId",userId);
-        query.findObjects(new FindListener<SongYun>() {
-            @Override
-            public void done(List<SongYun> list, BmobException e) {
-                if (e==null){
-                    if (list!=null){
-                        List<BmobObject> deleteList = new ArrayList<>();
-                        for (SongYun songYun:list){
-                            deleteList.add(songYun);
-                        }
-                        deleteFromYun(deleteList);
-                    }
-                }else {
-                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+//    public void findAndDeleteFromYun(String userId){
+//        BmobQuery<SongYun> query = new BmobQuery<>();
+//        query.addWhereEqualTo("userId",userId);
+//        query.findObjects(new FindListener<SongYun>() {
+//            @Override
+//            public void done(List<SongYun> list, BmobException e) {
+//                if (e==null){
+//                    if (list!=null){
+//                        List<BmobObject> deleteList = new ArrayList<>();
+//                        for (SongYun songYun:list){
+//                            deleteList.add(songYun);
+//                        }
+//                        deleteFromYun(deleteList);
+//                    }
+//                }else {
+//                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+//
+//                }
+//            }
+//        });
+//    }
 
-                }
-            }
-        });
-    }
-
-    public void findAndSaveFromYun(String userId, final SongQueue queue){
-        BmobQuery<SongYun> query = new BmobQuery<>();
-        query.addWhereEqualTo("userId",userId);
-        query.findObjects(new FindListener<SongYun>() {
-            @Override
-            public void done(List<SongYun> list, BmobException e) {
-                if (e==null){
-                    saveListSongYun(list,queue);
-                }else {
-                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
-                }
-            }
-        });
-    }
+//    public void findAndSaveFromYun(String userId, final SongQueue queue){
+//        BmobQuery<SongYun> query = new BmobQuery<>();
+//        query.addWhereEqualTo("userId",userId);
+//        query.findObjects(new FindListener<SongYun>() {
+//            @Override
+//            public void done(List<SongYun> list, BmobException e) {
+//                if (e==null){
+//                    saveListSongYun(list,queue);
+//                }else {
+//                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+//                }
+//            }
+//        });
+//    }
 
 
-    public void syncFromYun(Context context,SongQueue queue,String userid){
-        if (userid!=null&&!userid.equals("")){
-            if (queue!=null&&queue.songs().size()!=0){
-                findAndDeleteFromYun(userid);
-                saveToYun(context,ConvertQueueToYun(queue,userid),userid);
-            }else {
-                findAndSaveFromYun(userid,queue);
-                Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
-            }
-        }else {
-            Toast.makeText(context,"无效的用户信息",Toast.LENGTH_SHORT).show();
-        }
-
-    }
+//    public void syncFromYun(Context context,SongQueue queue,String userid){
+//        if (userid!=null&&!userid.equals("")){
+//            if (queue!=null&&queue.songs().size()!=0){
+//                findAndDeleteFromYun(userid);
+//                saveToYun(context,ConvertQueueToYun(queue,userid),userid);
+//            }else {
+//                findAndSaveFromYun(userid,queue);
+//                Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
+//            }
+//        }else {
+//            Toast.makeText(context,"无效的用户信息",Toast.LENGTH_SHORT).show();
+//        }
+//
+//    }
 
 
     public void syncYun(Context context,SongQueue queue,String userid){
@@ -296,14 +295,22 @@ public class MusicDBHelper {
                 }
                 return new BmobBatch().deleteBatch(deleteList).doBatchObservable();
             }
-        }).doOnNext(new Action1<List<BatchResult>>() {
+        }).onErrorReturn(new Func1<Throwable, List<BatchResult>>() {
+            @Override
+            public List<BatchResult> call(Throwable throwable) {
+                return null;
+            }
+        })
+        .doOnNext(new Action1<List<BatchResult>>() {
             @Override
             public void call(List<BatchResult> batchResults) {
-                for (int i=0;i<batchResults.size();i++){
-                    BatchResult result = batchResults.get(i);
-                    BmobException ex =result.getError();
-                    if(ex!=null){
-                        Log.e("Bomb","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
+                if (batchResults!=null){
+                    for (int i=0;i<batchResults.size();i++){
+                        BatchResult result = batchResults.get(i);
+                        BmobException ex =result.getError();
+                        if(ex!=null){
+                            Log.e("Bomb","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
+                        }
                     }
                 }
             }
@@ -326,18 +333,18 @@ public class MusicDBHelper {
         }).subscribe(new Subscriber<List<BatchResult>>() {
             @Override
             public void onCompleted() {
-                Toast.makeText(context,"已上传数据到云端",Toast.LENGTH_SHORT).show();
+
             }
 
             @Override
             public void onError(Throwable throwable) {
-
+                Log.e("Test",throwable.getMessage());
                 Toast.makeText(context,"上传数据失败",Toast.LENGTH_SHORT).show();
             }
 
             @Override
             public void onNext(List<BatchResult> batchResults) {
-
+                Toast.makeText(context,"已上传数据到云端",Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -97,7 +97,7 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         if (isMylist){
             if (!(mQueue.size()<1)){
                 if (!(mQueueIndex+1<mQueue.size())){
-                    mQueueIndex = mQueueIndex-1;
+                    mQueueIndex = mQueueIndex-1<0?0:mQueueIndex-1;
                     if (isPlaying&&deleteIsPlaying) play(getNowPlaying());
                 }else {
                     if (isPlaying&&deleteIsPlaying) play(getNowPlaying());
