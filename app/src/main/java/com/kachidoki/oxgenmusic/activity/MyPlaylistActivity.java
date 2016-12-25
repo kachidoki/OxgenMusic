@@ -118,6 +118,9 @@ public class MyPlaylistActivity extends BaseActivity {
         }
 
         setBackGround();
+
+        if (SPUtils.get(MyPlaylistActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)&&MusicManager.getMusicManager().getIsPlaying())
+            adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
     }
 
     @Override
@@ -141,6 +144,8 @@ public class MyPlaylistActivity extends BaseActivity {
                     fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
                 }
                 setBackGround();
+                if (SPUtils.get(MyPlaylistActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)&&MusicManager.getMusicManager().getIsPlaying())
+                    adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
                 break;
         }
     }

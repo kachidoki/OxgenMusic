@@ -92,6 +92,8 @@ public class RankActivity extends BaseActivity {
             adapter.setData(songs);
             countAllTime(songs);
             songList = songs;
+            if (SPUtils.get(RankActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(RankActivity.this,Constants.hotListname_sp,"nocall").equals(getIntent().getStringExtra("topid"))&&MusicManager.getMusicManager().getIsPlaying())
+                adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
         }
     };
 
@@ -118,6 +120,7 @@ public class RankActivity extends BaseActivity {
 
         setListImg(getIntent().getStringExtra("topid"));
         getRankMusic();
+
     }
 
     @Override
@@ -136,6 +139,8 @@ public class RankActivity extends BaseActivity {
                     fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
                 }
                 setBackGround();
+                if (SPUtils.get(RankActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(RankActivity.this,Constants.hotListname_sp,"nocall").equals(getIntent().getStringExtra("topid"))&&MusicManager.getMusicManager().getIsPlaying())
+                    adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
                 break;
         }
     }

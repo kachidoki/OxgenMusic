@@ -35,6 +35,7 @@ public class PlayerService extends Service {
     public static final int CommandClose =4;
     public static final int CommandPlayNow = 5;
     private NotificationTarget notificationTarget;
+    private NotificationTarget notificationNomalTarget;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -84,29 +85,36 @@ public class PlayerService extends Service {
         builder.setShowWhen(false);
 
 
+        RemoteViews nomalRemoteViews = new RemoteViews(getPackageName(),R.layout.notification_content);
         //bigView
         RemoteViews bigRemoteViews = new RemoteViews(getPackageName(),R.layout.notification_big_content);
         if (MusicManager.getMusicManager().getNowSong()!=null){
             bigRemoteViews.setTextViewText(R.id.nof_songname,MusicManager.getMusicManager().getNowSong().songname);
             bigRemoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
+            nomalRemoteViews.setTextViewText(R.id.nof_nomal_songname,MusicManager.getMusicManager().getNowSong().songname);
+            nomalRemoteViews.setTextViewText(R.id.nof_nomal_singer,MusicManager.getMusicManager().getNowSong().singername);
         }
 
 
         if(MusicManager.getMusicManager().getIsPlaying()){
             bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_pause);
+            nomalRemoteViews.setImageViewResource(R.id.nof_nomal_playpasue,R.drawable.icon_play_pause);
         }else{
             bigRemoteViews.setImageViewResource(R.id.nof_playpasue,R.drawable.icon_play_gray);
+            nomalRemoteViews.setImageViewResource(R.id.nof_nomal_playpasue,R.drawable.icon_play_play);
         }
 
         Intent Intent1 = new Intent(this,PlayerService.class);
         Intent1.putExtra("command",CommandPlay);
         PendingIntent PIntent1 =  PendingIntent.getService(this,5,Intent1,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_playpasue,PIntent1);
+        nomalRemoteViews.setOnClickPendingIntent(R.id.nof_nomal_playpasue,PIntent1);
 
         Intent Intent2 = new Intent(this,PlayerService.class);
         Intent2.putExtra("command",CommandNext);
         PendingIntent PIntent2 =  PendingIntent.getService(this,6,Intent2,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_next,PIntent2);
+        nomalRemoteViews.setOnClickPendingIntent(R.id.nof_nomal_next,PIntent2);
 
         Intent Intent3 = new Intent(this,PlayerService.class);
         Intent3.putExtra("command",CommandPrevious);
@@ -117,26 +125,33 @@ public class PlayerService extends Service {
         Intent4.putExtra("command",CommandClose);
         PendingIntent PIntent4 =  PendingIntent.getService(this,8,Intent4,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_stop,PIntent4);
+        nomalRemoteViews.setOnClickPendingIntent(R.id.nof_nomal_stop,PIntent4);
 
         Intent intentToPlay = new Intent(this, PlayActivity.class);
         PendingIntent pIntentToPlay = PendingIntent.getActivity(this,9,intentToPlay,0);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_img,pIntentToPlay);
+        nomalRemoteViews.setOnClickPendingIntent(R.id.nof_nomal_img,pIntentToPlay);
 
         Intent notificationIntent = new Intent(this,PlayActivity.class);
         PendingIntent contentIntent = PendingIntent.getService(this,0,notificationIntent,0);
 
 
-//        builder.setContent(bigRemoteViews);
+        builder.setContent(nomalRemoteViews);
         builder.setCustomBigContentView(bigRemoteViews);
         Notification notification = builder.build();
         notificationTarget = new NotificationTarget(getApplicationContext(),bigRemoteViews,R.id.nof_img,notification,Constants.PlayerNotification);
+        notificationNomalTarget = new NotificationTarget(getApplicationContext(),nomalRemoteViews,R.id.nof_nomal_img,notification,Constants.PlayerNotification);
         notification.contentIntent = contentIntent;
         if (MusicManager.getMusicManager().getNowSong()!=null){
             Glide.with(getApplicationContext())
                     .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
                     .asBitmap()
                     .into(notificationTarget);
+            Glide.with(getApplicationContext())
+                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
+                    .asBitmap()
+                    .into(notificationNomalTarget);
         }
 
         startForeground(Constants.PlayerNotification,notification);

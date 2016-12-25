@@ -10,19 +10,21 @@
         android:src="@drawable/cd_nomal_png"
         android:id="@+id/nof_nomal_img" />
     <LinearLayout
-        android:layout_weight="12"
+        android:layout_weight="8"
         android:layout_marginLeft="16dp"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:orientation="vertical">
         <TextView
             android:layout_weight="1"
-            android:gravity="center_vertical"
-            android:layout_width="wrap_content"
+            android:gravity="bottom"
+            android:layout_marginBottom="2dp"
+            android:layout_width="150dp"
             android:layout_height="wrap_content"
             android:id="@+id/nof_nomal_songname"
             android:textSize="15sp"
             android:textColor="@color/white"
+            android:singleLine="true"
             android:text="歌名"/>
         <TextView
             android:layout_weight="1"
@@ -30,43 +32,53 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/nof_nomal_singer"
+            android:textColor="@color/textGray"
             android:text="歌手名"/>
     </LinearLayout>
     <LinearLayout
-        android:layout_weight="1"
+        android:minWidth="100dp"
+        android:layout_marginRight="12dp"
+        android:layout_weight="2"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="6dp"
-            android:id="@+id/nof_nomal_playpasue"
-            android:src="@drawable/icon_play_play"/>
+        android:orientation="horizontal">
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="5dp"
+                android:id="@+id/nof_nomal_playpasue"
+                android:src="@drawable/icon_play_play"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="4dp"
+                android:id="@+id/nof_nomal_next"
+                android:src="@drawable/icon_nextsong"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_weight="1"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:gravity="center_vertical">
+            <ImageView
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="5dp"
+                android:id="@+id/nof_nomal_stop"
+                android:src="@drawable/nof_close"/>
+        </LinearLayout>
     </LinearLayout>
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="5dp"
-            android:id="@+id/nof_nomal_next"
-            android:src="@drawable/icon_nextsong"/>
-    </LinearLayout>
-    <LinearLayout
-        android:layout_weight="1"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:gravity="center_vertical">
-        <ImageView
-            android:layout_width="36dp"
-            android:layout_height="36dp"
-            android:padding="5dp"
-            android:id="@+id/nof_nomal_stop"
-            android:src="@drawable/nof_close"/>
-    </LinearLayout>
+
 
 </LinearLayout>

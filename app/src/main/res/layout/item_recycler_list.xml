@@ -10,6 +10,14 @@
         android:orientation="horizontal"
         android:layout_width="match_parent"
         android:layout_height="62dp">
+        <ImageView
+            android:visibility="gone"
+            android:id="@+id/isplay_list"
+            android:layout_width="62dp"
+            android:layout_height="62dp"
+            android:padding="14dp"
+            android:src="@drawable/icon_isplaying"
+            />
         <TextView
             android:layout_width="62dp"
             android:layout_height="62dp"
