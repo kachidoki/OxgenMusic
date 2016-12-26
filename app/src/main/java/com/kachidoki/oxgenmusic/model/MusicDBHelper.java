@@ -7,10 +7,12 @@ import android.widget.Toast;
 import com.activeandroid.ActiveAndroid;
 import com.activeandroid.query.Delete;
 import com.activeandroid.query.Select;
+import com.activeandroid.query.Update;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
 import com.kachidoki.oxgenmusic.model.bean.SongQueue;
 import com.kachidoki.oxgenmusic.model.bean.SongYun;
+import com.kachidoki.oxgenmusic.player.MusicManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -78,7 +80,19 @@ public class MusicDBHelper {
                 .from(SongBean.class)
                 .where("songname = ?",song.songname)
                 .where("singername = ?",song.singername)
+                .where("queue = ?", MusicManager.myList.getId())
                 .execute();
+    }
+
+    public void swapSongs(Song fromSong,Song toSong){
+        long fromId = new Select().from(SongBean.class).where("songname = ?",fromSong.songname).where("singername = ?",fromSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
+        long toId = new Select().from(SongBean.class).where("songname = ?",toSong.songname).where("singername = ?",toSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
+        new Update(SongBean.class)
+                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?",toSong.songname,toSong.seconds,toSong.singerid,toSong.albumpic_big,toSong.url,toSong.singername,toSong.albumid)
+                .where("Id = ?",fromId).execute();
+        new Update(SongBean.class)
+                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?",fromSong.songname,fromSong.seconds,fromSong.singerid,fromSong.albumpic_big,fromSong.url,fromSong.singername,fromSong.albumid)
+                .where("Id = ?",toId).execute();
     }
 
     public void deleteQueueSong(SongQueue queue){

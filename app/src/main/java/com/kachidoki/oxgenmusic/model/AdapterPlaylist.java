@@ -110,11 +110,8 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.e("Test","nowQueue"+SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue"));
-                    Log.e("Test","nowCallname"+SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noQueue"));
                     if (SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noname").equals(callname)){
                         //设置index即可
-                        Log.e("Test","设置index即可");
                         MusicManager.getMusicManager().setIndex(i);
                         if (callname.equals("search")){
                             //也要重置
@@ -124,7 +121,6 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
                         }
                     }else {
                         //重置队列
-                        Log.e("Test","重置队列");
                         SPUtils.put(itemView.getContext(),Constants.hotListname_sp,callname);
                         MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
                         MusicDBHelper.getMusicDBHelper().saveListSong(songs,MusicManager.hotList);
@@ -136,8 +132,6 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
                     if (SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
                         SPUtils.put(itemView.getContext(),Constants.nowQueue_sp,Constants.hotList);
                     }
-                    Log.e("Test","nowQueue"+SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue"));
-                    Log.e("Test","nowCallname"+SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noQueue"));
                 }
             });
 

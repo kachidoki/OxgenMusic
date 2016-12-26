@@ -12,5 +12,6 @@
     <color name="gray">#626262</color>
     <color name="textGray">#eeeeee</color>
     <color name="grayA">#64626262</color>
+    <color name="ABackGround">#00ffffff</color>
 
 </resources>

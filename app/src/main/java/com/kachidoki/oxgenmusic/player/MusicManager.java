@@ -9,6 +9,7 @@ import com.kachidoki.oxgenmusic.model.bean.SongQueue;
 import java.io.IOException;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -60,6 +61,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     /**
      * 播放队列管理
      */
+    public void justSetIndex(int index){
+        mQueueIndex = index;
+    }
+
     public void setIndex(int index){
         mQueueIndex = index;
         play(getNowPlaying());
@@ -89,6 +94,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public void addQueue(List<Song> songs){
         mQueue.addAll(songs);
+    }
+
+    public void swapSong(int from,int to){
+        Collections.swap(mQueue, from, to);
     }
 
     public void deleteSong(int index,boolean isPlaying,boolean isMylist){

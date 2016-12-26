@@ -118,12 +118,7 @@ public class PopWindow extends PopupWindow {
                 break;
             case R.id.pop_playthis:
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
-
-                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
-                    SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
-                }
-
-                if (SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
+                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
                     //设置index即可
                     MusicManager.getMusicManager().setIndex(queueIndex);
                     if (callname.equals("search")){
@@ -141,6 +136,9 @@ public class PopWindow extends PopupWindow {
                     Intent PlayNow = new Intent(context, PlayerService.class);
                     PlayNow.putExtra("command", PlayerService.CommandPlayNow);
                     context.startService(PlayNow);
+                }
+                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+                    SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
                 }
                 dismiss();
                 break;

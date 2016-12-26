@@ -2,6 +2,8 @@ package com.kachidoki.oxgenmusic.network;
 
 import android.util.Log;
 
+import com.kachidoki.oxgenmusic.config.Constants;
+
 import java.util.concurrent.TimeUnit;
 
 import okhttp3.OkHttpClient;
@@ -28,7 +30,7 @@ public class NetWork {
         if (musicApi==null){
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
-                    .baseUrl("http://route.showapi.com/")
+                    .baseUrl(Constants.baseUrl)
                     .addConverterFactory(gsonConverterFactory)
                     .addCallAdapterFactory(rxJavaCallAdapterFactory)
                     .build();
@@ -46,7 +48,7 @@ public class NetWork {
 
         if (download==null){
             Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl("http://ws.stream.qqmusic.qq.com/")
+                    .baseUrl(Constants.DownbaseUrl)
                     .client(okHttpClient)
                     .addConverterFactory(gsonConverterFactory)
                     .addCallAdapterFactory(rxJavaCallAdapterFactory)

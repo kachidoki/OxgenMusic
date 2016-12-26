@@ -25,7 +25,7 @@
             android:textSize="15sp"
             android:textColor="@color/white"
             android:singleLine="true"
-            android:text="歌名"/>
+            android:text=""/>
         <TextView
             android:layout_weight="1"
             android:gravity="center_vertical"
@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:id="@+id/nof_nomal_singer"
             android:textColor="@color/textGray"
-            android:text="歌手名"/>
+            android:text=""/>
     </LinearLayout>
     <LinearLayout
         android:minWidth="100dp"

@@ -11,6 +11,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.transition.Slide;
 import android.view.Gravity;
 import android.widget.ImageView;
@@ -31,6 +32,7 @@ import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
+import com.kachidoki.oxgenmusic.widget.MyItemTouchHelperCallback;
 import com.kachidoki.oxgenmusic.widget.PopWindowMylist;
 
 import org.greenrobot.eventbus.EventBus;
@@ -63,6 +65,7 @@ public class MyPlaylistActivity extends BaseActivity {
     @BindView(R.id.mylist_fab)
     FloatingActionButton fab;
 
+    private ItemTouchHelper mItemTouchHelper;
     AdapterMylist adapter = new AdapterMylist(MyPlaylistActivity.this, new PopWindowMylist.OnChange() {
         @Override
         public void Callback(int i) {
@@ -95,6 +98,11 @@ public class MyPlaylistActivity extends BaseActivity {
 
         recyclerViewMylist.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewMylist.setAdapter(adapter);
+
+        ItemTouchHelper.Callback callback = new MyItemTouchHelperCallback(adapter);
+        mItemTouchHelper = new ItemTouchHelper(callback);
+        mItemTouchHelper.attachToRecyclerView(recyclerViewMylist);
+
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
 
         getMylist();

@@ -1,6 +1,7 @@
 package com.kachidoki.oxgenmusic.model;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,9 +18,10 @@ import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.utils.Utils;
-import com.kachidoki.oxgenmusic.widget.PopWindow;
+import com.kachidoki.oxgenmusic.widget.MyItemTouchHelperCallback;
 import com.kachidoki.oxgenmusic.widget.PopWindowMylist;
 
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -28,7 +30,7 @@ import butterknife.ButterKnife;
 /**
  * Created by mayiwei on 16/12/7.
  */
-public class AdapterMylist extends RecyclerView.Adapter {
+public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHelperCallback.ItemTouchHelperLister{
     List<Song> songLists;
     public Context context;
     public int playingSong = -1;
@@ -81,7 +83,36 @@ public class AdapterMylist extends RecyclerView.Adapter {
         notifyDataSetChanged();
     }
 
-    static class PlayListViewHolder extends RecyclerView.ViewHolder{
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+            MusicManager.getMusicManager().swapSong(fromPosition,toPosition);
+            if (playingSong==fromPosition||playingSong==toPosition){
+                MusicManager.getMusicManager().justSetIndex(playingSong==fromPosition?toPosition:fromPosition);
+                setItemPlaying(playingSong==fromPosition?toPosition:fromPosition);
+            }
+        }
+        MusicDBHelper.getMusicDBHelper().swapSongs(songLists.get(fromPosition),songLists.get(toPosition));
+        Collections.swap(songLists, fromPosition, toPosition);
+        notifyItemMoved(fromPosition, toPosition);
+        this.notifyItemChanged(fromPosition);
+        this.notifyItemChanged(toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        MusicManager.getMusicManager().deleteSong(position,MusicManager.getMusicManager().getIsPlaying(),SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList));
+        MusicDBHelper.getMusicDBHelper().deleteSingleSong(songLists.get(position));
+        onChange.Callback(position);
+        if (MusicManager.getMusicManager().getIsfirst()&&SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
+            SPUtils.put(context,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+        }
+        songLists.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    static class PlayListViewHolder extends RecyclerView.ViewHolder implements MyItemTouchHelperCallback.ItemTouchHelperViewHolderLister{
         PopWindowMylist.OnChange callback;
         @BindView(R.id.isplay_list)
         ImageView isplaying;
@@ -115,18 +146,12 @@ public class AdapterMylist extends RecyclerView.Adapter {
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    Log.e("Test","nowQueue"+SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue"));
-                    Log.e("Test","nowCallname"+SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noQueue"));
                     if (SPUtils.get(itemView.getContext(), Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
-                        Log.e("Test","设置index即可");
                         MusicManager.getMusicManager().setIndex(i);
                     }else {
-                        Log.e("Test","重置队列");
                         MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList),i,true);
                         SPUtils.put(itemView.getContext(),Constants.nowQueue_sp,Constants.myList);
                     }
-                    Log.e("Test","nowQueue"+SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue"));
-                    Log.e("Test","nowCallname"+SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noQueue"));
                 }
             });
 
@@ -138,6 +163,15 @@ public class AdapterMylist extends RecyclerView.Adapter {
         }
 
 
+        @Override
+        public void onItemSelected() {
+            itemView.setBackgroundResource(R.color.grayA);
+        }
+
+        @Override
+        public void onItemClear() {
+            itemView.setBackgroundColor(0);
+        }
     }
 
 

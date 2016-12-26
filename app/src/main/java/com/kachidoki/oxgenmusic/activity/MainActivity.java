@@ -9,6 +9,7 @@ import android.os.Handler;
 import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
 import com.kachidoki.oxgenmusic.widget.CDview;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
@@ -102,7 +104,7 @@ public class MainActivity extends BaseActivity {
         }
     };
 
-    AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this);
+    AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this,"26");
 
     Observer<List<Song>> observer = new Observer<List<Song>>() {
         @Override
@@ -118,6 +120,8 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onNext(List<Song> songs) {
             adapter.setData(songs);
+            if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")&&MusicManager.getMusicManager().getIsPlaying())
+                adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
         }
     };
 
@@ -152,6 +156,12 @@ public class MainActivity extends BaseActivity {
             cDview.start();
         } else {
             cDview.pause();
+        }
+
+        if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")&&MusicManager.getMusicManager().getIsPlaying()){
+            adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+        }else {
+            adapter.initPlayingSong();
         }
 
         checkDrawer();
@@ -263,6 +273,8 @@ public class MainActivity extends BaseActivity {
                 } else {
                     cDview.pause();
                 }
+                if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")&&MusicManager.getMusicManager().getIsPlaying())
+                    adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
                 break;
         }
     }
