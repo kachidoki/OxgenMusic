@@ -24,6 +24,7 @@ import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.widget.CDview;
+import com.kachidoki.oxgenmusic.widget.LrcView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -64,6 +65,11 @@ public class PlayActivity extends BaseActivity {
     LinearLayout backGround;
     @BindView(R.id.play_backImag)
     ImageView backImg;
+    @BindView(R.id.play_lrc)
+    LrcView lrcView;
+
+
+    String toBeReadText = "[00&#58;00&#46;92]海阔天空&#32;&#32;&#45;&#32;BEYOND&#10;[00&#58;02&#46;27]词：黄家驹&#10;[00&#58;03&#46;32]曲：黄家驹&#10;[00&#58;04&#46;30]&#10;[00&#58;19&#46;17]今天我&#32;寒夜里看雪飘过&#10;[00&#58;25&#46;75]怀着冷却了的心窝飘远方&#10;[00&#58;30&#46;77]&#10;[00&#58;31&#46;60]风雨里追赶&#32;雾里分不清影踪&#10;[00&#58;37&#46;82]天空海阔你与我&#32;可会变&#10;[00&#58;43&#46;27]&#10;[00&#58;44&#46;14]多少次迎着冷眼与嘲笑&#10;[00&#58;50&#46;55]从没有放弃过心中的理想&#10;[00&#58;56&#46;02]&#10;[00&#58;56&#46;67]一刹那恍惚&#32;若有所失的感觉&#10;[01&#58;02&#46;65]不知不觉已变淡&#32;心里爱&#10;[01&#58;08&#46;64]&#10;[01&#58;09&#46;66]原谅我这一生不羁放纵爱自由&#10;[01&#58;15&#46;56]&#10;[01&#58;16&#46;40]也会怕有一天会跌倒&#10;[01&#58;22&#46;72]背弃了理想谁人都可以&#10;[01&#58;27&#46;84]&#10;[01&#58;28&#46;51]哪会怕有一天只你共我&#10;[01&#58;33&#46;89]&#10;[01&#58;43&#46;41]今天我&#32;寒夜里看雪飘过&#10;[01&#58;49&#46;76]怀着冷却了的心窝飘远方&#10;[01&#58;54&#46;86]&#10;[01&#58;55&#46;60]风雨里追赶&#32;雾里分不清影踪&#10;[02&#58;01&#46;92]天空海阔你与我&#32;可会变&#10;[02&#58;06&#46;61]&#10;[02&#58;08&#46;70]原谅我这一生不羁放纵爱自由&#10;[02&#58;14&#46;86]&#10;[02&#58;15&#46;55]也会怕有一天会跌倒&#10;[02&#58;21&#46;30]&#10;[02&#58;21&#46;83]背弃了理想谁人都可以&#10;[02&#58;27&#46;17]&#10;[02&#58;28&#46;08]哪会怕有一天只你共我&#10;[02&#58;33&#46;08]&#10;[02&#58;38&#46;06]仍然自由自我&#10;[02&#58;40&#46;57]&#10;[02&#58;41&#46;42]永远高唱我歌&#10;[02&#58;44&#46;42]走遍千里&#32;原谅我这一生不羁放纵爱自由&#10;[02&#58;55&#46;20]&#10;[02&#58;56&#46;14]也会怕有一天会跌倒&#10;[03&#58;02&#46;26]背弃了理想&#32;谁人都可以&#10;[03&#58;07&#46;48]&#10;[03&#58;08&#46;67]哪会怕有一天只你共我&#10;[03&#58;13&#46;58]&#10;[03&#58;14&#46;51]原谅我这一生不羁放纵爱自由&#10;[03&#58;21&#46;27]也会怕有一天会跌倒&#10;[03&#58;26&#46;00]&#10;[03&#58;27&#46;38]背弃了理想谁人都可以&#10;[03&#58;31&#46;94]&#10;[03&#58;33&#46;61]哪会怕有一天只你共我";
 
     private SimpleDateFormat time = new SimpleDateFormat("m:ss");
     private Handler handler = new Handler();
@@ -75,11 +81,18 @@ public class PlayActivity extends BaseActivity {
                     playAllTime.setText(time.format(MusicManager.getMusicManager().getDuration()));
                     playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
                     playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+                    ////////////////
+                    lrcView.changeCurrent(MusicManager.getMusicManager().getCurrentPosition());
+
                     playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
                     playSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
                         @Override
                         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                            if (b) MusicManager.getMusicManager().seekTo(seekBar.getProgress());
+                            if (b) {
+                                MusicManager.getMusicManager().seekTo(seekBar.getProgress());
+                                lrcView.onDrag(seekBar.getProgress());
+                            }
+
                         }
                         @Override
                         public void onStartTrackingTouch(SeekBar seekBar) {
@@ -119,6 +132,7 @@ public class PlayActivity extends BaseActivity {
         ButterKnife.bind(this);
         setToolbar(true);
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
+        lrcView.setLrcWord(toBeReadText);
     }
 
     @Override
@@ -155,6 +169,8 @@ public class PlayActivity extends BaseActivity {
                 playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
                 playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
                 playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
+                ////////////////////
+                lrcView.changeCurrent(MusicManager.getMusicManager().getCurrentPosition());
             }
         }
         setBackGround();

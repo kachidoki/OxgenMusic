@@ -65,6 +65,7 @@ public class LaunchActivity extends AppCompatActivity {
     }
 
     private void initQueue() {
+        
         if (MusicManager.getMusicManager().getIsfirst()){
             if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
                 MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)),
@@ -76,6 +77,7 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
     private void initSP(){
+        Log.e("Test","initSP");
         if (!SPUtils.contains(getApplicationContext(),Constants.nowQueue_sp)){
             SPUtils.put(getApplicationContext(),Constants.nowQueue_sp,Constants.myList);
         }
@@ -90,6 +92,7 @@ public class LaunchActivity extends AppCompatActivity {
         }
     }
     private void initQueueDB(){
+        Log.e("Test","initQueueDB ");
         if (MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList)==null){
             MusicDBHelper.getMusicDBHelper().saveQueue(new SongQueue(Constants.myList));
             MusicManager.myList = MusicDBHelper.getMusicDBHelper().SelectQueue(Constants.myList);

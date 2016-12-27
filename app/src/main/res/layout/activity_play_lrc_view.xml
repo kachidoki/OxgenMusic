@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="320dp"
+    android:gravity="center">
+    <com.kachidoki.oxgenmusic.widget.LrcView
+    android:id="@+id/play_lrc"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginTop="5dp"
+    android:layout_marginBottom="5dp"
+    app:textSize="18sp"
+    app:normalTextColor="@android:color/white"
+    app:currentTextColor="@android:color/holo_orange_light"
+    app:dividerHeight="20dp"
+    app:rows="7" />
+</LinearLayout>

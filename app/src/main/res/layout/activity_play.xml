@@ -16,6 +16,7 @@
         android:background="@color/black"
         android:id="@+id/play_backGround">
         <include layout="@layout/include_toolbar"/>
+        <include layout="@layout/activity_play_lrc_view"/>
         <include layout="@layout/activity_play_cd_view"/>
         <LinearLayout
             android:orientation="vertical"

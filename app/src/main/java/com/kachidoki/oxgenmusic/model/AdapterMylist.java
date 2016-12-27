@@ -102,6 +102,7 @@ public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHe
 
     @Override
     public void onItemDismiss(int position) {
+        Log.e("Test","onItemDismiss position = "+position);
         MusicManager.getMusicManager().deleteSong(position,MusicManager.getMusicManager().getIsPlaying(),SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList));
         MusicDBHelper.getMusicDBHelper().deleteSingleSong(songLists.get(position));
         onChange.Callback(position);
@@ -109,7 +110,8 @@ public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHe
             SPUtils.put(context,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
         }
         songLists.remove(position);
-        notifyItemRemoved(position);
+//        notifyItemRemoved(position+1);
+//        notifyDataSetChanged();
     }
 
     static class PlayListViewHolder extends RecyclerView.ViewHolder implements MyItemTouchHelperCallback.ItemTouchHelperViewHolderLister{
