@@ -25,10 +25,13 @@ public class SongBean extends Model {
     public int albumid;
     @Column(name = "queue")
     public SongQueue queue;
+    @Column(name = "songid")
+    public int songid;
+
     public SongBean(){
         super();
     }
-    public SongBean(String songname,int seconds,int singerid,String albumpic,String url,String singername,int albumid,SongQueue queue){
+    public SongBean(String songname,int seconds,int singerid,String albumpic,String url,String singername,int albumid,int songid,SongQueue queue){
         super();
         this.songname = songname;
         this.seconds = seconds;
@@ -38,5 +41,6 @@ public class SongBean extends Model {
         this.singername = singername;
         this.albumid = albumid;
         this.queue = queue;
+        this.songid = songid;
     }
 }

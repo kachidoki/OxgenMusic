@@ -42,7 +42,7 @@ public class MusicDBHelper {
     }
 
     public void saveSong(Song song,SongQueue songQueue){
-        new SongBean(song.songname,song.seconds,song.singerid,song.albumpic_big,song.url,song.singername,song.albumid,songQueue).save();
+        new SongBean(song.songname,song.seconds,song.singerid,song.albumpic_big,song.url,song.singername,song.albumid,song.songid,songQueue).save();
     }
 
     public void saveQueue(SongQueue songQueue){
@@ -53,7 +53,7 @@ public class MusicDBHelper {
         ActiveAndroid.beginTransaction();
         try {
             for (int i = 0; i < songs.size(); i++) {
-                new SongBean(songs.get(i).songname,songs.get(i).seconds,songs.get(i).singerid,songs.get(i).albumpic_big,songs.get(i).url,songs.get(i).singername,songs.get(i).albumid,songQueue).save();
+                new SongBean(songs.get(i).songname,songs.get(i).seconds,songs.get(i).singerid,songs.get(i).albumpic_big,songs.get(i).url,songs.get(i).singername,songs.get(i).albumid,songs.get(i).songid,songQueue).save();
             }
             ActiveAndroid.setTransactionSuccessful();
         }
@@ -66,7 +66,7 @@ public class MusicDBHelper {
         ActiveAndroid.beginTransaction();
         try {
             for (SongYun songYun:songs){
-                new SongBean(songYun.songname,songYun.seconds,songYun.singerid,songYun.albumpic_big,songYun.url,songYun.singername,songYun.albumid,songQueue).save();
+                new SongBean(songYun.songname,songYun.seconds,songYun.singerid,songYun.albumpic_big,songYun.url,songYun.singername,songYun.albumid,songYun.songid,songQueue).save();
             }
             ActiveAndroid.setTransactionSuccessful();
         }
@@ -88,10 +88,10 @@ public class MusicDBHelper {
         long fromId = new Select().from(SongBean.class).where("songname = ?",fromSong.songname).where("singername = ?",fromSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
         long toId = new Select().from(SongBean.class).where("songname = ?",toSong.songname).where("singername = ?",toSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
         new Update(SongBean.class)
-                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?",toSong.songname,toSong.seconds,toSong.singerid,toSong.albumpic_big,toSong.url,toSong.singername,toSong.albumid)
+                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?,"+"songid=?",toSong.songname,toSong.seconds,toSong.singerid,toSong.albumpic_big,toSong.url,toSong.singername,toSong.albumid,toSong.songid)
                 .where("Id = ?",fromId).execute();
         new Update(SongBean.class)
-                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?",fromSong.songname,fromSong.seconds,fromSong.singerid,fromSong.albumpic_big,fromSong.url,fromSong.singername,fromSong.albumid)
+                .set("songname=?," + "seconds=?,"+ "singerid=?,"+ "albumpic=?,"+ "url=?,"+ "singername=?,"+ "albumid=?,"+"songid=?",fromSong.songname,fromSong.seconds,fromSong.singerid,fromSong.albumpic_big,fromSong.url,fromSong.singername,fromSong.albumid,fromSong.songid)
                 .where("Id = ?",toId).execute();
     }
 
@@ -130,6 +130,7 @@ public class MusicDBHelper {
                 song.songname = songQueue.songs().get(i).songname;
                 song.albumid = songQueue.songs().get(i).albumid;
                 song.albumpic_big = songQueue.songs().get(i).albumpic;
+                song.songid = songQueue.songs().get(i).songid;
                 song.url = songQueue.songs().get(i).url;
                 songs.add(song);
             }
@@ -153,6 +154,7 @@ public class MusicDBHelper {
             song.albumpic_big = queue.songs().get(i).albumpic;
             song.url = queue.songs().get(i).url;
             song.userId = userid;
+            song.songid = queue.songs().get(i).songid;
             songs.add(song);
         }
         return songs;

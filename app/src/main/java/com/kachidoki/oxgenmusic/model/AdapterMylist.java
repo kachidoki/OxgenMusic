@@ -102,16 +102,14 @@ public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHe
 
     @Override
     public void onItemDismiss(int position) {
-        Log.e("Test","onItemDismiss position = "+position);
         MusicManager.getMusicManager().deleteSong(position,MusicManager.getMusicManager().getIsPlaying(),SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList));
         MusicDBHelper.getMusicDBHelper().deleteSingleSong(songLists.get(position));
-        onChange.Callback(position);
         if (MusicManager.getMusicManager().getIsfirst()&&SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
             SPUtils.put(context,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
         }
         songLists.remove(position);
-//        notifyItemRemoved(position+1);
-//        notifyDataSetChanged();
+        notifyItemRemoved(position);
+        countTime.Callback(0);
     }
 
     static class PlayListViewHolder extends RecyclerView.ViewHolder implements MyItemTouchHelperCallback.ItemTouchHelperViewHolderLister{
@@ -126,6 +124,8 @@ public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHe
         LinearLayout more;
         @BindView(R.id.number_list)
         TextView number;
+        @BindView(R.id.playLayout_list)
+        LinearLayout playlayout;
 
         public PlayListViewHolder(View itemView, PopWindowMylist.OnChange onChange) {
             super(itemView);
@@ -145,7 +145,7 @@ public class AdapterMylist extends RecyclerView.Adapter implements MyItemTouchHe
                     popWindow.showAtLocation(itemView, Gravity.BOTTOM, 0, Utils.checkDeviceHasNavigationBar()?Utils.getNavigationBarHeight():0);
                 }
             });
-            itemView.setOnClickListener(new View.OnClickListener() {
+            playlayout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (SPUtils.get(itemView.getContext(), Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){

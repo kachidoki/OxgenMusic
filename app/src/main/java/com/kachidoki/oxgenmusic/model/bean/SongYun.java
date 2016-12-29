@@ -18,8 +18,9 @@ public class SongYun extends BmobObject {
     public String queue;
     @NonNull
     public String userId;
+    public int songid;
     public SongYun(){}
-    public SongYun(String songName,int second,int singerId,String albumpic,String Url,String singerName,int albumId,String que,String userid){
+    public SongYun(String songName,int second,int singerId,String albumpic,String Url,String singerName,int albumId,int songid,String que,String userid){
         this.songname = songName;
         this.seconds = second;
         this.singerid = singerId;
@@ -29,5 +30,6 @@ public class SongYun extends BmobObject {
         this.albumid = albumId;
         this.queue = que;
         this.userId = userid;
+        this.songid = songid;
     }
 }

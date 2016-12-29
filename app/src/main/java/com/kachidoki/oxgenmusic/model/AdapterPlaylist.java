@@ -85,7 +85,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
         LinearLayout more;
         @BindView(R.id.number_list)
         TextView number;
-        @BindView(R.id.layout_list)
+        @BindView(R.id.playLayout_list)
         LinearLayout layout;
         @BindView(R.id.isplay_list)
         ImageView isplaying;
@@ -107,7 +107,7 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
                     popWindow.showAtLocation(itemView,Gravity.BOTTOM, 0, Utils.checkDeviceHasNavigationBar()?Utils.getNavigationBarHeight():0);
                 }
             });
-            itemView.setOnClickListener(new View.OnClickListener() {
+            layout.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if (SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noname").equals(callname)){

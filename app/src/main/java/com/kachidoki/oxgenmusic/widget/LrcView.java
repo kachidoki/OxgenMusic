@@ -1,5 +1,7 @@
 package com.kachidoki.oxgenmusic.widget;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -185,7 +187,6 @@ public class LrcView extends View {
         line = line.replaceAll("\\[", "");
         String[] result = line.split("\\]");
         result[0] = String.valueOf(parseTime(result[0]));
-
         return result;
     }
 
@@ -226,46 +227,76 @@ public class LrcView extends View {
     }
 
 
-    /**
-     * 解析
-     * @param toBeReadText
-     */
-    public void setLrcWord(String toBeReadText){
+//    /**
+//     * 解析
+//     * @param toBeReadText
+//     */
+//    public void setLrcWord(String toBeReadText){
+//        reset();
+//        ArrayList<String> tempList = new ArrayList<>();
+//        //切割每一行时间与歌词
+//        String[] split1 = toBeReadText.split("\\[");
+//        String split1Result = "";
+//        for (String string : split1) {
+//            split1Result += string;
+//        }
+//
+//        String[] split2  = split1Result.split("\\]");
+//        String split2Result = "";
+//        for (String string : split2) {
+//            split2Result += string;
+//        }
+//
+//        String[] result = split2Result.split("\\&#10;");
+//        for (String string : result) {
+//            tempList.add(string);
+//        }
+//
+//        //解析歌词
+//        for(int i = 0;i < tempList.size();i++){
+//            String lyrics = tempList.get(i);
+//            String time = tempList.get(i);
+//            lyrics = lyrics.substring(16);
+//            time = time.substring(0,15);
+//            lyrics = lyrics.replace("&#32;"," ");
+//            lyrics = lyrics.replace("&#45;", "-");
+//            time = time.replace("&#58;", ":");
+//            time = time.replace("&#46;", ".");
+//
+//            mLrcs.add(lyrics);
+//            mTimes.add(parseTime(time));
+//        }
+//    }
+
+
+
+    // 设置lrc的路径
+    public void setLrcWord(String word) {
         reset();
-        ArrayList<String> tempList = new ArrayList<>();
-        //切割每一行时间与歌词
-        String[] split1 = toBeReadText.split("\\[");
-        String split1Result = "";
-        for (String string : split1) {
-            split1Result += string;
-        }
+        String[] arr;
 
-        String[] split2  = split1Result.split("\\]");
-        String split2Result = "";
-        for (String string : split2) {
-            split2Result += string;
-        }
+        word = word.replace("&#32;"," ");
+        word = word.replace("&#45;", "-");
+        word = word.replace("&#58;", ":");
+        word = word.replace("&#46;", ".");
+        word = word.replace("&#40;", "(");
+        word = word.replace("&#41;", ")");
 
-        String[] result = split2Result.split("\\&#10;");
+        String[] result = word.split("\\&#10;");
         for (String string : result) {
-            //System.out.println(string);
-            tempList.add(string);
+            arr = parseLine(string);
+            if (arr == null) continue;
+
+            // 如果解析出来只有一个
+            if (arr.length == 1) {
+                String last = mLrcs.remove(mLrcs.size() - 1);
+                mLrcs.add(last + arr[0]);
+                continue;
+            }
+            mTimes.add(Long.parseLong(arr[0]));
+            mLrcs.add(arr[1]);
         }
 
-        //解析歌词
-        for(int i = 0;i < tempList.size();i++){
-            String lyrics = tempList.get(i);
-            String time = tempList.get(i);
-            lyrics = lyrics.substring(16);
-            time = time.substring(0,15);
-            lyrics = lyrics.replace("&#32;"," ");
-            lyrics = lyrics.replace("&#45;", "-");
-            time = time.replace("&#58;", ":");
-            time = time.replace("&#46;", ".");
-
-            mLrcs.add(lyrics);
-            mTimes.add(parseTime(time));
-        }
     }
 
     // 外部提供方法

@@ -1,0 +1,1 @@
+ALTER TABLE Songs ADD COLUMN songid INTEGER;

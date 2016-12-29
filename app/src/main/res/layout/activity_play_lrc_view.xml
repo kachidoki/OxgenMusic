@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="320dp"
+    android:layout_height="match_parent"
     android:gravity="center">
     <com.kachidoki.oxgenmusic.widget.LrcView
     android:id="@+id/play_lrc"
@@ -16,5 +16,5 @@
     app:normalTextColor="@android:color/white"
     app:currentTextColor="@android:color/holo_orange_light"
     app:dividerHeight="20dp"
-    app:rows="7" />
+    app:rows="9" />
 </LinearLayout>

@@ -1,12 +1,13 @@
 package com.kachidoki.oxgenmusic.activity;
 
 import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
 import android.view.View;
 import android.widget.ImageView;
@@ -15,21 +16,22 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
 import com.kachidoki.oxgenmusic.R;
+import com.kachidoki.oxgenmusic.activity.fragment.CdViewFragment;
+import com.kachidoki.oxgenmusic.activity.fragment.LrcViewFragment;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
-import com.kachidoki.oxgenmusic.widget.CDview;
-import com.kachidoki.oxgenmusic.widget.LrcView;
+
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -51,8 +53,6 @@ public class PlayActivity extends BaseActivity {
     ImageView playNext;
     @BindView(R.id.play_mode)
     ImageView playMode;
-    @BindView(R.id.play_cdView)
-    CDview cDview;
     @BindView(R.id.play_toMylist)
     CardView playToMylist;
     @BindView(R.id.play_seekBar)
@@ -65,11 +65,15 @@ public class PlayActivity extends BaseActivity {
     LinearLayout backGround;
     @BindView(R.id.play_backImag)
     ImageView backImg;
-    @BindView(R.id.play_lrc)
-    LrcView lrcView;
+    @BindView(R.id.play_viewpager)
+    ViewPager viewPager;
+    @BindView(R.id.play_container)
+    LinearLayout container;
 
 
-    String toBeReadText = "[00&#58;00&#46;92]海阔天空&#32;&#32;&#45;&#32;BEYOND&#10;[00&#58;02&#46;27]词：黄家驹&#10;[00&#58;03&#46;32]曲：黄家驹&#10;[00&#58;04&#46;30]&#10;[00&#58;19&#46;17]今天我&#32;寒夜里看雪飘过&#10;[00&#58;25&#46;75]怀着冷却了的心窝飘远方&#10;[00&#58;30&#46;77]&#10;[00&#58;31&#46;60]风雨里追赶&#32;雾里分不清影踪&#10;[00&#58;37&#46;82]天空海阔你与我&#32;可会变&#10;[00&#58;43&#46;27]&#10;[00&#58;44&#46;14]多少次迎着冷眼与嘲笑&#10;[00&#58;50&#46;55]从没有放弃过心中的理想&#10;[00&#58;56&#46;02]&#10;[00&#58;56&#46;67]一刹那恍惚&#32;若有所失的感觉&#10;[01&#58;02&#46;65]不知不觉已变淡&#32;心里爱&#10;[01&#58;08&#46;64]&#10;[01&#58;09&#46;66]原谅我这一生不羁放纵爱自由&#10;[01&#58;15&#46;56]&#10;[01&#58;16&#46;40]也会怕有一天会跌倒&#10;[01&#58;22&#46;72]背弃了理想谁人都可以&#10;[01&#58;27&#46;84]&#10;[01&#58;28&#46;51]哪会怕有一天只你共我&#10;[01&#58;33&#46;89]&#10;[01&#58;43&#46;41]今天我&#32;寒夜里看雪飘过&#10;[01&#58;49&#46;76]怀着冷却了的心窝飘远方&#10;[01&#58;54&#46;86]&#10;[01&#58;55&#46;60]风雨里追赶&#32;雾里分不清影踪&#10;[02&#58;01&#46;92]天空海阔你与我&#32;可会变&#10;[02&#58;06&#46;61]&#10;[02&#58;08&#46;70]原谅我这一生不羁放纵爱自由&#10;[02&#58;14&#46;86]&#10;[02&#58;15&#46;55]也会怕有一天会跌倒&#10;[02&#58;21&#46;30]&#10;[02&#58;21&#46;83]背弃了理想谁人都可以&#10;[02&#58;27&#46;17]&#10;[02&#58;28&#46;08]哪会怕有一天只你共我&#10;[02&#58;33&#46;08]&#10;[02&#58;38&#46;06]仍然自由自我&#10;[02&#58;40&#46;57]&#10;[02&#58;41&#46;42]永远高唱我歌&#10;[02&#58;44&#46;42]走遍千里&#32;原谅我这一生不羁放纵爱自由&#10;[02&#58;55&#46;20]&#10;[02&#58;56&#46;14]也会怕有一天会跌倒&#10;[03&#58;02&#46;26]背弃了理想&#32;谁人都可以&#10;[03&#58;07&#46;48]&#10;[03&#58;08&#46;67]哪会怕有一天只你共我&#10;[03&#58;13&#46;58]&#10;[03&#58;14&#46;51]原谅我这一生不羁放纵爱自由&#10;[03&#58;21&#46;27]也会怕有一天会跌倒&#10;[03&#58;26&#46;00]&#10;[03&#58;27&#46;38]背弃了理想谁人都可以&#10;[03&#58;31&#46;94]&#10;[03&#58;33&#46;61]哪会怕有一天只你共我";
+    private List<ImageView> DotList = new ArrayList<>();//导航图集合
+    private int mCurrentIndex = 0;//当前小圆点的位置
+    private List<Fragment> fragments = new ArrayList<>();
 
     private SimpleDateFormat time = new SimpleDateFormat("m:ss");
     private Handler handler = new Handler();
@@ -82,7 +86,7 @@ public class PlayActivity extends BaseActivity {
                     playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
                     playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
                     ////////////////
-                    lrcView.changeCurrent(MusicManager.getMusicManager().getCurrentPosition());
+//                    lrcView.changeCurrent(MusicManager.getMusicManager().getCurrentPosition());
 
                     playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
                     playSeekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -90,7 +94,7 @@ public class PlayActivity extends BaseActivity {
                         public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
                             if (b) {
                                 MusicManager.getMusicManager().seekTo(seekBar.getProgress());
-                                lrcView.onDrag(seekBar.getProgress());
+//                                lrcView.onDrag(seekBar.getProgress());
                             }
 
                         }
@@ -110,18 +114,6 @@ public class PlayActivity extends BaseActivity {
         }
     };
 
-    private SimpleTarget target = new SimpleTarget<Bitmap>() {
-        @Override
-        public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-            cDview.setImage(resource);
-        }
-
-        @Override
-        public void onLoadFailed(Exception e, Drawable errorDrawable) {
-            super.onLoadFailed(e, errorDrawable);
-            cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal_png));
-        }
-    };
 
 
     @Override
@@ -131,8 +123,56 @@ public class PlayActivity extends BaseActivity {
         EventBus.getDefault().register(this);
         ButterKnife.bind(this);
         setToolbar(true);
-        cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
-        lrcView.setLrcWord(toBeReadText);
+
+        initViewPager();
+
+    }
+
+
+    private void initViewPager(){
+        fragments.add(new CdViewFragment());
+        fragments.add(new LrcViewFragment());
+        for (int i = 0; i < fragments.size(); i++) {
+            ImageView imageView = new ImageView(this);
+            DotList.add(imageView);
+            ImageView dot = new ImageView(this);
+            if (i == mCurrentIndex) {
+                dot.setImageResource(R.drawable.page_now);
+            } else {
+                dot.setImageResource(R.drawable.page);
+            }
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+            if (i > 0) {
+                params.leftMargin = 2;
+            }
+            dot.setLayoutParams(params);
+            container.addView(dot);
+        }
+        viewPager.setAdapter(new MyViewPagerAdapter(getSupportFragmentManager()));
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                mCurrentIndex = position;
+                for (int i = 0; i < container.getChildCount(); i++) {
+                    ImageView imageView = (ImageView) container.getChildAt(i);
+                    if (i == position) {
+                        imageView.setImageResource(R.drawable.page_now);
+                    } else {
+                        imageView.setImageResource(R.drawable.page);
+                    }
+                }
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
@@ -144,15 +184,6 @@ public class PlayActivity extends BaseActivity {
             playPlay.setImageResource(R.drawable.icon_play_play);
         }
 
-        if (MusicManager.getMusicManager().getNowSong() != null) {
-            loadCDBitmap();
-        }
-
-        if (MusicManager.getMusicManager().getIsPlaying()) {
-            cDview.start();
-        } else {
-            cDview.pause();
-        }
 
         switch (MusicManager.getMusicManager().getPlayMode()){
             case LOOP:playMode.setImageResource(R.drawable.icon_play_loop);
@@ -169,8 +200,6 @@ public class PlayActivity extends BaseActivity {
                 playNowTime.setText(time.format(MusicManager.getMusicManager().getCurrentPosition()));
                 playSeekBar.setMax(MusicManager.getMusicManager().getDuration());
                 playSeekBar.setProgress(MusicManager.getMusicManager().getCurrentPosition());
-                ////////////////////
-                lrcView.changeCurrent(MusicManager.getMusicManager().getCurrentPosition());
             }
         }
         setBackGround();
@@ -185,16 +214,13 @@ public class PlayActivity extends BaseActivity {
         handler.removeCallbacks(updataProgress);
     }
 
-    @OnClick({R.id.play_more, R.id.play_previous, R.id.play_play, R.id.play_next, R.id.play_mode})
+    @OnClick({R.id.play_previous, R.id.play_play, R.id.play_next})
     void sendCommand(View view) {
         switch (view.getId()) {
-            case R.id.play_more:
-                break;
             case R.id.play_previous:
                 Intent previous = new Intent(this, PlayerService.class);
                 previous.putExtra("command", PlayerService.CommandPrevious);
                 startService(previous);
-                loadCDBitmap();
                 break;
             case R.id.play_play:
                 Intent play = new Intent(this, PlayerService.class);
@@ -205,9 +231,6 @@ public class PlayActivity extends BaseActivity {
                 Intent next = new Intent(this, PlayerService.class);
                 next.putExtra("command", PlayerService.CommandNext);
                 startService(next);
-                loadCDBitmap();
-                break;
-            case R.id.play_mode:
                 break;
         }
     }
@@ -248,14 +271,6 @@ public class PlayActivity extends BaseActivity {
     public void onEvent(PlayEvent playEvent) {
         switch (playEvent.getAction()) {
             case CHANGE:
-                if (MusicManager.getMusicManager().getNowSong() != null) {
-                    loadCDBitmap();
-                }
-                if (MusicManager.getMusicManager().getIsPlaying()) {
-                    cDview.start();
-                } else {
-                    cDview.pause();
-                }
                 if (!MusicManager.getMusicManager().getIsPlaying()) {
                     playPlay.setImageResource(R.drawable.icon_play_play);
                 } else {
@@ -267,12 +282,6 @@ public class PlayActivity extends BaseActivity {
     }
 
 
-    private void loadCDBitmap() {
-        Glide.with(getApplicationContext())
-                .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
-                .asBitmap()
-                .into(target);
-    }
 
     private void setBackGround(){
         if (MusicManager.getMusicManager().getNowSong()!=null){
@@ -287,5 +296,20 @@ public class PlayActivity extends BaseActivity {
             getToolbar().setSubtitle("");
         }
 
+    }
+
+
+    public class MyViewPagerAdapter extends FragmentPagerAdapter {
+        public MyViewPagerAdapter(FragmentManager fm) {
+            super(fm);
+        }
+        @Override
+        public Fragment getItem(int i) {
+            return fragments.get(i);
+        }
+        @Override
+        public int getCount() {
+            return fragments.size();
+        }
     }
 }
