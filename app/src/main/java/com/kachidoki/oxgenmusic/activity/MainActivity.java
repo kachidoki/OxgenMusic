@@ -57,6 +57,7 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observer;
+import rx.Subscriber;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -133,6 +134,8 @@ public class MainActivity extends BaseActivity {
         EventBus.getDefault().register(this);
 
         setToolbar(true);
+
+        initQueue();
         initDrawer(savedInstanceState);
         setProfile();
 
@@ -165,6 +168,53 @@ public class MainActivity extends BaseActivity {
         }
 
         checkDrawer();
+    }
+
+    private void initQueue() {
+        if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
+            MusicDBHelper.getMusicDBHelper().RxConvertQueue(MusicManager.myList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Song>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Song> songs) {
+                            MusicManager.getMusicManager().setQueue(songs, (Integer) SPUtils.get(MainActivity.this,Constants.nowIndex_sp,0), false);
+                            loadCDBitmap();
+                        }
+                    });
+
+        } else  {
+            MusicDBHelper.getMusicDBHelper().RxConvertQueue(MusicManager.hotList)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Song>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Song> songs) {
+                            MusicManager.getMusicManager().setQueue(songs, (Integer) SPUtils.get(MainActivity.this,Constants.nowIndex_sp,0), false);
+                            loadCDBitmap();
+                        }
+                    });
+        }
     }
 
     @Override

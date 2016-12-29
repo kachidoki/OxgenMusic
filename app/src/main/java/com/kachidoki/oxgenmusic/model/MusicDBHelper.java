@@ -26,6 +26,7 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListListener;
 import cn.bmob.v3.listener.SaveListener;
 import rx.Observable;
+import rx.Observer;
 import rx.Subscriber;
 import rx.functions.Action1;
 import rx.functions.Func1;
@@ -137,6 +138,16 @@ public class MusicDBHelper {
             return songs;
         }
         return null;
+    }
+
+    public Observable<List<Song>> RxConvertQueue(final SongQueue songQueue){
+        return Observable.create(new Observable.OnSubscribe<List<Song>>() {
+            @Override
+            public void call(Subscriber<? super List<Song>> subscriber) {
+                subscriber.onNext(ConvertQueue(songQueue));
+                subscriber.onCompleted();
+            }
+        });
     }
 
 

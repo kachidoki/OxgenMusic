@@ -121,6 +121,12 @@ public class RankActivity extends BaseActivity {
         setListImg(getIntent().getStringExtra("topid"));
         getRankMusic();
 
+        if (MusicManager.getMusicManager().getIsPlaying()){
+            fab.setImageResource(R.mipmap.ic_pause_black_24dp);
+        }else {
+            fab.setImageResource(R.mipmap.ic_play_arrow_black_24dp);
+        }
+
     }
 
     @Override

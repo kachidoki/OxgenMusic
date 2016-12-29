@@ -12,7 +12,7 @@
     android:layout_height="wrap_content"
     android:layout_marginTop="5dp"
     android:layout_marginBottom="5dp"
-    app:textSize="18sp"
+    app:textSize="16sp"
     app:normalTextColor="@android:color/white"
     app:currentTextColor="@android:color/holo_orange_light"
     app:dividerHeight="20dp"
