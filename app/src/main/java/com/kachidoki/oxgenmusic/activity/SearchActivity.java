@@ -65,6 +65,7 @@ public class SearchActivity extends BaseActivity {
         public void onNext(List<Song> songs) {
             freshing.setVisibility(View.GONE);
             adapter.setData(songs);
+            adapter.callname = searchKeyword.getText().toString();
         }
     };
 

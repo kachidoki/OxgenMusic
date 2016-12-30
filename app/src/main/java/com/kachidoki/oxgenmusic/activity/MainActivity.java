@@ -58,6 +58,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 import rx.Observer;
 import rx.Subscriber;
+import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
 import rx.schedulers.Schedulers;
@@ -110,7 +111,6 @@ public class MainActivity extends BaseActivity {
     Observer<List<Song>> observer = new Observer<List<Song>>() {
         @Override
         public void onCompleted() {
-
         }
 
         @Override
@@ -123,6 +123,40 @@ public class MainActivity extends BaseActivity {
             adapter.setData(songs);
             if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")&&MusicManager.getMusicManager().getIsPlaying())
                 adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+        }
+    };
+
+
+    Subscription musicSubsription = null;
+    Observer<List<Song>> MusicObserver = new Subscriber<List<Song>>() {
+        @Override
+        public void onCompleted() {
+            if (musicSubsription!=null){
+                musicSubsription.unsubscribe();
+                musicSubsription=null;
+            }
+        }
+
+        @Override
+        public void onError(Throwable throwable) {
+
+        }
+
+        @Override
+        public void onNext(List<Song> songs) {
+            //压缩过的队列
+            int half = 10;
+            int index = (int) SPUtils.get(MainActivity.this,Constants.nowIndex_sp,0);
+            boolean isless = index - half<0;
+            if (songs.size()<=half*2){
+                SPUtils.put(getApplicationContext(),Constants.nowQueue_sp,Constants.cacheList);
+                SPUtils.put(getApplicationContext(),Constants.hotListname_sp,Constants.cacheList);
+                MusicManager.getMusicManager().setQueue(songs,isless?index:half, false);
+            }else {
+                MusicManager.getMusicManager().setQueue(songs, index, false);
+            }
+            loadCDBitmap();
+            startService(new Intent(MainActivity.this,PlayerService.class));
         }
     };
 
@@ -139,7 +173,7 @@ public class MainActivity extends BaseActivity {
         initDrawer(savedInstanceState);
         setProfile();
 
-        startService(new Intent(this, PlayerService.class));
+//        startService(new Intent(this, PlayerService.class));
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
@@ -172,48 +206,16 @@ public class MainActivity extends BaseActivity {
 
     private void initQueue() {
         if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
-            MusicDBHelper.getMusicDBHelper().RxConvertQueue(MusicManager.myList)
+            musicSubsription = MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.myList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<Song>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onNext(List<Song> songs) {
-                            MusicManager.getMusicManager().setQueue(songs, (Integer) SPUtils.get(MainActivity.this,Constants.nowIndex_sp,0), false);
-                            loadCDBitmap();
-                        }
-                    });
+                    .subscribe(MusicObserver);
 
         } else  {
-            MusicDBHelper.getMusicDBHelper().RxConvertQueue(MusicManager.hotList)
+            musicSubsription = MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.hotList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(new Subscriber<List<Song>>() {
-                        @Override
-                        public void onCompleted() {
-
-                        }
-
-                        @Override
-                        public void onError(Throwable throwable) {
-
-                        }
-
-                        @Override
-                        public void onNext(List<Song> songs) {
-                            MusicManager.getMusicManager().setQueue(songs, (Integer) SPUtils.get(MainActivity.this,Constants.nowIndex_sp,0), false);
-                            loadCDBitmap();
-                        }
-                    });
+                    .subscribe(MusicObserver);
         }
     }
 

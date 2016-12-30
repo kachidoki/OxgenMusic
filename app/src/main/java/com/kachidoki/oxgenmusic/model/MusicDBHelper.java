@@ -120,6 +120,50 @@ public class MusicDBHelper {
         return false;
     }
 
+
+    public List<Song> fastConvertQueue(int index,SongQueue songQueue){
+        List<SongBean> songBeanList = songQueue.songs();
+        if (songBeanList!=null){
+            int half = 10;
+            boolean isless = index - half<0;
+            boolean ismore = index + half>songBeanList.size()-1;
+            List<Song> songs = new ArrayList<>();
+            for (int i = isless?0:index-half;i<(ismore?songBeanList.size():index+half);i++){
+                Song song = new Song();
+                song.singername = songQueue.songs().get(i).singername;
+                song.seconds = songQueue.songs().get(i).seconds;
+                song.singerid = songQueue.songs().get(i).singerid;
+                song.songname = songQueue.songs().get(i).songname;
+                song.albumid = songQueue.songs().get(i).albumid;
+                song.albumpic_big = songQueue.songs().get(i).albumpic;
+                song.songid = songQueue.songs().get(i).songid;
+                song.url = songQueue.songs().get(i).url;
+                songs.add(song);
+            }
+            return songs;
+        }
+        return null;
+    }
+
+    public Observable<List<Song>> RxFastConvertQueue(final int index, final SongQueue songQueue){
+        final boolean isSmall = songQueue.songs().size()<40;
+        return Observable.create(new Observable.OnSubscribe<List<Song>>() {
+            @Override
+            public void call(Subscriber<? super List<Song>> subscriber) {
+                if (isSmall){
+                    subscriber.onNext(ConvertQueue(songQueue));
+                    subscriber.onCompleted();
+                }else {
+                    subscriber.onNext(fastConvertQueue(index,songQueue));
+                    subscriber.onCompleted();
+                }
+            }
+        });
+
+    }
+
+
+
     public List<Song> ConvertQueue(SongQueue songQueue){
         if (songQueue.songs()!=null){
             List<Song> songs = new ArrayList<Song>();

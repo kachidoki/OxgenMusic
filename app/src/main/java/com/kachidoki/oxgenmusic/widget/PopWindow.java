@@ -3,6 +3,7 @@ package com.kachidoki.oxgenmusic.widget;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -120,13 +121,14 @@ public class PopWindow extends PopupWindow {
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
                 if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
                     //设置index即可
+                    Log.e("Test","设置index即可");
                     MusicManager.getMusicManager().setIndex(queueIndex);
-                    if (callname.equals("search")){
-                        //也要重置
-                        MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
-                        MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
-                        MusicManager.getMusicManager().setQueue(songList,queueIndex,true);
-                    }
+//                    if (callname.equals("search")){
+//                        //也要重置
+//                        MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
+//                        MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
+//                        MusicManager.getMusicManager().setQueue(songList,queueIndex,true);
+//                    }
                 }else {
                     //重置队列
                     SPUtils.put(context,Constants.hotListname_sp,callname);

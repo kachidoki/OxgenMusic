@@ -72,7 +72,14 @@ public class PlayerService extends Service {
     public void onDestroy() {
         super.onDestroy();
         stopForeground(true);
-        SPUtils.put(PlayerService.this,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+        if (SPUtils.get(PlayerService.this,Constants.nowQueue_sp,"noQueue").equals(Constants.cacheList)){
+            int half = 10;
+            int index = (int)SPUtils.get(PlayerService.this,Constants.nowIndex_sp,0);
+            boolean isless = index - half<0;
+            SPUtils.put(PlayerService.this,Constants.nowIndex_sp,isless?MusicManager.getMusicManager().getIndex():index+(MusicManager.getMusicManager().getIndex()-half));
+        }else {
+            SPUtils.put(PlayerService.this,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+        }
         MusicManager.getMusicManager().setIsfirst(true);
     }
 
@@ -163,14 +170,12 @@ public class PlayerService extends Service {
                 sendPlayerNotification();
                 break;
             case CommandNext:
-                Log.e("Test","setMediaPlayer : CommandNext");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().next();
                 }
                 sendPlayerNotification();
                 break;
             case CommandPlay:
-                Log.e("Test","setMediaPlayer : CommandPlay");
                 if (MusicManager.getMusicManager().getIsPlaying()){
                     MusicManager.getMusicManager().pause();
                 }else {
@@ -179,14 +184,12 @@ public class PlayerService extends Service {
                 sendPlayerNotification();
                 break;
             case CommandPrevious:
-                Log.e("Test","setMediaPlayer : CommandPrevious");
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().previous();
                 }
                 sendPlayerNotification();
                 break;
             case CommandClose:
-                Log.e("Test","setMediaPlayer : CommandClose");
                 if (MusicManager.getMusicManager().getNowSong()!=null){
                     if (MusicManager.getMusicManager().getIsReady()){
                         MusicManager.getMusicManager().pause();

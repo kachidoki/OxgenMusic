@@ -36,8 +36,6 @@ public class LaunchActivity extends AppCompatActivity {
         if (MusicManager.getMusicManager().getIsfirst()){
             initSP();
             initQueueDB();
-//            initQueue();
-
             skipActivity(1500);
         }else {
             skipActivity(1000);
@@ -103,15 +101,5 @@ public class LaunchActivity extends AppCompatActivity {
         Log.e("Launch","initQueueDB down");
     }
 
-    private void initQueue() {
-        Log.e("Launch","initQueue ");
-        if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.myList),
-                    (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
-        } else  {
-            MusicManager.getMusicManager().setQueue(MusicDBHelper.getMusicDBHelper().ConvertQueue(MusicManager.hotList),
-                    (Integer) SPUtils.get(LaunchActivity.this,Constants.nowIndex_sp,0), false);
-        }
-        Log.e("Launch","initQueue down");
-    }
+
 }
