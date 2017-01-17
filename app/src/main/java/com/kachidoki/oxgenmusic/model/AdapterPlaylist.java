@@ -111,15 +111,8 @@ public class AdapterPlaylist extends RecyclerView.Adapter {
                 @Override
                 public void onClick(View view) {
                     if (SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noname").equals(callname)){
-                        Log.e("Test","nowQueue_sp = "+SPUtils.get(itemView.getContext(),Constants.nowQueue_sp,"noQueue")+" hotListname_sp = "+SPUtils.get(itemView.getContext(),Constants.hotListname_sp,"noname"));
                         //设置index即可
                         MusicManager.getMusicManager().setIndex(i);
-//                        if (callname.equals("search")){
-//                            //也要重置
-//                            MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
-//                            MusicDBHelper.getMusicDBHelper().saveListSong(songs,MusicManager.hotList);
-//                            MusicManager.getMusicManager().setQueue(songs,i,true);
-//                        }
                     }else {
                         //重置队列
                         SPUtils.put(itemView.getContext(),Constants.hotListname_sp,callname);

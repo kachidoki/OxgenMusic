@@ -169,7 +169,9 @@ public class MainActivity extends BaseActivity {
 
         setToolbar(true);
 
-        initQueue();
+        if(MusicManager.getMusicManager().getIsfirst()){
+            initQueue();
+        }
         initDrawer(savedInstanceState);
         setProfile();
 

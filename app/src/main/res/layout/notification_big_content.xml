@@ -34,6 +34,7 @@
                     android:layout_height="wrap_content"
                     android:textColor="@color/white"
                     android:text="songname"
+                    android:singleLine="true"
                     android:textSize="16sp"
                     android:id="@+id/nof_songname"/>
                 <TextView
