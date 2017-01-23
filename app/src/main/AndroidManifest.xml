@@ -33,6 +33,8 @@
             android:label="注册"/>
         <activity android:name=".activity.SearchActivity"
             android:label="搜索"/>
+        <activity android:name=".activity.LocalActivity"
+            android:label="本地音乐"/>
         <activity android:name=".activity.LaunchActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

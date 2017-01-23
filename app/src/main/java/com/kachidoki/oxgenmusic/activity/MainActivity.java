@@ -361,8 +361,9 @@ public class MainActivity extends BaseActivity {
                         new PrimaryDrawerItem().withName("主界面").withIcon(R.drawable.drawer_home).withIdentifier(1),
                         new PrimaryDrawerItem().withName("我的列表").withIcon(R.drawable.drawer_list).withIdentifier(2),
                         new PrimaryDrawerItem().withName("正在播放").withIcon(R.drawable.drawer_play).withIdentifier(3),
+                        new PrimaryDrawerItem().withName("本地音乐").withIcon(R.drawable.drawer_local).withIdentifier(8),
                         new DividerDrawerItem(),
-                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
+//                        new SecondaryDrawerItem().withName("设置").withIcon(R.drawable.drawer_setting).withIdentifier(4),
                         new SecondaryDrawerItem().withName("关于").withIcon(R.drawable.drawer_about).withIdentifier(5)
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -374,8 +375,9 @@ public class MainActivity extends BaseActivity {
                                 intent = new Intent(MainActivity.this, MyPlaylistActivity.class);
                             } else if (drawerItem.getIdentifier() == 3) {
                                 intent = new Intent(MainActivity.this, PlayActivity.class);
-                            } else if (drawerItem.getIdentifier() == 4) {
-                                Toast.makeText(MainActivity.this,"其他功能等待更新哦",Toast.LENGTH_SHORT).show();
+                            } else if (drawerItem.getIdentifier() == 8) {
+                                intent = new Intent(MainActivity.this, LocalActivity.class);
+//                                Toast.makeText(MainActivity.this,"其他功能等待更新哦",Toast.LENGTH_SHORT).show();
                             } else if (drawerItem.getIdentifier() == 5) {
                                 intent = new Intent(MainActivity.this, AboutActivity.class);
                             } else if (drawerItem.getIdentifier()== 6) {
@@ -417,8 +419,8 @@ public class MainActivity extends BaseActivity {
     private void checkDrawer() {
         if (drawer.getDrawerItems().size() != 8) {
             if (AccountModel.getAccountModel().isLogin()) {
-                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("数据同步").withIcon(R.drawable.drawer_sync).withIdentifier(6), 5);
-                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("退出登录").withIcon(R.drawable.drawer_logout).withIdentifier(7), 6);
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("数据同步").withIcon(R.drawable.drawer_sync).withIdentifier(6), 6);
+                drawer.addItemAtPosition(new SecondaryDrawerItem().withName("退出登录").withIcon(R.drawable.drawer_logout).withIdentifier(7), 7);
             }
         } else if (drawer.getDrawerItems().size() == 8) {
             if (!AccountModel.getAccountModel().isLogin()) {

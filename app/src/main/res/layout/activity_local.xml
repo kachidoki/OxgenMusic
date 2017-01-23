@@ -33,14 +33,14 @@
                 android:text="本地音乐"/>
         </LinearLayout>
         <View
-            android:id="@+id/slider"
+            android:id="@+id/local_slider"
             android:layout_width="match_parent"
             android:layout_height="2dp"
             android:background="@android:color/white"
             android:layout_gravity="bottom"/>
     </FrameLayout>
     <android.support.v4.view.ViewPager
-        android:id="@+id/viewpager"
+        android:id="@+id/local_viewpager"
         android:layout_height="match_parent"
         android:layout_width="match_parent"
         />
