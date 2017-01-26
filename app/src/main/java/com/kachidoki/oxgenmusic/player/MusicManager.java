@@ -41,7 +41,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
 
     public MusicManager(){
-        Log.e("Test","MusicManager构造 isFirst = "+isfirst);
         mediaPlayer = new MediaPlayer();
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
@@ -101,6 +100,10 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void deleteSong(int index,boolean isPlaying,boolean isMylist){
+        Log.e("Test","before deleteSong "+" size = "+mQueue.size());
+        for (int i =0;i<mQueue.size();i++){
+            Log.e("Test","before deleteSong"+"i = "+i+" songname = "+mQueue.get(i).songname);
+        }
         boolean deleteIsPlaying = index==mQueueIndex;
         if (isMylist){
             mQueue.remove(index);
@@ -115,7 +118,13 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
                 mediaPlayer.stop();
                 callBack.OnChange();
             }
+            Log.e("Test","==================================");
+            Log.e("Test","after deleteSong "+" size = "+mQueue.size());
+            for (int i =0;i<mQueue.size();i++){
+                Log.e("Test","after deleteSong"+"i = "+i+" songname = "+mQueue.get(i).songname);
+            }
         }
+
     }
 
     public List<Song> getmQueue(){
@@ -245,8 +254,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     private void play(Song song){
         if (song!=null){
             isfirst = false;
-            Log.e("Test","play isfirst = "+isfirst);
-            Log.e("Test","play index = "+mQueueIndex);
             try {
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(song.url);
@@ -304,7 +311,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        Log.e("Test","onCompletion");
         isReady = false;
         next();
         callBack.OnChange();
@@ -312,7 +318,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
-        Log.e("Test","onPrepared");
         isReady = true;
         mediaPlayer.start();
         callBack.OnChange();
