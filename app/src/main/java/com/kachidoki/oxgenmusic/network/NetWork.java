@@ -19,14 +19,13 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetWork {
     private static Download download;
     private static MusicApi musicApi;
-    private static OkHttpClient okHttpClient ;
     private static final int DEFAULT_TIMEOUT = 15;
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
 
 
     public static MusicApi getMusicApi(){
-        okHttpClient = new OkHttpClient();
+        OkHttpClient okHttpClient = new OkHttpClient();
         if (musicApi==null){
             Retrofit retrofit = new Retrofit.Builder()
                     .client(okHttpClient)
@@ -39,22 +38,20 @@ public class NetWork {
         return musicApi;
     }
 
-    public static Download getDownloadApi(ProgressResponseListener listener){
-        okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new DownloadProgressInterceptor(listener))
+    public static Download getDownloadApi(ProgressResponseListener listener,String songname){
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new DownloadProgressInterceptor(songname,listener))
                 .retryOnConnectionFailure(true)
                 .connectTimeout(DEFAULT_TIMEOUT, TimeUnit.SECONDS)
                 .build();
 
-        if (download==null){
-            Retrofit retrofit = new Retrofit.Builder()
-                    .baseUrl(Constants.DownbaseUrl)
-                    .client(okHttpClient)
-                    .addConverterFactory(gsonConverterFactory)
-                    .addCallAdapterFactory(rxJavaCallAdapterFactory)
-                    .build();
-            download = retrofit.create(Download.class);
-        }
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.DownbaseUrl)
+                .client(okHttpClient)
+                .addConverterFactory(gsonConverterFactory)
+                .addCallAdapterFactory(rxJavaCallAdapterFactory)
+                .build();
+        download = retrofit.create(Download.class);
         return download;
     }
 

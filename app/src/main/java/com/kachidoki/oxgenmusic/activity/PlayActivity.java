@@ -9,21 +9,28 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.CardView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.activity.fragment.CdViewFragment;
 import com.kachidoki.oxgenmusic.activity.fragment.LrcViewFragment;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
+import com.kachidoki.oxgenmusic.config.Constants;
+import com.kachidoki.oxgenmusic.model.MusicDBHelper;
+import com.kachidoki.oxgenmusic.model.bean.Song;
+import com.kachidoki.oxgenmusic.model.bean.SongDown;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.utils.SPUtils;
 
 
 import org.greenrobot.eventbus.EventBus;
@@ -36,6 +43,9 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import rx.Subscriber;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.schedulers.Schedulers;
 
 import static com.kachidoki.oxgenmusic.player.MusicManager.PlayMode.*;
 
@@ -237,11 +247,49 @@ public class PlayActivity extends BaseActivity {
 
     @OnClick(R.id.play_more)
     void download(){
-        Intent intent = new Intent(PlayActivity.this, DownloadService.class);
-        intent.putExtra("command",DownloadService.CommandDownload);
-        intent.putExtra("songname", MusicManager.getMusicManager().getNowSong().songname);
-        intent.putExtra("url",MusicManager.getMusicManager().getNowSong().url);
-        startService(intent);
+        Log.e("Test","nowQueue ="+SPUtils.get(PlayActivity.this, Constants.nowQueue_sp,"noQueue"));
+        Log.e("Test","hotListname_sp ="+SPUtils.get(PlayActivity.this, Constants.hotListname_sp,"nocall"));
+        if (SPUtils.get(PlayActivity.this, Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                &&(SPUtils.get(PlayActivity.this, Constants.hotListname_sp,"nocall").equals("mylocal")
+                ||SPUtils.get(PlayActivity.this, Constants.hotListname_sp,"nocall").equals("mydown"))){
+            Toast.makeText(PlayActivity.this,"这首是本地歌曲",Toast.LENGTH_SHORT).show();
+        }else {
+            MusicDBHelper.getMusicDBHelper().RxGetDownsongs()
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Subscriber<List<Song>>() {
+                        @Override
+                        public void onCompleted() {
+
+                        }
+
+                        @Override
+                        public void onError(Throwable throwable) {
+
+                        }
+
+                        @Override
+                        public void onNext(List<Song> songs) {
+                            if (MusicDBHelper.getMusicDBHelper().checkIsDown(MusicManager.getMusicManager().getNowSong().songname,songs)){
+                                Toast.makeText(PlayActivity.this, "已经下载", Toast.LENGTH_SHORT).show();
+                            }else {
+                                Intent intent = new Intent(PlayActivity.this, DownloadService.class);
+                                intent.putExtra("command",DownloadService.CommandDownload);
+                                intent.putExtra("songname", MusicManager.getMusicManager().getNowSong().songname);
+                                intent.putExtra("seconds",MusicManager.getMusicManager().getNowSong().seconds);
+                                intent.putExtra("singerid",MusicManager.getMusicManager().getNowSong().singerid);
+                                intent.putExtra("albumpic",MusicManager.getMusicManager().getNowSong().albumpic_big);
+                                intent.putExtra("singername",MusicManager.getMusicManager().getNowSong().singername);
+                                intent.putExtra("albumid",MusicManager.getMusicManager().getNowSong().albumid);
+                                intent.putExtra("songid",MusicManager.getMusicManager().getNowSong().songid);
+                                intent.putExtra("url",MusicManager.getMusicManager().getNowSong().url);
+                                startService(intent);
+                            }
+                        }
+                    });
+
+        }
+
     }
 
     @OnClick(R.id.play_toMylist)

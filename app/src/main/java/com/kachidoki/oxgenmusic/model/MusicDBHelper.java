@@ -1,6 +1,8 @@
 package com.kachidoki.oxgenmusic.model;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -10,6 +12,7 @@ import com.activeandroid.query.Select;
 import com.activeandroid.query.Update;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.bean.SongBean;
+import com.kachidoki.oxgenmusic.model.bean.SongDown;
 import com.kachidoki.oxgenmusic.model.bean.SongQueue;
 import com.kachidoki.oxgenmusic.model.bean.SongYun;
 import com.kachidoki.oxgenmusic.player.MusicManager;
@@ -85,6 +88,14 @@ public class MusicDBHelper {
                 .execute();
     }
 
+    public void deleteDownSong(Song song){
+        new Delete()
+                .from(SongDown.class)
+                .where("songname = ?",song.songname)
+                .where("singername = ?",song.singername)
+                .execute();
+    }
+
     public void swapSongs(Song fromSong,Song toSong){
         long fromId = new Select().from(SongBean.class).where("songname = ?",fromSong.songname).where("singername = ?",fromSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
         long toId = new Select().from(SongBean.class).where("songname = ?",toSong.songname).where("singername = ?",toSong.singername).where("queue = ?", MusicManager.myList.getId()).execute().get(0).getId();
@@ -115,6 +126,13 @@ public class MusicDBHelper {
     public boolean checkIsAdd(String songname,SongQueue songQueue){
         List<SongBean> list = SelectQueue(songQueue.name).songs();
         for (SongBean songBean:list){
+            if (songname.equals(songBean.songname)) return true;
+        }
+        return false;
+    }
+
+    public boolean checkIsDown(String songname,List<Song> songs){
+        for (Song songBean:songs){
             if (songname.equals(songBean.songname)) return true;
         }
         return false;
@@ -216,107 +234,6 @@ public class MusicDBHelper {
     }
 
 
-//    public void saveToYun(final Context context, List<BmobObject> songYuns,String userId){
-//        if (songYuns!=null){
-//            new BmobBatch().insertBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
-//                @Override
-//                public void done(List<BatchResult> list, BmobException e) {
-//                    if(e==null){
-//                        for(int i=0;i<list.size();i++){
-//                            BatchResult result = list.get(i);
-//                            BmobException ex =result.getError();
-//                            if(ex==null){
-//                                Log.e("BMOBsava","第"+i+"个数据批量添加成功："+result.getCreatedAt()+","+result.getObjectId()+","+result.getUpdatedAt());
-//                            }else{
-//                                Log.e("BMOBsava","第"+i+"个数据批量添加失败："+ex.getMessage()+","+ex.getErrorCode());
-//                            }
-//                            Toast.makeText(context,"同步成功",Toast.LENGTH_SHORT).show();
-//                        }
-//                    }else{
-//                        Log.i("BMOBsava","失败："+e.getMessage()+","+e.getErrorCode());
-//                    }
-//                }
-//            });
-//        }
-//    }
-
-//    public void deleteFromYun(List<BmobObject> songYuns){
-//        if (songYuns!=null){
-//            new BmobBatch().deleteBatch(songYuns).doBatch(new QueryListListener<BatchResult>() {
-//                @Override
-//                public void done(List<BatchResult> list, BmobException e) {
-//                    if(e==null){
-//                        for(int i=0;i<list.size();i++){
-//                            BatchResult result = list.get(i);
-//                            BmobException ex =result.getError();
-//                            if(ex==null){
-//                                Log.e("BMOBdelete","第"+i+"个数据批量删除成功");
-//                            }else{
-//                                Log.e("BMOBdelete","第"+i+"个数据批量删除失败："+ex.getMessage()+","+ex.getErrorCode());
-//                            }
-//                        }
-//                    }else{
-//                        Log.i("BMOBdelete","失败："+e.getMessage()+","+e.getErrorCode());
-//                    }
-//                }
-//            });
-//        }
-//    }
-
-//    public void findAndDeleteFromYun(String userId){
-//        BmobQuery<SongYun> query = new BmobQuery<>();
-//        query.addWhereEqualTo("userId",userId);
-//        query.findObjects(new FindListener<SongYun>() {
-//            @Override
-//            public void done(List<SongYun> list, BmobException e) {
-//                if (e==null){
-//                    if (list!=null){
-//                        List<BmobObject> deleteList = new ArrayList<>();
-//                        for (SongYun songYun:list){
-//                            deleteList.add(songYun);
-//                        }
-//                        deleteFromYun(deleteList);
-//                    }
-//                }else {
-//                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
-//
-//                }
-//            }
-//        });
-//    }
-
-//    public void findAndSaveFromYun(String userId, final SongQueue queue){
-//        BmobQuery<SongYun> query = new BmobQuery<>();
-//        query.addWhereEqualTo("userId",userId);
-//        query.findObjects(new FindListener<SongYun>() {
-//            @Override
-//            public void done(List<SongYun> list, BmobException e) {
-//                if (e==null){
-//                    saveListSongYun(list,queue);
-//                }else {
-//                    Log.e("bmob","失败："+e.getMessage()+","+e.getErrorCode());
-//                }
-//            }
-//        });
-//    }
-
-
-//    public void syncFromYun(Context context,SongQueue queue,String userid){
-//        if (userid!=null&&!userid.equals("")){
-//            if (queue!=null&&queue.songs().size()!=0){
-//                findAndDeleteFromYun(userid);
-//                saveToYun(context,ConvertQueueToYun(queue,userid),userid);
-//            }else {
-//                findAndSaveFromYun(userid,queue);
-//                Toast.makeText(context,"已从云端导入",Toast.LENGTH_SHORT).show();
-//            }
-//        }else {
-//            Toast.makeText(context,"无效的用户信息",Toast.LENGTH_SHORT).show();
-//        }
-//
-//    }
-
-
     public void syncYun(Context context,SongQueue queue,String userid){
         if (userid!=null&&!userid.equals("")){
             if (queue!=null&&queue.songs().size()!=0){
@@ -416,6 +333,81 @@ public class MusicDBHelper {
             @Override
             public void onNext(List<BatchResult> batchResults) {
                 Toast.makeText(context,"已上传数据到云端",Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+
+    //获取本地音乐
+    private List<Song> getLocalMusicData(Context context) {
+        List<Song> list = new ArrayList<Song>();
+        Cursor cursor = context.getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI,
+                null, null, null, MediaStore.Audio.AudioColumns.IS_MUSIC);
+        if (cursor != null) {
+            while (cursor.moveToNext()) {
+                Song song = new Song();
+                song.songname = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DISPLAY_NAME));
+                song.singername = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.ARTIST));
+                song.url = cursor.getString(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DATA));
+                song.seconds = cursor.getInt(cursor.getColumnIndexOrThrow(MediaStore.Audio.Media.DURATION));
+                // 注释部分是切割标题，分离出歌曲名和歌手 （本地媒体库读取的歌曲信息不规范）
+                if (song.songname.contains("-")) {
+                    String[] str = song.songname.split("-");
+                    song.singername = str[0];
+                    song.songname = str[1];
+                }
+                list.add(song);
+            }
+            // 释放资源
+            cursor.close();
+        }
+        return list;
+    }
+
+
+    public Observable<List<Song>> RxGetLocalsongs(final Context context){
+        return Observable.create(new Observable.OnSubscribe<List<Song>>() {
+            @Override
+            public void call(Subscriber<? super List<Song>> subscriber) {
+                subscriber.onNext(getLocalMusicData(context));
+                subscriber.onCompleted();
+            }
+        });
+    }
+
+    private List<SongDown> SelectDown(){
+        return new Select()
+                .from(SongDown.class)
+                .execute();
+    }
+
+
+    private List<Song> ConvertSongDown(List<SongDown> songDowns){
+        if (songDowns!=null){
+            List<Song> songs = new ArrayList<Song>();
+            for (int i=0;i<songDowns.size();i++){
+                Song song = new Song();
+                song.singername = songDowns.get(i).singername;
+                song.seconds = songDowns.get(i).seconds;
+                song.singerid = songDowns.get(i).singerid;
+                song.songname = songDowns.get(i).songname;
+                song.albumid = songDowns.get(i).albumid;
+                song.albumpic_big = songDowns.get(i).albumpic;
+                song.songid = songDowns.get(i).songid;
+                song.url = songDowns.get(i).url;
+                songs.add(song);
+            }
+            return songs;
+        }
+        return null;
+    }
+
+    public Observable<List<Song>> RxGetDownsongs(){
+        return Observable.create(new Observable.OnSubscribe<List<Song>>() {
+            @Override
+            public void call(Subscriber<? super List<Song>> subscriber) {
+                subscriber.onNext(ConvertSongDown(SelectDown()));
+                subscriber.onCompleted();
             }
         });
     }

@@ -61,7 +61,9 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.functions.Func1;
+import rx.internal.util.SubscriptionList;
 import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 
 public class MainActivity extends BaseActivity {
     @BindView(R.id.recyclerView_main)
@@ -127,14 +129,11 @@ public class MainActivity extends BaseActivity {
     };
 
 
-    Subscription musicSubsription = null;
+    SubscriptionList subscriptionList = new SubscriptionList();
     Observer<List<Song>> MusicObserver = new Subscriber<List<Song>>() {
         @Override
         public void onCompleted() {
-            if (musicSubsription!=null){
-                musicSubsription.unsubscribe();
-                musicSubsription=null;
-            }
+
         }
 
         @Override
@@ -179,8 +178,9 @@ public class MainActivity extends BaseActivity {
 
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
-        cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal));
+        cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal_png));
         getHotSong();
+        getRankImg();
     }
 
     @Override
@@ -208,16 +208,16 @@ public class MainActivity extends BaseActivity {
 
     private void initQueue() {
         if (SPUtils.get(getApplicationContext(), Constants.nowQueue_sp, "noQueue").equals(Constants.myList)) {
-            musicSubsription = MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.myList)
+            subscriptionList.add(MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.myList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(MusicObserver);
+                    .subscribe(MusicObserver));
 
         } else  {
-            musicSubsription = MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.hotList)
+            subscriptionList.add(MusicDBHelper.getMusicDBHelper().RxFastConvertQueue((Integer) SPUtils.get(getApplicationContext(),Constants.nowIndex_sp,0),MusicManager.hotList)
                     .subscribeOn(Schedulers.io())
                     .observeOn(AndroidSchedulers.mainThread())
-                    .subscribe(MusicObserver);
+                    .subscribe(MusicObserver));
         }
     }
 
@@ -225,6 +225,7 @@ public class MainActivity extends BaseActivity {
     protected void onDestroy() {
         super.onDestroy();
         EventBus.getDefault().unregister(this);
+        subscriptionList.unsubscribe();
     }
 
     private void getHotSong() {
@@ -243,10 +244,15 @@ public class MainActivity extends BaseActivity {
     }
 
     private void loadCDBitmap() {
-        Glide.with(getApplicationContext())
-                .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
-                .asBitmap()
-                .into(target);
+        if (MusicManager.getMusicManager().getNowSong().albumpic_big!=null){
+            Glide.with(MainActivity.this)
+                    .load(MusicManager.getMusicManager().getNowSong().albumpic_big)
+                    .asBitmap()
+                    .into(target);
+        }else {
+            cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal_png));
+        }
+
     }
 
 
@@ -307,6 +313,237 @@ public class MainActivity extends BaseActivity {
                 intent9.putExtra("topid", "26");
                 startActivity(intent9);
         }
+    }
+
+
+    private void getRankImg(){
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "5")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank1);
+                    }
+                }));
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "6")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank2);
+                    }
+                }));
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "23")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank3);
+                    }
+                }));
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "19")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank4);
+                    }
+                }));
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "17")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank5);
+                    }
+                }));
+
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "18")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank6);
+                    }
+                }));
+
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "3")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank7);
+                    }
+                }));
+        subscriptionList.add(NetWork.getMusicApi()
+                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, "16")
+                .map(new Func1<ApiResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(ApiResult apiResult) {
+                        return apiResult.showapi_res_body.pagebean.songLists;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Subscriber<List<Song>>() {
+                    @Override
+                    public void onCompleted() {
+
+                    }
+
+                    @Override
+                    public void onError(Throwable throwable) {
+
+                    }
+
+                    @Override
+                    public void onNext(List<Song> songs) {
+                        Glide.with(MainActivity.this)
+                                .load(songs.get(0).albumpic_big)
+                                .into(rank8);
+                    }
+                }));
+
     }
 
 

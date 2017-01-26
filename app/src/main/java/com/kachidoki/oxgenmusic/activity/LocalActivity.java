@@ -1,11 +1,18 @@
 package com.kachidoki.oxgenmusic.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.FrameLayout;
@@ -40,7 +47,6 @@ public class LocalActivity extends BaseActivity {
     private MyDownloadFragment myDownloadFragment;
     private MyLocalMusicFragment myLocalMusicFragment;
     private List<Fragment> fragments;
-    private int currIndex = 0;// 当前页卡编号
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -51,7 +57,51 @@ public class LocalActivity extends BaseActivity {
         InitSlider();
         InitViewPager();
 
+        if (!checkPermissom()){
+            requestStrongPermission();
+        }
+
     }
+
+    private void requestStrongPermission(){
+        ActivityCompat.requestPermissions(LocalActivity.this, new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, 1);
+    }
+
+    private boolean checkPermissom(){
+        return (ContextCompat.checkSelfPermission(LocalActivity.this, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == 1) {
+            int grantResult = grantResults[0];
+            boolean granted = grantResult == PackageManager.PERMISSION_GRANTED;
+            if (granted){
+                myLocalMusicFragment.reLoad();
+            }else {
+                if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                    AlertDialog dialog = new AlertDialog.Builder(this)
+                            .setMessage("需要赋予访问存储的权限")
+                            .setPositiveButton("确定", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            })
+                            .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    finish();
+                                }
+                            }).create();
+                    dialog.show();
+                    return;
+                }
+            }
+        }
+    }
+
 
     private void InitSlider(){
         localSlider.post(new Runnable() {

@@ -70,6 +70,8 @@ public class RankActivity extends BaseActivity {
     LinearLayout backGround;
     @BindView(R.id.list_fab)
     FloatingActionButton fab;
+    @BindView(R.id.list_wordimg)
+    ImageView wordimg;
 
     AdapterPlaylist adapter;
 
@@ -91,6 +93,8 @@ public class RankActivity extends BaseActivity {
             freshing.setVisibility(View.GONE);
             adapter.setData(songs);
             countAllTime(songs);
+            Glide.with(RankActivity.this).load(songs.get(0).albumpic_big)
+                    .into(listImg);
             songList = songs;
             if (SPUtils.get(RankActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(RankActivity.this,Constants.hotListname_sp,"nocall").equals(getIntent().getStringExtra("topid"))&&MusicManager.getMusicManager().getIsPlaying())
                 adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
@@ -184,25 +188,25 @@ public class RankActivity extends BaseActivity {
 
     private void setListImg(String topid){
         switch (topid){
-            case "16":listImg.setImageResource(R.drawable.rank_16_1);
+            case "16":wordimg.setImageResource(R.drawable.rankword_16);
                 break;
-            case "17":listImg.setImageResource(R.drawable.rank_17);
+            case "17":wordimg.setImageResource(R.drawable.rankword_17);
                 break;
-            case "18":listImg.setImageResource(R.drawable.rank_18);
+            case "18":wordimg.setImageResource(R.drawable.rankword_18);
                 break;
-            case "19":listImg.setImageResource(R.drawable.rank_19_3);
+            case "19":wordimg.setImageResource(R.drawable.rankword_19);
                 break;
-            case "23":listImg.setImageResource(R.drawable.rank_23_);
+            case "23":wordimg.setImageResource(R.drawable.rankword_23);
                 break;
-            case "3":listImg.setImageResource(R.drawable.rank_3);
+            case "3":wordimg.setImageResource(R.drawable.rankword_3);
                 break;
-            case "5":listImg.setImageResource(R.drawable.rank_5_2);
+            case "5":wordimg.setImageResource(R.drawable.rankword_5);
                 break;
-            case "6":listImg.setImageResource(R.drawable.rank_6_2);
+            case "6":wordimg.setImageResource(R.drawable.rankword_6);
                 break;
-            case "26":listImg.setImageResource(R.drawable.rank_26);
+            case "26":
                 break;
-            default:listImg.setImageResource(R.drawable.cd_nomal);
+            default:listImg.setImageResource(R.drawable.cd_nomal_png);
                 break;
         }
     }

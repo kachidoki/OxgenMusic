@@ -116,7 +116,6 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
                 callBack.OnChange();
             }
         }
-        Log.e("Test","deleteSong index = "+mQueueIndex);
     }
 
     public List<Song> getmQueue(){

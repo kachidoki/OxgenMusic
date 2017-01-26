@@ -5,6 +5,6 @@ package com.kachidoki.oxgenmusic.network;
  */
 public interface ProgressResponseListener {
 
-    void onResponseProgress(long bytesRead, long contentLength, boolean done);
+    void onResponseProgress(long bytesRead, long contentLength, boolean done,String songname);
 
 }

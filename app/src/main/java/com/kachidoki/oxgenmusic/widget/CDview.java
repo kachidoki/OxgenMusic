@@ -23,7 +23,7 @@ public class CDview extends View {
     private static final int MSG_RUN = 0x00000100;
     private static final int TIME_UPDATE = 50;
 
-    private Bitmap mCircleBitmap;
+//    private Bitmap mCircleBitmap;
     private Bitmap mClipBitmap; // cd图片
 
     private float mRotation = 0.0f;
@@ -38,7 +38,7 @@ public class CDview extends View {
 
     public CDview(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mCircleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cd);
+//        mCircleBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.cd);
         mMatrix = new Matrix();
     }
 
@@ -87,7 +87,7 @@ public class CDview extends View {
             }
         }
         setMeasuredDimension(width, height);
-        mCircleBitmap = resizeBitmap(width/10,mCircleBitmap);
+//        mCircleBitmap = resizeBitmap(width/10,mCircleBitmap);
         mClipBitmap = resizeBitmap(width,mClipBitmap);
     }
 
@@ -100,7 +100,7 @@ public class CDview extends View {
         mMatrix.preTranslate((getMeasuredWidth() - mClipBitmap.getWidth()) / 2,(getMeasuredWidth() - mClipBitmap.getWidth()) / 2);
 
         canvas.drawBitmap(mClipBitmap, mMatrix, null);
-        canvas.drawBitmap(mCircleBitmap, (getMeasuredWidth() - mCircleBitmap.getWidth()) / 2, (getMeasuredHeight() - mCircleBitmap.getHeight()) / 2, null);
+//        canvas.drawBitmap(mCircleBitmap, (getMeasuredWidth() - mCircleBitmap.getWidth()) / 2, (getMeasuredHeight() - mCircleBitmap.getHeight()) / 2, null);
         canvas.restore();
     }
 
@@ -146,8 +146,8 @@ public class CDview extends View {
 
         int widthSize = bmp.getWidth();
         int heightSize = bmp.getHeight();
-        int widthSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.AT_MOST);
-        int heightSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.AT_MOST);
+        int widthSpec = MeasureSpec.makeMeasureSpec(widthSize, MeasureSpec.EXACTLY);
+        int heightSpec = MeasureSpec.makeMeasureSpec(heightSize, MeasureSpec.EXACTLY);
 
         measure(widthSpec, heightSpec);
         mClipBitmap = createCircleBitmap(bmp);

@@ -100,6 +100,10 @@ public class PlayerService extends Service {
             bigRemoteViews.setTextViewText(R.id.nof_singer,MusicManager.getMusicManager().getNowSong().singername);
             nomalRemoteViews.setTextViewText(R.id.nof_nomal_songname,MusicManager.getMusicManager().getNowSong().songname);
             nomalRemoteViews.setTextViewText(R.id.nof_nomal_singer,MusicManager.getMusicManager().getNowSong().singername);
+            if (MusicManager.getMusicManager().getNowSong().albumpic_big==null){
+                bigRemoteViews.setImageViewResource(R.id.nof_img,R.drawable.cd_nomal_png);
+                nomalRemoteViews.setImageViewResource(R.id.nof_nomal_img,R.drawable.cd_nomal_png);
+            }
         }
 
 

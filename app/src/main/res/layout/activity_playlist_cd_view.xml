@@ -3,7 +3,7 @@
     android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="180dp">
-    <LinearLayout
+    <FrameLayout
         android:layout_weight="1"
         android:layout_width="0dp"
         android:layout_height="180dp"
@@ -16,7 +16,14 @@
             android:id="@+id/list_img"
             android:transitionName="rankImg"
             />
-    </LinearLayout>
+        <ImageView
+            android:layout_marginTop="8dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center_horizontal"
+            android:id="@+id/list_wordimg"
+            />
+    </FrameLayout>
     <LinearLayout
         android:layout_weight="1"
         android:layout_width="0dp"

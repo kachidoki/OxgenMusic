@@ -22,6 +22,7 @@ public class ProgressResponseBody extends ResponseBody {
     private final ProgressResponseListener progressListener;
     //包装完成的BufferedSource
     private BufferedSource bufferedSource;
+    private String songName;
 
     /**
      * 构造函数，赋值
@@ -29,9 +30,10 @@ public class ProgressResponseBody extends ResponseBody {
      * @param responseBody     待包装的响应体
      * @param progressListener 回调接口
      */
-    public ProgressResponseBody(ResponseBody responseBody, ProgressResponseListener progressListener) {
+    public ProgressResponseBody(ResponseBody responseBody, ProgressResponseListener progressListener,String songName) {
         this.responseBody = responseBody;
         this.progressListener = progressListener;
+        this.songName = songName;
     }
 
 
@@ -89,7 +91,7 @@ public class ProgressResponseBody extends ResponseBody {
                 totalBytesRead += bytesRead != -1 ? bytesRead : 0;
                 //回调，如果contentLength()不知道长度，会返回-1
                 if(progressListener != null){
-                    progressListener.onResponseProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1);
+                    progressListener.onResponseProgress(totalBytesRead, responseBody.contentLength(), bytesRead == -1,songName);
                 }
                 return bytesRead;
             }

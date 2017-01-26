@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import android.widget.Toast;
 
 import com.kachidoki.oxgenmusic.R;
-import com.kachidoki.oxgenmusic.activity.RankActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.Song;
@@ -27,39 +26,40 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import rx.Subscriber;
-import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
-import rx.schedulers.Schedulers;
 
 /**
- * Created by mayiwei on 16/11/30.
+ * Created by mayiwei on 17/1/25.
  */
-public class PopWindow extends PopupWindow {
-
-
+public class PopWindowDown extends PopupWindow {
     private Context context;
     private View view;
     private Song song;
     private List<Song> songList;
     private int queueIndex;
     private String callname;
-    @BindView(R.id.pop_addlist)
+    @BindView(R.id.popDown_addlist)
     LinearLayout add;
-    @BindView(R.id.pop_playthis)
+    @BindView(R.id.popDown_playthis)
     LinearLayout playthis;
-    @BindView(R.id.pop_cancel)
+    @BindView(R.id.popDown_cancel)
     LinearLayout cancel;
-    @BindView(R.id.pop_download)
-    LinearLayout popDownload;
+    @BindView(R.id.popDown_delete)
+    LinearLayout delete;
 
-    public PopWindow(Context mContext, Song mSong, List<Song> songs,int index,String callname) {
+    private OnChange onChange;
+
+    public interface OnChange{
+        void Callback(int i);
+    }
+
+    public PopWindowDown(Context mContext, Song mSong, List<Song> songs,int index,String callname,OnChange callback) {
         this.context = mContext;
         this.song = mSong;
         this.songList = songs;
         this.queueIndex = index;
         this.callname = callname;
-        this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_list, null);
+        this.onChange = callback;
+        this.view = LayoutInflater.from(mContext).inflate(R.layout.pop_mydown, null);
         ButterKnife.bind(this, view);
         // 设置外部可点击
         this.setOutsideTouchable(true);
@@ -98,10 +98,10 @@ public class PopWindow extends PopupWindow {
         this.setAnimationStyle(R.style.pop_anim);
     }
 
-    @OnClick({R.id.pop_playthis, R.id.pop_addlist, R.id.pop_cancel,R.id.pop_download})
+    @OnClick({R.id.popDown_playthis, R.id.popDown_addlist, R.id.popDown_cancel,R.id.popDown_delete})
     void toTarget(View view) {
         switch (view.getId()) {
-            case R.id.pop_addlist:
+            case R.id.popDown_addlist:
                 if (SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
                     if (!MusicManager.getMusicManager().checkIsAdd(song)) {
                         Toast.makeText(context, "添加成功", Toast.LENGTH_SHORT).show();
@@ -118,21 +118,15 @@ public class PopWindow extends PopupWindow {
                         Toast.makeText(context, "已在我的歌单", Toast.LENGTH_SHORT).show();
                     }
                 }
-
                 dismiss();
                 break;
-            case R.id.pop_playthis:
+            case R.id.popDown_playthis:
                 Toast.makeText(context, "播放歌曲", Toast.LENGTH_SHORT).show();
-                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
+                if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                        &&SPUtils.get(context,Constants.hotListname_sp,"noname").equals(callname)){
                     //设置index即可
                     Log.e("Test","设置index即可");
                     MusicManager.getMusicManager().setIndex(queueIndex);
-//                    if (callname.equals("search")){
-//                        //也要重置
-//                        MusicDBHelper.getMusicDBHelper().deleteQueueSong(MusicManager.hotList);
-//                        MusicDBHelper.getMusicDBHelper().saveListSong(songList,MusicManager.hotList);
-//                        MusicManager.getMusicManager().setQueue(songList,queueIndex,true);
-//                    }
                 }else {
                     //重置队列
                     SPUtils.put(context,Constants.hotListname_sp,callname);
@@ -145,50 +139,27 @@ public class PopWindow extends PopupWindow {
                 }
                 if (SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.myList)){
                     SPUtils.put(context,Constants.nowQueue_sp,Constants.hotList);
+                    SPUtils.put(context,Constants.hotListname_sp,callname);
                 }
                 dismiss();
                 break;
-            case R.id.pop_download:
-                MusicDBHelper.getMusicDBHelper().RxGetDownsongs()
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribe(new Subscriber<List<Song>>() {
-                            @Override
-                            public void onCompleted() {
-
-                            }
-
-                            @Override
-                            public void onError(Throwable throwable) {
-
-                            }
-
-                            @Override
-                            public void onNext(List<Song> songs) {
-                                if (MusicDBHelper.getMusicDBHelper().checkIsDown(song.songname,songs)){
-                                    Toast.makeText(context, "已经下载", Toast.LENGTH_SHORT).show();
-                                }else {
-                                    Intent intent = new Intent(context, DownloadService.class);
-                                    intent.putExtra("command",DownloadService.CommandDownload);
-                                    intent.putExtra("songname", song.songname);
-                                    intent.putExtra("seconds",song.seconds);
-                                    intent.putExtra("singerid",song.singerid);
-                                    intent.putExtra("albumpic",song.albumpic_big);
-                                    intent.putExtra("singername",song.singername);
-                                    intent.putExtra("albumid",song.albumid);
-                                    intent.putExtra("songid",song.songid);
-                                    intent.putExtra("url",song.url);
-                                    context.startService(intent);
-                                }
-                            }
-                        });
+            case R.id.popDown_delete:
+//                MusicManager.getMusicManager().deleteSong(queueIndex,MusicManager.getMusicManager().getIsPlaying(),
+//                        SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+//                        &&SPUtils.get(context, Constants.hotListname_sp,"nocall").equals(callname));
+//                MusicDBHelper.getMusicDBHelper().deleteDownSong(song);
+                onChange.Callback(queueIndex);
+                if (MusicManager.getMusicManager().getIsfirst()
+                        &&SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                        &&SPUtils.get(context, Constants.hotListname_sp,"nocall").equals(callname)){
+                    SPUtils.put(context,Constants.nowIndex_sp,MusicManager.getMusicManager().getIndex());
+                }
                 dismiss();
                 break;
-            case R.id.pop_cancel:
+            case R.id.popDown_cancel:
                 dismiss();
                 break;
 
         }
     }
-
 }
