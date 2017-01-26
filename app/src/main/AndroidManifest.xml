@@ -16,25 +16,33 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.MainActivity"
             android:label="氧气云音乐">
         </activity>
         <activity
+            android:screenOrientation="portrait"
             android:name=".activity.RankActivity"
             android:label="排行榜"/>
         <activity android:name=".activity.PlayActivity"
+            android:screenOrientation="portrait"
             android:label="正在播放"/>
         <activity android:name=".activity.MyPlaylistActivity"
+            android:screenOrientation="portrait"
             android:label="我的列表"/>
         <service android:name=".player.PlayerService" />
         <service android:name=".player.DownloadService"/>
         <activity android:name=".activity.LoginActivity"
+            android:screenOrientation="portrait"
             android:label="登录"/>
         <activity android:name=".activity.RegisterActivity"
+            android:screenOrientation="portrait"
             android:label="注册"/>
         <activity android:name=".activity.SearchActivity"
+            android:screenOrientation="portrait"
             android:label="搜索"/>
         <activity android:name=".activity.LocalActivity"
+            android:screenOrientation="portrait"
             android:label="本地音乐"/>
         <activity android:name=".activity.LaunchActivity">
             <intent-filter>

@@ -68,13 +68,18 @@ public class MyLocalMusicFragment extends Fragment {
 
         @Override
         public void onNext(List<Song> songs) {
-            loadFreshing.setVisibility(View.GONE);
-            adapter.setData(songs);
-            songList = songs;
-            if (SPUtils.get(getContext(), Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
-                    &&SPUtils.get(getContext(),Constants.hotListname_sp,"nocall").equals("mylocal")
-                    && MusicManager.getMusicManager().getIsPlaying())
-                adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+            if (songs.isEmpty()||songs==null){
+                loadNull.setVisibility(View.VISIBLE);
+                loadFreshing.setVisibility(View.GONE);
+            }else {
+                loadFreshing.setVisibility(View.GONE);
+                adapter.setData(songs);
+                songList = songs;
+                if (SPUtils.get(getContext(), Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                        &&SPUtils.get(getContext(),Constants.hotListname_sp,"nocall").equals("mylocal")
+                        && MusicManager.getMusicManager().getIsPlaying())
+                    adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+            }
         }
     };
 
@@ -106,8 +111,11 @@ public class MyLocalMusicFragment extends Fragment {
             case CHANGE:
                 if (SPUtils.get(getContext(), Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
                         &&SPUtils.get(getContext(),Constants.hotListname_sp,"nocall").equals("mylocal")
-                        && MusicManager.getMusicManager().getIsPlaying())
+                        && MusicManager.getMusicManager().getIsPlaying()){
                     adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+                }else {
+                    adapter.setItemPlaying(-1);
+                }
                 break;
         }
     }

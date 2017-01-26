@@ -15,5 +15,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="14sp"
-        android:text="还未有下载的歌,快去下载吧"/>
+        android:text="本地还没有歌,快去下载吧"/>
 </LinearLayout>

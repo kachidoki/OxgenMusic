@@ -147,7 +147,7 @@ public class PopWindowDown extends PopupWindow {
 //                MusicManager.getMusicManager().deleteSong(queueIndex,MusicManager.getMusicManager().getIsPlaying(),
 //                        SPUtils.get(context, Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
 //                        &&SPUtils.get(context, Constants.hotListname_sp,"nocall").equals(callname));
-//                MusicDBHelper.getMusicDBHelper().deleteDownSong(song);
+                MusicDBHelper.getMusicDBHelper().deleteDownSong(song);
                 onChange.Callback(queueIndex);
                 if (MusicManager.getMusicManager().getIsfirst()
                         &&SPUtils.get(context,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
