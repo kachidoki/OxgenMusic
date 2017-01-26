@@ -131,6 +131,7 @@ public class SearchActivity extends BaseActivity {
                 song.songname = content.songname;
                 song.albumid = content.albumid;
                 song.albumpic_big = content.albumpic_big;
+                song.songid = content.songid;
                 song.url = content.m4a;
                 songs.add(song);
             }

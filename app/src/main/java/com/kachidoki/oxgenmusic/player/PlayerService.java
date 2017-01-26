@@ -4,9 +4,12 @@ import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Handler;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.support.annotation.Nullable;
 import android.support.v7.app.NotificationCompat;
 import android.util.Log;
@@ -20,6 +23,7 @@ import com.kachidoki.oxgenmusic.app.App;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
+import com.kachidoki.oxgenmusic.widget.ShakeHelper;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -36,6 +40,7 @@ public class PlayerService extends Service {
     public static final int CommandPlayNow = 5;
     private NotificationTarget notificationTarget;
     private NotificationTarget notificationNomalTarget;
+    private ShakeHelper shakeHelper;
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
@@ -54,6 +59,7 @@ public class PlayerService extends Service {
             }
 
         });
+        initShake();
     }
 
     @Override
@@ -174,12 +180,14 @@ public class PlayerService extends Service {
                 sendPlayerNotification();
                 break;
             case CommandNext:
+                shakeHelper.start();
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().next();
                 }
                 sendPlayerNotification();
                 break;
             case CommandPlay:
+                shakeHelper.start();
                 if (MusicManager.getMusicManager().getIsPlaying()){
                     MusicManager.getMusicManager().pause();
                 }else {
@@ -188,6 +196,7 @@ public class PlayerService extends Service {
                 sendPlayerNotification();
                 break;
             case CommandPrevious:
+                shakeHelper.start();
                 if (MusicManager.getMusicManager().getmQueue()!=null){
                     MusicManager.getMusicManager().previous();
                 }
@@ -199,6 +208,7 @@ public class PlayerService extends Service {
                         MusicManager.getMusicManager().pause();
                     }
                 }
+                shakeHelper.stop();
                 stopForeground(true);
                 stopSelf();
                 break;
@@ -209,6 +219,29 @@ public class PlayerService extends Service {
                 sendPlayerNotification();
                 break;
         }
+    }
+
+    private void initShake(){
+        final Vibrator vibrator=(Vibrator) getBaseContext().getSystemService(Context.VIBRATOR_SERVICE);
+        shakeHelper=new ShakeHelper(getBaseContext());
+        shakeHelper.setOnShakeListener(new ShakeHelper.OnShakeListener() {
+
+            @Override
+            public void onShake() {
+                // TODO Auto-generated method stub
+                if(MusicManager.getMusicManager().getIsPlaying()){
+                    shakeHelper.stop();
+                    vibrator.vibrate(200);
+                    MusicManager.getMusicManager().next();
+                    new Handler().postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            shakeHelper.start();
+                        }
+                    },1500);
+                }
+            }
+        } );
     }
 
 
