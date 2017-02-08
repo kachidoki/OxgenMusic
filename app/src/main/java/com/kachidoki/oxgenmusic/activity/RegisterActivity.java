@@ -58,7 +58,7 @@ public class RegisterActivity extends BaseActivity {
             Toast.makeText(RegisterActivity.this, "请输入6-12位密码",Toast.LENGTH_SHORT).show();
             return false;
         }else if (!registerPassRe.getText().toString().equals(registerPassRe.getText().toString())){
-            Toast.makeText(RegisterActivity.this, "两次输入密码不一致",Toast.LENGTH_SHORT).show();
+            Toast.makeText(RegisterActivity.this, "两次输入的密码不一致",Toast.LENGTH_SHORT).show();
             return false;
         }else {
             return true;
