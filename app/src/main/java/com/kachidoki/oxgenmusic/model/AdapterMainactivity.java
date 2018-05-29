@@ -38,6 +38,10 @@ public class AdapterMainactivity extends RecyclerView.Adapter {
         this.callname = callname;
     }
 
+    public void setCallname(String name) {
+        this.callname = callname;
+    }
+
     public void initPlayingSong(){
         playingSong = -1;
         notifyDataSetChanged();

@@ -46,7 +46,7 @@ public class MusicDBHelper {
     }
 
     public void saveSong(Song song,SongQueue songQueue){
-        new SongBean(song.songname,song.seconds,song.singerid,song.albumpic_big,song.url,song.singername,song.albumid,song.songid,songQueue).save();
+        new SongBean(song.songname,song.seconds,song.singerid,song.albumpic_big,song.url,song.singername,song.albumid,song.songid,song.songmid,songQueue).save();
     }
 
     public void saveQueue(SongQueue songQueue){
@@ -57,7 +57,7 @@ public class MusicDBHelper {
         ActiveAndroid.beginTransaction();
         try {
             for (int i = 0; i < songs.size(); i++) {
-                new SongBean(songs.get(i).songname,songs.get(i).seconds,songs.get(i).singerid,songs.get(i).albumpic_big,songs.get(i).url,songs.get(i).singername,songs.get(i).albumid,songs.get(i).songid,songQueue).save();
+                new SongBean(songs.get(i).songname,songs.get(i).seconds,songs.get(i).singerid,songs.get(i).albumpic_big,songs.get(i).url,songs.get(i).singername,songs.get(i).albumid,songs.get(i).songid,songs.get(i).songmid,songQueue).save();
             }
             ActiveAndroid.setTransactionSuccessful();
         }

@@ -10,6 +10,7 @@
         android:src="@drawable/cd_nomal_png"
         android:id="@+id/nof_nomal_img" />
     <LinearLayout
+        android:id="@+id/nof_toPlay"
         android:layout_weight="8"
         android:layout_marginLeft="16dp"
         android:layout_width="wrap_content"

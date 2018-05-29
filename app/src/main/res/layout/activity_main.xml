@@ -12,76 +12,85 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:orientation="vertical">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginLeft="16dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_marginLeft="16dp"
                     android:padding="3dp"
-                    android:src="@drawable/icon_hot_main"/>
+                    android:src="@drawable/icon_hot_main" />
+
                 <TextView
+                    android:id="@+id/main_hot_title"
+                    style="@style/TextAppearance.AppCompat.Title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="36dp"
                     android:layout_marginLeft="3dp"
                     android:layout_weight="1"
-                    android:layout_width="wrap_content"
-                    android:layout_height="36dp"
                     android:gravity="center_vertical"
-                    android:textSize="18sp"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:text="最近热歌"/>
+                    android:text="最近热歌"
+                    android:textSize="18sp" />
+
                 <TextView
-                    android:layout_marginRight="16dp"
+                    android:id="@+id/main_more"
                     android:layout_width="wrap_content"
                     android:layout_height="36dp"
-                    android:gravity="center_vertical"
                     android:layout_marginLeft="16dp"
-                    android:id="@+id/main_more"
+                    android:layout_marginRight="16dp"
+                    android:gravity="center_vertical"
                     android:padding="2dp"
-                    android:textSize="17sp"
-                    android:text="更多"/>
+                    android:text="更多"
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <android.support.v7.widget.RecyclerView
-                android:layout_marginTop="3dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginRight="8dp"
+                android:id="@+id/recyclerView_main"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-                android:id="@+id/recyclerView_main"
-                />
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:layout_marginTop="3dp" />
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="36dp"
-                android:orientation="horizontal"
-                android:gravity="center_vertical">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
                 <ImageView
-                    android:layout_marginLeft="16dp"
                     android:layout_width="32dp"
                     android:layout_height="32dp"
+                    android:layout_marginLeft="16dp"
                     android:padding="1dp"
-                    android:src="@drawable/icon_main_rank"/>
+                    android:src="@drawable/icon_main_rank" />
+
                 <TextView
-                    android:layout_marginLeft="3dp"
+                    style="@style/TextAppearance.AppCompat.Title"
                     android:layout_width="match_parent"
                     android:layout_height="36dp"
+                    android:layout_marginLeft="3dp"
                     android:gravity="center_vertical"
-                    android:textSize="18sp"
-                    style="@style/TextAppearance.AppCompat.Title"
-                    android:text="歌曲榜单"/>
+                    android:text="歌曲榜单"
+                    android:textSize="18sp" />
             </LinearLayout>
 
-            <include layout="@layout/activity_main_rank_view"/>
+            <include layout="@layout/activity_main_rank_view" />
         </LinearLayout>
 
     </ScrollView>
 
+    <include layout="@layout/activity_main_cd_view"/>
 
 
 </LinearLayout>

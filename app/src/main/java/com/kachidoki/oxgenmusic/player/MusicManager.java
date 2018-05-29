@@ -30,6 +30,9 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         return musicManager;
     }
 
+    private PlayerUrlNetTransfer mTransfer;
+    private PlayerHistoryReporter mReporter;
+
     private MediaPlayer mediaPlayer;
     private List<Song> mQueue;
     private int mQueueIndex;
@@ -42,6 +45,19 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
 
     public MusicManager(){
         mediaPlayer = new MediaPlayer();
+        mTransfer = new PlayerUrlNetTransfer();
+        mReporter = new PlayerHistoryReporter();
+        mTransfer.setCaller(new PlayerUrlNetTransfer.OnTransferFinsh() {
+            @Override
+            public void succes(String url) {
+                play(getNowSong());
+            }
+
+            @Override
+            public void fail(Throwable e) {
+                Log.e("MusicManager","mTransfer fail "+e.getMessage());
+            }
+        });
         mediaPlayer.setOnPreparedListener(this);
         mediaPlayer.setOnCompletionListener(this);
         mediaPlayer.reset();
@@ -100,9 +116,9 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     }
 
     public void deleteSong(int index,boolean isPlaying,boolean isMylist){
-        Log.e("Test","before deleteSong "+" size = "+mQueue.size());
+        Log.d("Test","before deleteSong "+" size = "+mQueue.size());
         for (int i =0;i<mQueue.size();i++){
-            Log.e("Test","before deleteSong"+"i = "+i+" songname = "+mQueue.get(i).songname);
+            Log.d("Test","before deleteSong"+"i = "+i+" songname = "+mQueue.get(i).songname);
         }
         boolean deleteIsPlaying = index==mQueueIndex;
         if (isMylist){
@@ -118,8 +134,8 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
                 mediaPlayer.stop();
                 callBack.OnChange();
             }
-            Log.e("Test","==================================");
-            Log.e("Test","after deleteSong "+" size = "+mQueue.size());
+            Log.d("Test","==================================");
+            Log.d("Test","after deleteSong "+" size = "+mQueue.size());
             for (int i =0;i<mQueue.size();i++){
                 Log.e("Test","after deleteSong"+"i = "+i+" songname = "+mQueue.get(i).songname);
             }
@@ -174,7 +190,11 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
           if (isfirst){
               play(getNowPlaying());
           }else {
-              mediaPlayer.start();
+              try {
+                  mediaPlayer.start();
+              } catch (IllegalStateException e){
+                  Log.e("MusicManager",e.getMessage());
+              }
           }
         }
         callBack.OnChange();
@@ -257,8 +277,11 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
             try {
                 mediaPlayer.reset();
                 mediaPlayer.setDataSource(song.url);
-                mediaPlayer.prepareAsync();
+                mediaPlayer.prepare();
+                mReporter.report(song);
             } catch (IOException e) {
+                Log.e("MusicManager",e.getMessage());
+                mTransfer.getTransferUrl(song);
                 e.printStackTrace();
             }
         }
@@ -274,7 +297,13 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
         if (mQueue.isEmpty()){
             return null;
         }
-        return mQueue.get(mQueueIndex);
+        try {
+            Song now = mQueue.get(mQueueIndex);
+            return now;
+        } catch (IndexOutOfBoundsException e) {
+            Log.e("MusicPlayer","must in the wrong queue error: "+e.getMessage());
+        }
+        return null;
     }
 
     private Song getNextSong(){
@@ -319,8 +348,14 @@ public class MusicManager implements MediaPlayer.OnCompletionListener,MediaPlaye
     @Override
     public void onPrepared(MediaPlayer mediaPlayer) {
         isReady = true;
-        mediaPlayer.start();
-        callBack.OnChange();
+        try {
+            mediaPlayer.start();
+            callBack.OnChange();
+        } catch (IllegalStateException e){
+            Log.e("MusicManager",e.getMessage());
+        }
+
+
     }
 
 

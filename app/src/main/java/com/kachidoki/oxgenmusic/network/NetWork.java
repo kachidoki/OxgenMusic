@@ -19,6 +19,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NetWork {
     private static Download download;
     private static MusicApi musicApi;
+    private static NewMusicApi newMusicApi;
     private static final int DEFAULT_TIMEOUT = 15;
     private static Converter.Factory gsonConverterFactory = GsonConverterFactory.create();
     private static CallAdapter.Factory rxJavaCallAdapterFactory = RxJavaCallAdapterFactory.create();
@@ -36,6 +37,20 @@ public class NetWork {
             musicApi = retrofit.create(MusicApi.class);
         }
         return musicApi;
+    }
+
+    public static NewMusicApi getNewMusicApi(){
+        OkHttpClient okHttpClient = new OkHttpClient();
+        if (newMusicApi==null){
+            Retrofit retrofit = new Retrofit.Builder()
+                    .client(okHttpClient)
+                    .baseUrl(Constants.newBaseUrl)
+                    .addConverterFactory(gsonConverterFactory)
+                    .addCallAdapterFactory(rxJavaCallAdapterFactory)
+                    .build();
+            newMusicApi = retrofit.create(NewMusicApi.class);
+        }
+        return newMusicApi;
     }
 
     public static Download getDownloadApi(ProgressResponseListener listener,String songname){

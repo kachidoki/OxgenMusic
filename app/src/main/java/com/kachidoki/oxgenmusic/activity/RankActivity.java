@@ -21,9 +21,11 @@ import com.bumptech.glide.Glide;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
+import com.kachidoki.oxgenmusic.model.AccountModel;
 import com.kachidoki.oxgenmusic.model.AdapterPlaylist;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
+import com.kachidoki.oxgenmusic.model.bean.NewApiGetTopResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
@@ -96,7 +98,9 @@ public class RankActivity extends BaseActivity {
             Glide.with(RankActivity.this).load(songs.get(0).albumpic_big)
                     .into(listImg);
             songList = songs;
-            if (SPUtils.get(RankActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(RankActivity.this,Constants.hotListname_sp,"nocall").equals(getIntent().getStringExtra("topid"))&&MusicManager.getMusicManager().getIsPlaying())
+            if (SPUtils.get(RankActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                    && SPUtils.get(RankActivity.this,Constants.hotListname_sp,"nocall").equals(getIntent().getStringExtra("topid"))
+                    && MusicManager.getMusicManager().getIsPlaying())
                 adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
         }
     };
@@ -158,17 +162,43 @@ public class RankActivity extends BaseActivity {
 
     private void getRankMusic() {
         unsubscribe();
-        subscription = NetWork.getMusicApi()
-                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, getIntent().getStringExtra("topid"))
-                .map(new Func1<ApiResult, List<Song>>() {
-                    @Override
-                    public List<Song> call(ApiResult apiResult) {
-                        return apiResult.showapi_res_body.pagebean.songLists;
-                    }
-                })
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+//        subscription = NetWork.getMusicApi()
+//                .getMusicList(Constants.showapi_appid, Constants.showapi_sign, getIntent().getStringExtra("topid"))
+//                .map(new Func1<ApiResult, List<Song>>() {
+//                    @Override
+//                    public List<Song> call(ApiResult apiResult) {
+//                        return apiResult.showapi_res_body.pagebean.songLists;
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer);
+        if (getIntent().getStringExtra("topid").equals("-1")) {
+            subscription = NetWork.getNewMusicApi()
+                    .getRecommendList(getIntent().getStringExtra("uid"))
+                    .map(new Func1<NewApiGetTopResult, List<Song>>() {
+                        @Override
+                        public List<Song> call(NewApiGetTopResult newApiGetTopResult) {
+                            return newApiGetTopResult.res_body.songlist;
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        }else {
+            subscription = NetWork.getNewMusicApi()
+                    .getMusicList(getIntent().getStringExtra("topid"))
+                    .map(new Func1<NewApiGetTopResult, List<Song>>() {
+                        @Override
+                        public List<Song> call(NewApiGetTopResult newApiGetTopResult) {
+                            return newApiGetTopResult.res_body.songlist;
+                        }
+                    })
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(observer);
+        }
+
     }
 
     private void countAllTime(List<Song> songs){

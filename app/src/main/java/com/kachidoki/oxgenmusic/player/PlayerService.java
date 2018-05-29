@@ -149,6 +149,7 @@ public class PlayerService extends Service {
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
         bigRemoteViews.setOnClickPendingIntent(R.id.nof_img,pIntentToPlay);
         nomalRemoteViews.setOnClickPendingIntent(R.id.nof_nomal_img,pIntentToPlay);
+        nomalRemoteViews.setOnClickPendingIntent(R.id.nof_toPlay,pIntentToPlay);
 
         Intent notificationIntent = new Intent(this,PlayActivity.class);
         PendingIntent contentIntent = PendingIntent.getService(this,0,notificationIntent,0);

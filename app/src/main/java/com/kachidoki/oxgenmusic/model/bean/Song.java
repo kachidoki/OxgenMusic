@@ -8,6 +8,7 @@ public class Song {
     public int seconds;
     public String albummid;
     public int songid;
+    public String songmid;
     public int singerid;
     public String albumpic_big;
     public String albumpic_small;

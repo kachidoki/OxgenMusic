@@ -282,7 +282,7 @@ public class LrcView extends View {
         word = word.replace("&#40;", "(");
         word = word.replace("&#41;", ")");
 
-        String[] result = word.split("\\&#10;");
+        String[] result = word.split("\\n");
         for (String string : result) {
             arr = parseLine(string);
             if (arr == null) continue;

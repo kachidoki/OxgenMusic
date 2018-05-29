@@ -26,6 +26,7 @@
             android:name=".activity.RankActivity"
             android:label="排行榜"/>
         <activity android:name=".activity.PlayActivity"
+            android:launchMode="singleTop"
             android:screenOrientation="portrait"
             android:label="正在播放"/>
         <activity android:name=".activity.MyPlaylistActivity"
@@ -54,7 +55,7 @@
         <activity android:name=".activity.AboutActivity"
             android:label="关于"/>
         <meta-data android:name="AA_DB_NAME" android:value="MyMusic.db" />
-        <meta-data android:name="AA_DB_VERSION" android:value="3" />
+        <meta-data android:name="AA_DB_VERSION" android:value="4" />
         <meta-data android:name="AA_MODELS" android:value="com.kachidoki.oxgenmusic.model.bean.SongBean, com.kachidoki.oxgenmusic.model.bean.SongQueue, com.kachidoki.oxgenmusic.model.bean.SongDown" />
     </application>
 

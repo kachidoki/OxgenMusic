@@ -29,9 +29,11 @@ import com.kachidoki.oxgenmusic.model.AccountModel;
 import com.kachidoki.oxgenmusic.model.AdapterMainactivity;
 import com.kachidoki.oxgenmusic.model.MusicDBHelper;
 import com.kachidoki.oxgenmusic.model.bean.ApiResult;
+import com.kachidoki.oxgenmusic.model.bean.NewApiGetTopResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
+import com.kachidoki.oxgenmusic.network.NewMusicApi;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
@@ -74,6 +76,8 @@ public class MainActivity extends BaseActivity {
     CDview cDview;
     @BindView(R.id.main_more)
     TextView more;
+    @BindView(R.id.main_hot_title)
+    TextView hotTitle;
     @BindView(R.id.rank1)
     ImageView rank1;
     @BindView(R.id.rank2)
@@ -110,7 +114,7 @@ public class MainActivity extends BaseActivity {
 
     AdapterMainactivity adapter = new AdapterMainactivity(MainActivity.this,"26");
 
-    Observer<List<Song>> observer = new Observer<List<Song>>() {
+    Observer<List<Song>> hotObserver = new Observer<List<Song>>() {
         @Override
         public void onCompleted() {
         }
@@ -123,8 +127,38 @@ public class MainActivity extends BaseActivity {
         @Override
         public void onNext(List<Song> songs) {
             adapter.setData(songs);
-            if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)&&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")&&MusicManager.getMusicManager().getIsPlaying())
+            adapter.setCallname("26");
+            if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                    &&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("26")
+                    &&MusicManager.getMusicManager().getIsPlaying())
                 adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+        }
+    };
+
+
+    Observer<List<Song>> recommendObserver = new Observer<List<Song>>() {
+        @Override
+        public void onCompleted() {
+        }
+
+        @Override
+        public void onError(Throwable e) {
+            Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
+        @Override
+        public void onNext(List<Song> songs) {
+            adapter.setData(songs);
+            adapter.setCallname("-1");
+            if (SPUtils.get(MainActivity.this,Constants.nowQueue_sp,"noQueue").equals(Constants.hotList)
+                    &&SPUtils.get(MainActivity.this,Constants.hotListname_sp,"nocall").equals("-1")
+                    &&MusicManager.getMusicManager().getIsPlaying()) {
+                adapter.setItemPlaying(MusicManager.getMusicManager().getIndex());
+            }
+
+            if (songs.size() == 0) {
+                getHotSong();
+            }
         }
     };
 
@@ -179,7 +213,7 @@ public class MainActivity extends BaseActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
         recyclerView.setAdapter(adapter);
         cDview.setImage(BitmapFactory.decodeResource(getResources(), R.drawable.cd_nomal_png));
-        getHotSong();
+        getMainSong();
         getRankImg();
     }
 
@@ -228,6 +262,30 @@ public class MainActivity extends BaseActivity {
         subscriptionList.unsubscribe();
     }
 
+    private void getMainSong() {
+        if (AccountModel.getAccountModel().isLogin()) {
+            getRecommendSong();
+        }else {
+            getHotSong();
+        }
+    }
+
+    private void getRecommendSong() {
+        unsubscribe();
+        subscription = NetWork.getNewMusicApi()
+                .getRecommendList(AccountModel.getAccountModel().getAccount().getObjectId())
+                .map(new Func1<NewApiGetTopResult, List<Song>>() {
+                    @Override
+                    public List<Song> call(NewApiGetTopResult apiResult) {
+                        return apiResult.res_body.songlist;
+                    }
+                })
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(recommendObserver);
+        hotTitle.setText("为你推荐");
+    }
+
     private void getHotSong() {
         unsubscribe();
         subscription = NetWork.getMusicApi()
@@ -240,7 +298,8 @@ public class MainActivity extends BaseActivity {
                 })
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(observer);
+                .subscribe(hotObserver);
+        hotTitle.setText("今日热歌");
     }
 
     private void loadCDBitmap() {
@@ -310,7 +369,12 @@ public class MainActivity extends BaseActivity {
                 break;
             case R.id.main_more:
                 Intent intent9 = new Intent(MainActivity.this, RankActivity.class);
-                intent9.putExtra("topid", "26");
+                if (AccountModel.getAccountModel().isLogin()) {
+                    intent9.putExtra("topid", "-1");
+                    intent9.putExtra("uid",AccountModel.getAccountModel().getAccount().getObjectId());
+                }else {
+                    intent9.putExtra("topid", "26");
+                }
                 startActivity(intent9);
         }
     }

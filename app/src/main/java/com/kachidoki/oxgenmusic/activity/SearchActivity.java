@@ -18,6 +18,7 @@ import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.app.BaseActivity;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.AdapterSearch;
+import com.kachidoki.oxgenmusic.model.bean.NewApiGetTopResult;
 import com.kachidoki.oxgenmusic.model.bean.SearchResult;
 import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.network.NetWork;
@@ -108,12 +109,23 @@ public class SearchActivity extends BaseActivity {
 
     private void getSearchMusic(){
         unsubscribe();
-        subscription = NetWork.getMusicApi()
-                .getSearchList(Constants.showapi_appid,Constants.showapi_sign,searchKeyword.getText().toString(),1)
-                .map(new Func1<SearchResult, List<Song>>() {
+//        subscription = NetWork.getMusicApi()
+//                .getSearchList(Constants.showapi_appid,Constants.showapi_sign,searchKeyword.getText().toString(),1)
+//                .map(new Func1<SearchResult, List<Song>>() {
+//                    @Override
+//                    public List<Song> call(SearchResult searchResult) {
+//                        return ConvertToSong(searchResult);
+//                    }
+//                })
+//                .subscribeOn(Schedulers.io())
+//                .observeOn(AndroidSchedulers.mainThread())
+//                .subscribe(observer);
+        subscription = NetWork.getNewMusicApi()
+                .getSearchList(searchKeyword.getText().toString(),50,0)
+                .map(new Func1<NewApiGetTopResult, List<Song>>() {
                     @Override
-                    public List<Song> call(SearchResult searchResult) {
-                        return ConvertToSong(searchResult);
+                    public List<Song> call(NewApiGetTopResult searchResult) {
+                        return searchResult.res_body.songlist;
                     }
                 })
                 .subscribeOn(Schedulers.io())

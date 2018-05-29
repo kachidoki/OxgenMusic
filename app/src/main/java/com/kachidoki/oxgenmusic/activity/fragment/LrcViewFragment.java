@@ -35,7 +35,7 @@ public class LrcViewFragment extends Fragment {
     @BindView(R.id.play_lrc)
     LrcView lrcView;
 
-    private int NowmusicId=-1;
+    private String NowmusicId = "";
     protected Subscription subscription;
     private Handler handler = new Handler();
     public Runnable updataProgress = new Runnable() {
@@ -59,11 +59,12 @@ public class LrcViewFragment extends Fragment {
 
         @Override
         public void onError(Throwable throwable) {
-            Log.e("Test","Error = "+throwable.getMessage());
+            Log.e("LrcViewFragment","Error = "+throwable.getMessage());
         }
 
         @Override
         public void onNext(LrcResult lrcResult) {
+            Log.d("LrcViewFragment","res = "+lrcResult.showapi_res_body.lyric);
             lrcView.setLrcWord(lrcResult.showapi_res_body.lyric);
 
         }
@@ -77,8 +78,8 @@ public class LrcViewFragment extends Fragment {
         EventBus.getDefault().register(this);
 
         if (MusicManager.getMusicManager().getNowSong() != null) {
-            if (MusicManager.getMusicManager().getNowSong().songid!=NowmusicId){
-                NowmusicId = MusicManager.getMusicManager().getNowSong().songid;
+            if (!MusicManager.getMusicManager().getNowSong().songmid.equals(NowmusicId)){
+                NowmusicId = MusicManager.getMusicManager().getNowSong().songmid;
                 getLrcWord(NowmusicId);
             }
         }
@@ -87,14 +88,14 @@ public class LrcViewFragment extends Fragment {
     }
 
 
-    private void getLrcWord(int musicId) {
+    private void getLrcWord(String musicId) {
         if (subscription != null && !subscription.isUnsubscribed()) {
             subscription.unsubscribe();
         }
 
-        Log.e("Test","getLrcWord musicId = "+musicId);
+        Log.e("LrcViewFragment","getLrcWord musicId = "+musicId);
         subscription = NetWork.getMusicApi()
-                .getLrcWord(Constants.showapi_appid,Constants.showapi_sign, String.valueOf(NowmusicId))
+                .getLrcWord(Constants.showapi_appid,Constants.showapi_sign, NowmusicId)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(observer);
@@ -106,8 +107,8 @@ public class LrcViewFragment extends Fragment {
         switch (playEvent.getAction()) {
             case CHANGE:
                 if (MusicManager.getMusicManager().getNowSong() != null) {
-                    if (MusicManager.getMusicManager().getNowSong().songid!=NowmusicId){
-                        NowmusicId = MusicManager.getMusicManager().getNowSong().songid;
+                    if (!MusicManager.getMusicManager().getNowSong().songmid.equals(NowmusicId)){
+                        NowmusicId = MusicManager.getMusicManager().getNowSong().songmid;
                         getLrcWord(NowmusicId);
                     }
                 }
