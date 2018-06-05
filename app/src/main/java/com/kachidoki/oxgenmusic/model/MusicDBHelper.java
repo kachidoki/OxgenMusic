@@ -156,6 +156,7 @@ public class MusicDBHelper {
                 song.albumpic_big = songQueue.songs().get(i).albumpic;
                 song.songid = songQueue.songs().get(i).songid;
                 song.url = songQueue.songs().get(i).url;
+                song.songmid = songQueue.songs().get(i).songmid;
                 songs.add(song);
             }
             return songs;
@@ -195,6 +196,7 @@ public class MusicDBHelper {
                 song.albumpic_big = songQueue.songs().get(i).albumpic;
                 song.songid = songQueue.songs().get(i).songid;
                 song.url = songQueue.songs().get(i).url;
+                song.songmid = songQueue.songs().get(i).songmid;
                 songs.add(song);
             }
             return songs;

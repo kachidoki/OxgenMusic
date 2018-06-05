@@ -50,6 +50,7 @@ public class DownloadService extends Service{
             int id = downMap.get(progressBean.songName).songid;
             sendNotification(progressBean.songName,(int)progressBean.contentLength,(int)progressBean.bytesRead,id);
             if (progressBean.done){
+                Log.i("downloadHandler","long = "+progressBean.contentLength+" read = "+progressBean.bytesRead);
                 manger.cancel(id);
                 sendDownNotification(progressBean.songName,downMap.get(progressBean.songName).songid);
             }
@@ -95,13 +96,13 @@ public class DownloadService extends Service{
                     intent.getIntExtra("seconds",0),
                     intent.getIntExtra("singerid",0),
                     intent.getStringExtra("albumpic"),
-                    getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath()+File.separator+intent.getStringExtra("songname")+".m4a",
+                    getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath()+File.separator+intent.getStringExtra("songname")+".mp3",
                     intent.getStringExtra("singername"),
                     intent.getIntExtra("albumid",0),
                     intent.getIntExtra("songid",0));
             downMap.put(songDown.songname,songDown);
-            Log.e("Test",getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath()+File.separator+intent.getStringExtra("songname")+".m4a");
-            Log.e("Test","开始下载 "+downMap.get(songDown.songname).songid);
+            Log.i("DownloadService",getExternalFilesDir(Environment.DIRECTORY_MUSIC).getAbsolutePath()+File.separator+intent.getStringExtra("songname")+".mp3");
+            Log.i("DownloadService","开始下载 "+downMap.get(songDown.songname).songid);
             downloadMusic(songDown.songname,intent.getStringExtra("url"));
         }
 
@@ -154,7 +155,7 @@ public class DownloadService extends Service{
 
                     @Override
                     public void onError(Throwable e) {
-
+                        Log.e("FileDownload","onError "+e.getMessage());
                     }
 
                     @Override

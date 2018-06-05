@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import com.kachidoki.oxgenmusic.R;
 import com.kachidoki.oxgenmusic.config.Constants;
 import com.kachidoki.oxgenmusic.model.bean.LrcResult;
+import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.model.event.PlayEvent;
 import com.kachidoki.oxgenmusic.network.NetWork;
 import com.kachidoki.oxgenmusic.player.MusicManager;
@@ -19,6 +20,8 @@ import com.kachidoki.oxgenmusic.widget.LrcView;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
+
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -76,7 +79,7 @@ public class LrcViewFragment extends Fragment {
         View view = inflater.inflate(R.layout.activity_play_lrc_view,container,false);
         ButterKnife.bind(this, view);
         EventBus.getDefault().register(this);
-
+        List<Song> songs = MusicManager.getMusicManager().getmQueue();
         if (MusicManager.getMusicManager().getNowSong() != null) {
             if (!MusicManager.getMusicManager().getNowSong().songmid.equals(NowmusicId)){
                 NowmusicId = MusicManager.getMusicManager().getNowSong().songmid;

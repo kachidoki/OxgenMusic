@@ -20,6 +20,7 @@ import com.kachidoki.oxgenmusic.model.bean.Song;
 import com.kachidoki.oxgenmusic.player.DownloadService;
 import com.kachidoki.oxgenmusic.player.MusicManager;
 import com.kachidoki.oxgenmusic.player.PlayerService;
+import com.kachidoki.oxgenmusic.player.PlayerUrlNetTransfer;
 import com.kachidoki.oxgenmusic.utils.SPUtils;
 
 import java.util.List;
@@ -37,7 +38,7 @@ import rx.schedulers.Schedulers;
  */
 public class PopWindow extends PopupWindow {
 
-
+    private PlayerUrlNetTransfer mTransfer;
     private Context context;
     private View view;
     private Song song;
@@ -55,6 +56,19 @@ public class PopWindow extends PopupWindow {
 
     public PopWindow(Context mContext, Song mSong, List<Song> songs,int index,String callname) {
         this.context = mContext;
+        mTransfer = new PlayerUrlNetTransfer();
+        mTransfer.setCaller(new PlayerUrlNetTransfer.OnTransferFinsh() {
+            @Override
+            public void succes(String url) {
+                song.url = url;
+                callDownLoad();
+            }
+
+            @Override
+            public void fail(Throwable e) {
+                Log.e("PopWindow","transfer error "+e.getMessage());
+            }
+        });
         this.song = mSong;
         this.songList = songs;
         this.queueIndex = index;
@@ -168,17 +182,7 @@ public class PopWindow extends PopupWindow {
                                 if (MusicDBHelper.getMusicDBHelper().checkIsDown(song.songname,songs)){
                                     Toast.makeText(context, "已经下载", Toast.LENGTH_SHORT).show();
                                 }else {
-                                    Intent intent = new Intent(context, DownloadService.class);
-                                    intent.putExtra("command",DownloadService.CommandDownload);
-                                    intent.putExtra("songname", song.songname);
-                                    intent.putExtra("seconds",song.seconds);
-                                    intent.putExtra("singerid",song.singerid);
-                                    intent.putExtra("albumpic",song.albumpic_big);
-                                    intent.putExtra("singername",song.singername);
-                                    intent.putExtra("albumid",song.albumid);
-                                    intent.putExtra("songid",song.songid);
-                                    intent.putExtra("url",song.url);
-                                    context.startService(intent);
+                                    mTransfer.getTransferUrl(song);
                                 }
                             }
                         });
@@ -189,6 +193,21 @@ public class PopWindow extends PopupWindow {
                 break;
 
         }
+    }
+
+    void callDownLoad() {
+        Intent intent = new Intent(context, DownloadService.class);
+        intent.putExtra("command",DownloadService.CommandDownload);
+        intent.putExtra("songname", song.songname);
+        intent.putExtra("seconds",song.seconds);
+        intent.putExtra("singerid",song.singerid);
+        intent.putExtra("albumpic",song.albumpic_big);
+        intent.putExtra("singername",song.singername);
+        intent.putExtra("albumid",song.albumid);
+        intent.putExtra("songid",song.songid);
+        intent.putExtra("url",song.url);
+        intent.putExtra("songmid",song.songmid);
+        context.startService(intent);
     }
 
 }
